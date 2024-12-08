@@ -6,6 +6,8 @@
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
+#' @param method method for the cut-off probability
+#' @param seed seed number
 #' @importFrom dplyr if_else mutate filter
 #' @importFrom stats pbeta rbinom
 #' @importFrom rlang :=

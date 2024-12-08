@@ -29,6 +29,7 @@ This function simulates nested data across multiple stages based on specified pr
 }
 \examples{
 # Example usage of the simulate_data_nested function
-result <- simulate_data_nested(p1 = 0.5, p2 = 0.3, p3 = 0.2, n_stage = 3, n = c(100, 150, 200), nsim = 10)
+result <- simulate_data_nested(p1 = 0.5, p2 = 0.3, p3 = 0.2,
+ n_stage = 3, n = c(100, 150, 200), nsim = 10)
 print(result)
 }

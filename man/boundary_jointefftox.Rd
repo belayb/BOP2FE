@@ -30,6 +30,10 @@ boundary_jointefftox(
 \item{gamma}{optimal value for gamma of the cut-off probability}
 
 \item{eta}{optimal value for eta of the cut-off probability}
+
+\item{method}{method for the cut-off probability}
+
+\item{seed}{seed number}
 }
 \description{
 Boundary values for joint Endpoint

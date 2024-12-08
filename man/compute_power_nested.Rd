@@ -26,6 +26,14 @@ compute_power_nested(
 \item{nsim}{number of simulation to run}
 
 \item{lambda}{lambda value for}
+
+\item{gamma}{gamma value for}
+
+\item{eta}{eta value for}
+
+\item{method}{method to use for cutoff probability}
+
+\item{seed}{for reproducability}
 }
 \description{
 function title - under construction

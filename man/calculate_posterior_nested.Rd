@@ -9,11 +9,11 @@ calculate_posterior_nested(xdata, H0, H1, n_stage)
 \arguments{
 \item{xdata}{A data frame containing the data for which posterior probabilities are to be calculated.}
 
+\item{H0}{A numeric vector representing the null hypothesis probabilities.}
+
+\item{H1}{A numeric vector representing the alternative hypothesis probabilities.}
+
 \item{n_stage}{An integer indicating the number of interim analysis in the trial.}
-
-\item{h0}{A numeric vector representing the null hypothesis probabilities.}
-
-\item{h1}{A numeric vector representing the alternative hypothesis probabilities.}
 }
 \value{
 A data frame with additional columns for the posterior probabilities calculated for each stage.

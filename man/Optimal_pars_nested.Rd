@@ -44,15 +44,23 @@ Optimal_pars_nested(
 
 \item{method}{method to use for cutoff}
 
-\item{n_stage}{Number of interim analysis in the simulation.}
+\item{lambda1}{starting value for lambda values to search}
 
-\item{lambda}{Range of lambda values to search}
+\item{lambda2}{ending value for lambda values to search}
 
-\item{gamma}{Range of gamma values to search}
+\item{grid1}{number of lambda values to consider between lambda1 and lambda2}
 
-\item{eta}{Range of eta values to search if method is power}
+\item{gamma1}{starting value for gamma values to search}
 
-\item{seed}{An integer seed for reproducibility of the random number generation.}
+\item{gamma2}{ending value for gamma values to search}
+
+\item{grid2}{number of gamma values to consider between gamma1 and gamma2}
+
+\item{eta1}{starting value for eta values to search}
+
+\item{eta2}{ending value for eta values to search}
+
+\item{grid3}{number of eta values to consider between eta1 and eta2}
 }
 \value{
 A data frame

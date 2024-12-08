@@ -20,6 +20,10 @@ boundary_nested(H0, a, n, nIA, lambda, gamma, eta, method = NULL, seed = 123)
 \item{gamma}{optimal value for gamma of the cut-off probability}
 
 \item{eta}{optimal value for eta of the cut-off probability}
+
+\item{method}{method for the cut-off probability}
+
+\item{seed}{seed number}
 }
 \description{
 Boundery values for Nested Endpoint

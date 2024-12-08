@@ -14,7 +14,8 @@
 #'
 #' @examples
 #' # Example usage of the simulate_data_nested function
-#' result <- simulate_data_nested(p1 = 0.5, p2 = 0.3, p3 = 0.2, n_stage = 3, n = c(100, 150, 200), nsim = 10)
+#' result <- simulate_data_nested(p1 = 0.5, p2 = 0.3, p3 = 0.2,
+#'  n_stage = 3, n = c(100, 150, 200), nsim = 10)
 #' print(result)
 #' @importFrom magrittr %>%
 #' @export
@@ -122,7 +123,8 @@ simulate_data_binary <- function(p,n_stage,n, nsim, seed=23456){
 #'
 #' @examples
 #' # Example usage of the get_cf_cs_values function
-#' result <- get_cf_cs_values(n = c(100, 150, 200), lambda = 0.05, gamma = 1, eta = 0.5, method = "power")
+#' result <- get_cf_cs_values(n = c(100, 150, 200), lambda = 0.05,
+#' gamma = 1, eta = 0.5, method = "power")
 #' print(result)
 #' @importFrom magrittr %>%
 #' @importFrom stats qnorm pnorm
@@ -152,8 +154,8 @@ get_cf_cs_values<- function(n, lambda=NULL, gamma=NULL, eta= NULL, method = "pow
 #' across multiple stages of a trial.
 #'
 #' @param xdata A data frame containing the data for which posterior probabilities are to be calculated.
-#' @param h0 A numeric vector representing the null hypothesis probabilities.
-#' @param h1 A numeric vector representing the alternative hypothesis probabilities.
+#' @param H0 A numeric vector representing the null hypothesis probabilities.
+#' @param H1 A numeric vector representing the alternative hypothesis probabilities.
 #' @param n_stage An integer indicating the number of interim analysis in the trial.
 #'
 #' @return A data frame with additional columns for the posterior probabilities calculated for each stage.
@@ -216,6 +218,11 @@ calculate_posterior_nested <- function(xdata, H0, H1, n_stage) {
 #' @param n vector of sample sizes
 #' @param nsim number of simulation to run
 #' @param lambda lambda value for
+#' @param gamma gamma value for
+#' @param eta eta value for
+#' @param method method to use for cutoff probability 
+#' @param seed for reproducability 
+#' 
 #add documentation
 compute_power_nested <- function(H0, H1, n, nsim, lambda=NULL, gamma=NULL, eta= NULL, method = "power", seed=NULL){
   n_stage <- length(n)
@@ -274,16 +281,20 @@ compute_power_nested <- function(H0, H1, n, nsim, lambda=NULL, gamma=NULL, eta= 
 #' @param CRPR0 Probability of success for the first or second outcome under the null hypothesis.
 #' @param CR1 Probability of success for the first outcome under the alternative hypothesis.
 #' @param CRPR1 Probability of success for the first or second outcome under the alternative hypothesis.
-#' @param n_stage Number of interim analysis in the simulation.
 #' @param n A vector of sample sizes for each interim analysis.
 #' @param nsim Number of simulation runs to perform.
 #' @param t1e Desired Type - I error rate
 #' @param t2e Desired Type - II error rate
 #' @param method method to use for cutoff
-#' @param lambda Range of lambda values to search
-#' @param gamma Range of gamma values to search
-#' @param eta Range of eta values to search if method is power
-#' @param seed An integer seed for reproducibility of the random number generation.
+#' @param lambda1 starting value for lambda values to search
+#' @param lambda2 ending value for lambda values to search
+#' @param grid1 number of lambda values to consider between lambda1 and lambda2
+#' @param gamma1 starting value for gamma values to search
+#' @param gamma2 ending value for gamma values to search
+#' @param grid2 number of gamma values to consider between gamma1 and gamma2
+#' @param eta1 starting value for eta values to search
+#' @param eta2 ending value for eta values to search
+#' @param grid3 number of eta values to consider between eta1 and eta2
 #'
 #' @return A data frame
 #'
@@ -397,7 +408,7 @@ calculate_posterior_binary <- function(xdata, H0, H1, n_stage) {
 compute_power_binary <- function(H0, H1, n, nsim, n_stage){
 
   y_null <- simulate_data_binary(p=H0, n=n, n_stage=n_stage , nsim = nsim)
-  y_alter <- simulate_data_binary(p1=H1, n=n, n_stage=n_stage , nsim = nsim)
+  y_alter <- simulate_data_binary(p=H1, n=n, n_stage=n_stage , nsim = nsim)
 
   cfcs<-get_cf_cs_values(n, lambda, gamma, eta, method)
   cf_values<-cfcs$cf_values

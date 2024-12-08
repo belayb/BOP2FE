@@ -1,5 +1,22 @@
-
-
+#' BOP2 design for binary endpoint 
+#' @param H0 Response rate 
+#' @param n vector of sample size at each interim look (Note that the sample size at interim i is the difference between sample size at interim i and at interim i-1)
+#' @param lambda optimal value for lambda of the cut-off probability
+#' @param gamma optimal value for gamma of the cut-off probability
+#' @param eta optimal value for eta of the cut-off probability
+#' @param method type of function to be used for the cut off probability for superiority. The default is power function
+#' @param nsim number of simulation
+#' @param seed for reproducibility
+#' @importFrom dplyr mutate case_when
+#' @importFrom stats pbeta rbinom
+#' @importFrom rlang :=
+#' @importFrom magrittr %>%
+#' @importFrom patchwork wrap_plots plot_annotation
+#' @importFrom gridExtra tableGrob ttheme_minimal
+#' @importFrom ggplot2  ggplot geom_ribbon geom_line scale_x_continuous scale_y_continuous geom_vline theme_minimal
+#' @importFrom tibble tibble
+#' @export
+#'
 BOP2FE_binary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = NULL, nsim = NULL, seed = NULL){
 
   a1 <- H0
@@ -83,6 +100,26 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = 
 
 }
 
+#' BOP2 design for nested (ordinal) endpoint 
+#' @param CR0  complete remission rate under the null (CR)
+#' @param CRPR0 complete remission or partial remission rate under the null (CR or PR)
+#' @param n vector of sample size at each interim look (Note that the sample size at interim i is the difference between sample size at interim i and at interim i-1)
+#' @param lambda optimal value for lambda of the cut-off probability
+#' @param gamma optimal value for gamma of the cut-off probability
+#' @param eta optimal value for eta of the cut-off probability
+#' @param method type of function to be used for the cut off probability for superiority. The default is power function
+#' @param nsim number of simulation
+#' @param seed for reproducibility
+#' @importFrom dplyr mutate case_when
+#' @importFrom stats pbeta rbinom
+#' @importFrom rlang :=
+#' @importFrom magrittr %>%
+#' @importFrom patchwork wrap_plots plot_annotation
+#' @importFrom gridExtra tableGrob ttheme_minimal
+#' @importFrom ggplot2  ggplot geom_ribbon geom_line scale_x_continuous scale_y_continuous geom_vline theme_minimal
+#' @importFrom tibble tibble
+#' @export
+#'
 
 BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = NULL, nsim = NULL, seed = NULL){
   H0 <- c(CR0, CRPR0 - CR0, 1 - CRPR0)
@@ -172,7 +209,25 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
 }
 
 
-
+#' BOP2 design for co-primary endpoint 
+#' @param H0 Response rate under the null (Response - PFS6, Response - no PFS6, No response - PFS6, No response - No PFS6)
+#' @param n vector of sample size at each interim look (Note that the sample size at interim i is the difference between sample size at interim i and at interim i-1)
+#' @param lambda optimal value for lambda of the cut-off probability
+#' @param gamma optimal value for gamma of the cut-off probability
+#' @param eta optimal value for eta of the cut-off probability
+#' @param method type of function to be used for the cut off probability for superiority. The default is power function
+#' @param nsim number of simulation
+#' @param seed for reproducibility
+#' @importFrom dplyr mutate case_when
+#' @importFrom stats pbeta rbinom
+#' @importFrom rlang :=
+#' @importFrom magrittr %>%
+#' @importFrom patchwork wrap_plots plot_annotation
+#' @importFrom gridExtra tableGrob ttheme_minimal
+#' @importFrom ggplot2  ggplot geom_ribbon geom_line scale_x_continuous scale_y_continuous geom_vline theme_minimal
+#' @importFrom tibble tibble
+#' @export
+#'
 
 BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = NULL, nsim = NULL, seed = NULL){
 
@@ -260,7 +315,25 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
 
 
 
-
+#' BOP2 design for joint efficacy and toxicity endpoint 
+#' @param H0 Response rate under the null (toxicity - OR, no toxicity - OR, toxicity - no OR, no toxicity - No OR)
+#' @param n vector of sample size at each interim look (Note that the sample size at interim i is the difference between sample size at interim i and at interim i-1)
+#' @param lambda optimal value for lambda of the cut-off probability
+#' @param gamma optimal value for gamma of the cut-off probability
+#' @param eta optimal value for eta of the cut-off probability
+#' @param method type of function to be used for the cut off probability for superiority. The default is power function
+#' @param nsim number of simulation
+#' @param seed for reproducibility
+#' @importFrom dplyr mutate case_when
+#' @importFrom stats pbeta rbinom
+#' @importFrom rlang :=
+#' @importFrom magrittr %>%
+#' @importFrom patchwork wrap_plots plot_annotation
+#' @importFrom gridExtra tableGrob ttheme_minimal
+#' @importFrom ggplot2  ggplot geom_ribbon geom_line scale_x_continuous scale_y_continuous geom_vline theme_minimal
+#' @importFrom tibble tibble
+#' @export
+#'
 BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = NULL, nsim = NULL, seed = NULL){
 
   a <- H0
@@ -317,7 +390,7 @@ BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  meth
     geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
     #ggtitle("Binary Efficacy Endpoint") +
     theme_minimal()
-
+  
 
   Oc_tabs <- tibble(Statistic = c("Early stoping for Futility (%)",
                                   "Early stoping for superiority (%)",
