@@ -35,51 +35,6 @@ This is a basic example which shows you how to use BOPFE:
 
 ``` r
 library(BOP2FE)
-#> Loading required package: dplyr
-#> Warning: package 'dplyr' was built under R version 4.3.3
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
-#> Loading required package: purrr
-#> Warning: package 'purrr' was built under R version 4.3.3
-#> Loading required package: rlang
-#> Warning: package 'rlang' was built under R version 4.3.3
-#> 
-#> Attaching package: 'rlang'
-#> The following objects are masked from 'package:purrr':
-#> 
-#>     %@%, flatten, flatten_chr, flatten_dbl, flatten_int, flatten_lgl,
-#>     flatten_raw, invoke, splice
-#> Loading required package: magrittr
-#> Warning: package 'magrittr' was built under R version 4.3.3
-#> 
-#> Attaching package: 'magrittr'
-#> The following object is masked from 'package:rlang':
-#> 
-#>     set_names
-#> The following object is masked from 'package:purrr':
-#> 
-#>     set_names
-#> Loading required package: tidyselect
-#> Warning: package 'tidyselect' was built under R version 4.3.3
-#> Loading required package: gridExtra
-#> Warning: package 'gridExtra' was built under R version 4.3.3
-#> 
-#> Attaching package: 'gridExtra'
-#> The following object is masked from 'package:dplyr':
-#> 
-#>     combine
-#> Loading required package: patchwork
-#> Warning: package 'patchwork' was built under R version 4.3.3
-#> Loading required package: ggplot2
-#> Warning: package 'ggplot2' was built under R version 4.3.3
-#> Loading required package: tibble
-#> Warning: package 'tibble' was built under R version 4.3.3
 ## basic example code
 ```
 
@@ -87,22 +42,6 @@ library(BOP2FE)
 
 ``` r
 BOP2FE_binary(H0 =0.2, n = c(10,5,5,5,5,5,5), lambda = 0.909, gamma=1, eta=NULL, nsim = 10000, seed = 1234)
-#> Warning in pbeta(H0, a1 + x, b1 + n - x): NaNs produced
-#> Warning in pbeta(H0, a1 + x, b1 + n - x): NaNs produced
-#> Warning in pbeta(H0, a1 + x, b1 + n - x): NaNs produced
-#> Warning in pbeta(H0, a1 + x, b1 + n - x): NaNs produced
-#> Warning in pbeta(H0, a1 + x, b1 + n - x): NaNs produced
-#> Warning in pbeta(H0, a1 + x, b1 + n - x): NaNs produced
-#> Warning in pbeta(H0, a1 + x, b1 + n - x): NaNs produced
-#> Warning in pbeta(H0, a1 + x, b1 + n - x): NaNs produced
-#> Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if
-#> `.name_repair` is omitted as of tibble 2.0.0.
-#> ℹ Using compatibility `.name_repair`.
-#> ℹ The deprecated feature was likely used in the BOP2FE package.
-#>   Please report the issue to the authors.
-#> This warning is displayed once every 8 hours.
-#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-#> generated.
 ```
 
 <img src="man/figures/README-binary-1.png" width="100%" />

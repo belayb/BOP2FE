@@ -201,7 +201,7 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
       title = "BOP2 FE for nested outcome",
       subtitle = Info,
       #caption = paste0("Design Pars: n= ",n, "lambda=", lambda, "gamma=" gamma),
-      theme = theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))
+      theme = theme(plot.title = element_text(size = 16, hjust = 0.5, face = "bold"))
     )
 
   return(layout)
@@ -306,7 +306,7 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
       title = "BOP2 FE for co-primary outcome",
       subtitle = Info,
       #caption = paste0("Design Pars: n= ",n, "lambda=", lambda, "gamma=" gamma),
-      theme = theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))
+      theme = theme(plot.title = element_text(size = 16, hjust = 0.5, face = "bold"))
     )
 
   return(layout)
@@ -411,7 +411,7 @@ BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  meth
       title = "BOP2 FE for joint efficacy and toxicity",
       subtitle = Info,
       #caption = paste0("Design Pars: n= ",n, "lambda=", lambda, "gamma=" gamma),
-      theme = theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))
+      theme = theme(plot.title = element_text(size = 16, hjust = 0.5, face = "bold"))
     )
 
   return(layout)
