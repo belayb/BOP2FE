@@ -12,7 +12,7 @@ compute_power_nested(
   lambda = NULL,
   gamma = NULL,
   eta = NULL,
-  method = "power",
+  method = NULL,
   seed = NULL
 )
 }

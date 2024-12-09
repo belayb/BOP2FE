@@ -4,7 +4,7 @@
 \alias{get_cf_cs_values}
 \title{Compute Probability Cutoffs for Futility Stopping}
 \usage{
-get_cf_cs_values(n, lambda = NULL, gamma = NULL, eta = NULL, method = "power")
+get_cf_cs_values(n, lambda = NULL, gamma = NULL, eta = NULL, method = NULL)
 }
 \arguments{
 \item{n}{A vector of sample sizes for each interim analysis of the trial.}

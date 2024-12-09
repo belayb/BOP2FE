@@ -4,7 +4,7 @@
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is power function
+#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -29,7 +29,7 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = 
   }
 
   # Set default method to "obrain" if eta is NULL
-  if (is.null(eta)) {
+  if (is.null(eta)|is.null(method)) {
     method <- "OBrien-Fleming"
   }
   if(is.null (gamma)) {gamma = 1; message("gamma value should be provided")}
@@ -56,35 +56,36 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = 
   # Calculate postprob_sup based on method
   if (method == "power") {
     plot_dat$postprob_sup <- 1 - (1 - lambda) * (plot_dat$n / nsum)^eta
-  } else {
+  } else {#"OBrien-Fleming"
     plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
   }
 
   # Plot
-  p1<-ggplot(plot_dat, aes(x = n)) +
-    geom_line(aes(y = postprob_fut), color = "blue", linewidth = 1) +
-    geom_ribbon(aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
-    geom_ribbon(aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
-    geom_line(aes(y = postprob_sup), color = "red", linewidth = 1) +
-    geom_ribbon(aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
-    scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
-    scale_y_continuous(name = "Cut-off Probability (%)", breaks = seq(0, 100, by = 20)) +
-    geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
-    #ggtitle("Binary Efficacy Endpoint") +
-    theme_minimal()
+  p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
+    ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
+    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
+    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
+    ggplot2::scale_y_continuous(name = "Cut-off Probability (%)", breaks = seq(0, 100, by = 20)) +
+    ggplot2::geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
+    #ggplot2::ggtitle("Binary Efficacy Endpoint") +
+    ggplot2::theme_minimal()
+  
 
 
-  Oc_tabs <- tibble(Statistic = c("Early stoping for Futility (%)",
+  Oc_tabs <- tibble::tibble(Statistic = c("Early stoping for Futility (%)",
                                   "Early stoping for superiority (%)",
                                   "Average sample size",
                                   "Null rejection (%)"),
                     Value = c(Oc_tab$earlystopfuti_mean, Oc_tab$earlystopsupe_mean, Oc_tab$ss_mean, Oc_tab$rejectnull_mean))
 
-  Oc_tabs<-as_tibble(Oc_tabs)%>%gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  Oc_tabs<-dplyr::as_tibble(Oc_tabs)%>%gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
   names(boundary_tab) <- c("Futility boundary", "Superiority boundary")
-  boundary_tab<- as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
+  boundary_tab<- tibble::as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
   colnames(boundary_tab) <- c("Interm analysis", 1:nIA)
-  boundary_tab<-as_tibble(boundary_tab)%>%gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  boundary_tab<-dplyr::as_tibble(boundary_tab)%>%gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
 
   Info<- paste0("lambda=", lambda, " ", "gamma=" ,gamma )
   layout <- patchwork::wrap_plots(p1,Oc_tabs, boundary_tab, nrow=3)
@@ -93,7 +94,7 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = 
       title = "BOP2 FE for binary outcome",
       subtitle = Info,
       #caption = paste0("Design Pars: n= ",n, "lambda=", lambda, "gamma=" gamma),
-      theme = theme(plot.title = element_text(size = 20, hjust = 0.5, face = "bold"))
+      theme = ggplot2::theme(plot.title = ggplot2::element_text(size = 20, hjust = 0.5, face = "bold"))
     )
 
   return(layout)
@@ -107,7 +108,7 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = 
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is power function
+#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -135,7 +136,7 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
   }
 
   # Set default method to "obrain" if eta is NULL
-  if (is.null(eta)) {
+  if (is.null(eta)|is.null(method)) {
     method <- "OBrien-Fleming"
   }
   if(is.null (gamma)) {gamma = 1; message("gamma value should be provided")}
@@ -169,43 +170,43 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
   }
 
   # Plot
-  p1<-ggplot(plot_dat, aes(x = n)) +
-    geom_line(aes(y = postprob_fut), color = "blue", linewidth = 1) +
-    geom_ribbon(aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
-    geom_ribbon(aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
-    geom_line(aes(y = postprob_sup), color = "red", linewidth = 1) +
-    geom_ribbon(aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
-    scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
-    scale_y_continuous(name = "Cut-off Probability (%)", breaks = seq(0, 100, by = 20)) +
-    geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
-    #ggtitle("Binary Efficacy Endpoint") +
-    theme_minimal()
-
-
-  Oc_tabs <- tibble(Statistic = c("Early stoping for Futility (%)",
-                                  "Early stoping for superiority (%)",
-                                  "Average sample size",
-                                  "Null rejection (%)"),
-                    Value = c(Oc_tab$earlystopfuti_mean, Oc_tab$earlystopsupe_mean, Oc_tab$ss_mean, Oc_tab$rejectnull_mean))
-
-  Oc_tabs<-as_tibble(Oc_tabs)%>%gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
+    ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
+    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
+    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
+    ggplot2::scale_y_continuous(name = "Cut-off Probability (%)", breaks = seq(0, 100, by = 20)) +
+    ggplot2::geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
+    #ggplot2::ggtitle("Binary Efficacy Endpoint") +
+    ggplot2::theme_minimal()
+  
+  Oc_tabs <- tibble::tibble(Statistic = c("Early stopping for Futility (%)",
+                                          "Early stopping for Superiority (%)",
+                                          "Average sample size",
+                                          "Null rejection (%)"),
+                            Value = c(Oc_tab$earlystopfuti_mean, Oc_tab$earlystopsupe_mean, Oc_tab$ss_mean, Oc_tab$rejectnull_mean))
+  
+  Oc_tabs <- dplyr::as_tibble(Oc_tabs) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  
   names(boundary_tab) <- c("Futility boundary CR", "Futility boundary CR/PR", "Superiority boundary CR", "Superiority boundary CR/PR")
-  boundary_tab<- as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
-  colnames(boundary_tab) <- c("Interm analysis", 1:nIA)
-  boundary_tab<-as_tibble(boundary_tab)%>%gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
-
-  Info<- paste0("lambda=", lambda, " ", "gamma=" ,gamma )
-  layout <- patchwork::wrap_plots(p1,Oc_tabs, boundary_tab, nrow=3)
-  layout<-layout +
+  boundary_tab <- dplyr::as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
+  colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
+  boundary_tab <- dplyr::as_tibble(boundary_tab) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  
+  Info <- paste0("lambda=", lambda, " ", "gamma=", gamma)
+  layout <- patchwork::wrap_plots(p1, Oc_tabs, boundary_tab, nrow = 3)
+  layout <- layout +
     patchwork::plot_annotation(
       title = "BOP2 FE for nested outcome",
       subtitle = Info,
-      #caption = paste0("Design Pars: n= ",n, "lambda=", lambda, "gamma=" gamma),
-      theme = theme(plot.title = element_text(size = 16, hjust = 0.5, face = "bold"))
+      #caption = paste0("Design Pars: n= ", n, "lambda=", lambda, "gamma=", gamma),
+      theme = ggplot2::theme(plot.title = ggplot2::element_text(size = 16, hjust = 0.5, face = "bold"))
     )
-
+  
   return(layout)
-
+  
 }
 
 
@@ -215,7 +216,7 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is power function
+#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -240,7 +241,7 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
   }
 
   # Set default method to "obrain" if eta is NULL
-  if (is.null(eta)) {
+  if (is.null(eta)|is.null(method)) {
     method <- "OBrien-Fleming"
   }
   if(is.null (gamma)) {gamma = 1; message("gamma value should be provided")}
@@ -274,42 +275,43 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
   }
 
   # Plot
-  p1<-ggplot(plot_dat, aes(x = n)) +
-    geom_line(aes(y = postprob_fut), color = "blue", linewidth = 1) +
-    geom_ribbon(aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
-    geom_ribbon(aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
-    geom_line(aes(y = postprob_sup), color = "red", linewidth = 1) +
-    geom_ribbon(aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
-    scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
-    scale_y_continuous(name = "Cut-off Probability (%)", breaks = seq(0, 100, by = 20)) +
-    geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
-    #ggtitle("Binary Efficacy Endpoint") +
-    theme_minimal()
-
-
-  Oc_tabs <- tibble(Statistic = c("Early stoping for Futility (%)",
-                                  "Early stoping for superiority (%)",
-                                  "Average sample size",
-                                  "Null rejection (%)"),
-                    Value = c(Oc_tab$earlystopfuti_mean, Oc_tab$earlystopsupe_mean, Oc_tab$ss_mean, Oc_tab$rejectnull_mean))
-
-  Oc_tabs<-as_tibble(Oc_tabs)%>%gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
+    ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
+    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
+    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
+    ggplot2::scale_y_continuous(name = "Cut-off Probability (%)", breaks = seq(0, 100, by = 20)) +
+    ggplot2::geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
+    #ggplot2::ggtitle("Binary Efficacy Endpoint") +
+    ggplot2::theme_minimal()
+  
+  Oc_tabs <- tibble::tibble(Statistic = c("Early stopping for Futility (%)",
+                                          "Early stopping for Superiority (%)",
+                                          "Average sample size",
+                                          "Null rejection (%)"),
+                            Value = c(Oc_tab$earlystopfuti_mean, Oc_tab$earlystopsupe_mean, Oc_tab$ss_mean, Oc_tab$rejectnull_mean))
+  
+  Oc_tabs <- dplyr::as_tibble(Oc_tabs) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  
   names(boundary_tab) <- c("Futility boundary ORR", "Futility boundary PFS6", "Superiority boundary ORR", "Superiority boundary PFS6")
-  boundary_tab<- as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
-  colnames(boundary_tab) <- c("Interm analysis", 1:nIA)
-  boundary_tab<-as_tibble(boundary_tab)%>%gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
-
-  Info<- paste0("lambda=", lambda, " ", "gamma=" ,gamma )
-  layout <- patchwork::wrap_plots(p1,Oc_tabs, boundary_tab, nrow=3)
-  layout<-layout +
+  boundary_tab <- dplyr::as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
+  colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
+  boundary_tab <- dplyr::as_tibble(boundary_tab) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  
+  Info <- paste0("lambda=", lambda, " ", "gamma=", gamma)
+  layout <- patchwork::wrap_plots(p1, Oc_tabs, boundary_tab, nrow = 3)
+  layout <- layout +
     patchwork::plot_annotation(
       title = "BOP2 FE for co-primary outcome",
       subtitle = Info,
-      #caption = paste0("Design Pars: n= ",n, "lambda=", lambda, "gamma=" gamma),
-      theme = theme(plot.title = element_text(size = 16, hjust = 0.5, face = "bold"))
+      #caption = paste0("Design Pars: n= ", n, "lambda=", lambda, "gamma=", gamma),
+      theme = ggplot2::theme(plot.title = ggplot2::element_text(size = 16, hjust = 0.5, face = "bold"))
     )
-
+  
   return(layout)
+  
 
 }
 
@@ -321,7 +323,7 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is power function
+#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -345,7 +347,7 @@ BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  meth
   }
 
   # Set default method to "obrain" if eta is NULL
-  if (is.null(eta)) {
+  if (is.null(eta)|is.null(method)) {
     method <- "OBrien-Fleming"
   }
   if(is.null (gamma)) {gamma = 1; message("gamma value should be provided")}
@@ -379,42 +381,43 @@ BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  meth
   }
 
   # Plot
-  p1<-ggplot(plot_dat, aes(x = n)) +
-    geom_line(aes(y = postprob_fut), color = "blue", linewidth = 1) +
-    geom_ribbon(aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
-    geom_ribbon(aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
-    geom_line(aes(y = postprob_sup), color = "red", linewidth = 1) +
-    geom_ribbon(aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
-    scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
-    scale_y_continuous(name = "Cut-off Probability (%)", breaks = seq(0, 100, by = 20)) +
-    geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
-    #ggtitle("Binary Efficacy Endpoint") +
-    theme_minimal()
+  p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
+    ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
+    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
+    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
+    ggplot2::scale_y_continuous(name = "Cut-off Probability (%)", breaks = seq(0, 100, by = 20)) +
+    ggplot2::geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
+    #ggplot2::ggtitle("Binary Efficacy Endpoint") +
+    ggplot2::theme_minimal()
   
-
-  Oc_tabs <- tibble(Statistic = c("Early stoping for Futility (%)",
-                                  "Early stoping for superiority (%)",
-                                  "Average sample size",
-                                  "Null rejection (%)"),
-                    Value = c(Oc_tab$earlystopfuti_mean, Oc_tab$earlystopsupe_mean, Oc_tab$ss_mean, Oc_tab$rejectnull_mean))
-
-  Oc_tabs<-as_tibble(Oc_tabs)%>%gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  Oc_tabs <- tibble::tibble(Statistic = c("Early stopping for Futility (%)",
+                                          "Early stopping for Superiority (%)",
+                                          "Average sample size",
+                                          "Null rejection (%)"),
+                            Value = c(Oc_tab$earlystopfuti_mean, Oc_tab$earlystopsupe_mean, Oc_tab$ss_mean, Oc_tab$rejectnull_mean))
+  
+  Oc_tabs <- dplyr::as_tibble(Oc_tabs) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  
   names(boundary_tab) <- c("Futility boundary response", "Futility boundary toxicity", "Superiority boundary response", "Superiority boundary toxicity")
-  boundary_tab<- as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
-  colnames(boundary_tab) <- c("Interm analysis", 1:nIA)
-  boundary_tab<-as_tibble(boundary_tab)%>%gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
-
-  Info<- paste0("lambda=", lambda, " ", "gamma=" ,gamma )
-  layout <- patchwork::wrap_plots(p1,Oc_tabs, boundary_tab, nrow=3)
-  layout<-layout +
+  boundary_tab <- dplyr::as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
+  colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
+  boundary_tab <- dplyr::as_tibble(boundary_tab) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  
+  Info <- paste0("lambda=", lambda, " ", "gamma=", gamma)
+  layout <- patchwork::wrap_plots(p1, Oc_tabs, boundary_tab, nrow = 3)
+  layout <- layout +
     patchwork::plot_annotation(
       title = "BOP2 FE for joint efficacy and toxicity",
       subtitle = Info,
-      #caption = paste0("Design Pars: n= ",n, "lambda=", lambda, "gamma=" gamma),
-      theme = theme(plot.title = element_text(size = 16, hjust = 0.5, face = "bold"))
+      #caption = paste0("Design Pars: n= ", n, "lambda=", lambda, "gamma=", gamma),
+      theme = ggplot2::theme(plot.title = ggplot2::element_text(size = 16, hjust = 0.5, face = "bold"))
     )
-
+  
   return(layout)
+  
 
 }
 

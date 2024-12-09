@@ -11,8 +11,8 @@ boundary_coprimary(
   nIA,
   lambda,
   gamma,
-  eta,
-  method = "power",
+  eta = NULL,
+  method = NULL,
   seed = 123
 )
 }
@@ -31,7 +31,7 @@ boundary_coprimary(
 
 \item{eta}{optimal value for eta of the cut-off probability}
 
-\item{method}{method for the cut-off probability}
+\item{method}{type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative}
 
 \item{seed}{seed number}
 }

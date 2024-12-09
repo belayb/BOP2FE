@@ -19,46 +19,46 @@
 #' print(result)
 #' @importFrom magrittr %>%
 #' @export
-simulate_data_nested <- function(p1,p2,p3,n_stage,n, nsim, seed=23456){
+simulate_data_nested <- function(p1, p2, p3, n_stage, n, nsim, seed = 23456) {
   set.seed(seed)
   # Initialize empty data frame
   resp <- data.frame()
   # Simulate data for each simulation run
   for (obs in 1:nsim) {
     Y_stage <- list()  # List to hold results for each stage
-
+    
     # Simulate data for each stage
     for (i in 1:n_stage) {
       Y1 <- rbinom(1, n[i], p1)
       Y2 <- rbinom(1, n[i] - Y1, p2 / (p2 + p3))
       Y3 <- n[i] - Y1 - Y2
-
+      
       # Store the values for this stage
       Y_stage[[i]] <- c(Y1, Y2, Y3)
     }
-
+    
     # Combine all stages into a single data frame row
     row_data <- unlist(Y_stage)
     resp <- rbind(resp, c(obs, row_data))
   }
-
+  
   # Assign dynamic column names for the response data frame
   colnames(resp) <- c("obs", unlist(lapply(1:n_stage, function(i) paste0(c("Y", "Y", "Y"), i, 1:3))))
-
+  
   # Calculate cumulative sums
   for (i in 1:n_stage) {
     Y_cols_i1 <- paste0("Y", 1:i, "1")  # Collect all Y11, Y21,... Yi1 columns
     Y_cols_i2 <- paste0("Y", 1:i, "2")  # Collect all Y12, Y22,... Yi2 columns
     Y_cols_i3 <- paste0("Y", 1:i, "3")  # Collect all Y13, Y23,... Yi3 columns
-
+    
     # Calculate cumulative sum values for each stage
-    resp[[paste0("tsum", i,"1")]] <- rowSums(resp %>% select(all_of(Y_cols_i1)))
-    resp[[paste0("tsum", i,"2")]] <- rowSums(resp %>% select(all_of(Y_cols_i2)))
-    resp[[paste0("tsum", i,"3")]] <- rowSums(resp %>% select(all_of(Y_cols_i3)))
-
+    resp[[paste0("tsum", i, "1")]] <- rowSums(dplyr::select(resp, dplyr::all_of(Y_cols_i1)))
+    resp[[paste0("tsum", i, "2")]] <- rowSums(dplyr::select(resp, dplyr::all_of(Y_cols_i2)))
+    resp[[paste0("tsum", i, "3")]] <- rowSums(dplyr::select(resp, dplyr::all_of(Y_cols_i3)))
   }
   return(resp)
 }
+
 
 #' Simulate binary endpoint data
 #'
@@ -78,15 +78,14 @@ simulate_data_nested <- function(p1,p2,p3,n_stage,n, nsim, seed=23456){
 #' print(result)
 #' @importFrom magrittr %>%
 #' @export
-simulate_data_binary <- function(p,n_stage,n, nsim, seed=23456){
-
+simulate_data_binary <- function(p, n_stage, n, nsim, seed = 23456) {
   set.seed(seed)
   # Initialize empty data frame
   resp <- data.frame()
-  # simulate data for each simulation run
-  for(obs in 1:nsim){
-    Y_stage <- list()# List to hold results for each stage
-    for (i in 1:n_stage){
+  # Simulate data for each simulation run
+  for (obs in 1:nsim) {
+    Y_stage <- list()  # List to hold results for each stage
+    for (i in 1:n_stage) {
       Y_stage[[i]] <- rbinom(1, n[i], p)
     }
     # Combine all stages into a single data frame row
@@ -95,15 +94,16 @@ simulate_data_binary <- function(p,n_stage,n, nsim, seed=23456){
   }
   # Assign dynamic column names for the response data frame
   colnames(resp) <- c("obs", unlist(lapply(1:n_stage, function(i) paste0("Y", i))))
-
+  
   # Calculate cumulative sums
   for (i in 1:n_stage) {
     Y_cols <- paste0("Y", 1:i)
     # Calculate cumulative sum values for each stage
-    resp[[paste0("tsum", i)]] <- rowSums(resp %>% select(all_of(Y_cols)))
+    resp[[paste0("tsum", i)]] <- rowSums(dplyr::select(resp, dplyr::all_of(Y_cols)))
   }
   return(resp)
 }
+
 
 #' Compute Probability Cutoffs for Futility Stopping
 #'
@@ -129,7 +129,7 @@ simulate_data_binary <- function(p,n_stage,n, nsim, seed=23456){
 #' @importFrom magrittr %>%
 #' @importFrom stats qnorm pnorm
 #' @export
-get_cf_cs_values<- function(n, lambda=NULL, gamma=NULL, eta= NULL, method = "power"){
+get_cf_cs_values<- function(n, lambda=NULL, gamma=NULL, eta= NULL, method = NULL){
   nsum<- sum(n)
   cf_values <- sapply(seq_along(n), function(i) {
     lambda * (sum(n[1:i]) / nsum)^gamma
@@ -177,40 +177,38 @@ get_cf_cs_values<- function(n, lambda=NULL, gamma=NULL, eta= NULL, method = "pow
 calculate_posterior_nested <- function(xdata, H0, H1, n_stage) {
   H0 <- as.numeric(H0)
   H1 <- as.numeric(H1)
-
+  
   b1 <- c(1, 0, 0)
   b2 <- c(1, 1, 0)
   a <- H0
-
+  
   phi1 <- sum(H0 * b1)
   phi2 <- sum(H0 * b2)
-
+  
   post_probs <- function(x, phi, b, a) {
     beta_a <- sum(b * (a + x))
     beta_b <- sum((1 - b) * (a + x))
     1 - pbeta(phi, beta_a, beta_b)
   }
-
+  
   phi_list <- list(phi1, phi2)
   b_list <- list(b1, b2)
-
+  
   for (i in 1:n_stage) {
     tsum_cols <- paste0("tsum", i, 1:3)
     for (j in 1:2) {
       phi <- phi_list[[j]]
       b <- b_list[[j]]
       postp_col <- paste0("postp", i, j)
-
-      #xdata <- xdata %>%
-      #  mutate(!!postp_col := post_probs(select(., all_of(tsum_cols)), phi, b, a))
+      
       xdata <- xdata %>%
-        mutate(!!postp_col := pmap_dbl(select(., all_of(tsum_cols)), ~ post_probs(c(..1, ..2, ..3), phi, b, a)))
-
-      }
+        dplyr::mutate(!!postp_col := purrr::pmap_dbl(dplyr::select(., dplyr::all_of(tsum_cols)), ~ post_probs(c(..1, ..2, ..3), phi, b, a)))
+    }
   }
-
+  
   return(xdata)
 }
+
 
 #' function title - under construction
 #' @param H0 the null hypothesis
@@ -224,42 +222,40 @@ calculate_posterior_nested <- function(xdata, H0, H1, n_stage) {
 #' @param seed for reproducability 
 #' 
 #add documentation
-compute_power_nested <- function(H0, H1, n, nsim, lambda=NULL, gamma=NULL, eta= NULL, method = "power", seed=NULL){
+compute_power_nested <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = NULL, seed = NULL) {
   n_stage <- length(n)
-  H0 = H0
-  H1 = H1
-  nsim=nsim
-
-  y_null <- simulate_data_nested(p1=H0[1], p2=H0[2], p3=H0[3], n=n, n_stage=n_stage , nsim = nsim)
-  y_alter <- simulate_data_nested(p1=H1[1], p2=H1[2], p3=H1[3], n=n, n_stage=n_stage , nsim = nsim)
-
-  cfcs<-get_cf_cs_values(n, lambda, gamma, eta, method)
-  cf_values<-cfcs$cf_values
-  cs_values<-cfcs$cs_values
-
-
-  y_null <- y_null%>%
-    calculate_posterior_nested(., H0, H1, n_stage)%>%
-    mutate(reject = case_when(
-      reduce(1:n_stage, ~ .x | (get(paste0("postp", .y, "1")) < cf_values[.y] & get(paste0("postp", .y, "2")) < cf_values[.y]), .init = FALSE) ~ 0,
-      reduce(1:n_stage, ~ .x | (get(paste0("postp", .y, "1")) >= cs_values[.y] | get(paste0("postp", .y, "2")) >= cs_values[.y]), .init = FALSE) ~ 1,
+  H0 <- H0
+  H1 <- H1
+  nsim <- nsim
+  
+  y_null <- simulate_data_nested(p1 = H0[1], p2 = H0[2], p3 = H0[3], n = n, n_stage = n_stage, nsim = nsim)
+  y_alter <- simulate_data_nested(p1 = H1[1], p2 = H1[2], p3 = H1[3], n = n, n_stage = n_stage, nsim = nsim)
+  
+  cfcs <- get_cf_cs_values(n, lambda, gamma, eta, method)
+  cf_values <- cfcs$cf_values
+  cs_values <- cfcs$cs_values
+  
+  y_null <- y_null %>%
+    calculate_posterior_nested(., H0, H1, n_stage) %>%
+    dplyr::mutate(reject = dplyr::case_when(
+      purrr::reduce(1:n_stage, ~ .x | (get(paste0("postp", .y, "1")) < cf_values[.y] & get(paste0("postp", .y, "2")) < cf_values[.y]), .init = FALSE) ~ 0,
+      purrr::reduce(1:n_stage, ~ .x | (get(paste0("postp", .y, "1")) >= cs_values[.y] | get(paste0("postp", .y, "2")) >= cs_values[.y]), .init = FALSE) ~ 1,
       TRUE ~ 1
     ))
-
-  y_alter <- y_alter%>%
-    calculate_posterior_nested(., H0, H1, n_stage)%>%
-    mutate(power = case_when(
-      reduce(1:n_stage, ~ .x | (get(paste0("postp", .y, "1")) < cf_values[.y] & get(paste0("postp", .y, "2")) < cf_values[.y]), .init = FALSE) ~ 0,
-      reduce(1:n_stage, ~ .x | (get(paste0("postp", .y, "1")) >= cs_values[.y] | get(paste0("postp", .y, "2")) >= cs_values[.y]), .init = FALSE) ~ 1,
+  
+  y_alter <- y_alter %>%
+    calculate_posterior_nested(., H0, H1, n_stage) %>%
+    dplyr::mutate(power = dplyr::case_when(
+      purrr::reduce(1:n_stage, ~ .x | (get(paste0("postp", .y, "1")) < cf_values[.y] & get(paste0("postp", .y, "2")) < cf_values[.y]), .init = FALSE) ~ 0,
+      purrr::reduce(1:n_stage, ~ .x | (get(paste0("postp", .y, "1")) >= cs_values[.y] | get(paste0("postp", .y, "2")) >= cs_values[.y]), .init = FALSE) ~ 1,
       TRUE ~ 1
     ))
-
-
+  
   # Summarizing results
   reject_mean <- mean(y_null$reject)
   power_mean <- mean(y_alter$power)
-
-  result <- data.frame(
+  
+  result <- dplyr::tibble(
     H0 = paste(H0[1], H0[2], sep = ", "),
     H1 = paste(H1[1], H1[2], sep = ", "),
     Lambda = lambda,
@@ -268,10 +264,10 @@ compute_power_nested <- function(H0, H1, n, nsim, lambda=NULL, gamma=NULL, eta= 
     reject_mean = reject_mean,
     power_mean = power_mean
   )
-
+  
   return(result)
-
 }
+
 
 #' Optimal parameters for nested outcome
 #'
@@ -318,10 +314,11 @@ Optimal_pars_nested <- function(CR0, CRPR0, CR1, CRPR1, n, nsim, t1e, t2e, metho
     gamma = numeric(0),
     eta = numeric(0)
   )
+  
 
   # Calculate total iterations
   total_iterations <- (grid1 + 1) * (grid2 + 1) * (if (method == "power") (grid3 + 1) else 1)
-  pb <- txtProgressBar(min = 0, max = total_iterations, style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = total_iterations, style = 3)
   iteration <- 0
 
   # Iterate over grid values
@@ -342,7 +339,7 @@ Optimal_pars_nested <- function(CR0, CRPR0, CR1, CRPR1, n, nsim, t1e, t2e, metho
 
           # Update progress bar
           iteration <- iteration + 1
-          setTxtProgressBar(pb, iteration)
+          utils::setTxtProgressBar(pb, iteration)
         }
       } else {
         # Calculate lambda and gamma values for this iteration
@@ -357,12 +354,19 @@ Optimal_pars_nested <- function(CR0, CRPR0, CR1, CRPR1, n, nsim, t1e, t2e, metho
 
         # Update progress bar
         iteration <- iteration + 1
-        setTxtProgressBar(pb, iteration)
+        utils::setTxtProgressBar(pb, iteration)
       }
     }
   }
   close(pb)
-  return(results)
+  
+  # Filter results by t1e
+  results_filtered <- results %>% dplyr::filter(!is.na(reject_mean) & reject_mean  < t1e)
+  
+  # Sort results by power
+  results_sorted <- results_filtered %>% dplyr::arrange(dplyr::desc(power_mean))
+  
+  return(results_sorted)
 }
 
 #' function title- under construction

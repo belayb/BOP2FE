@@ -6,7 +6,7 @@
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method method for the cut-off probability
+#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
 #' @param seed seed number
 #' @importFrom dplyr if_else mutate filter
 #' @importFrom stats pbeta rbinom
@@ -14,7 +14,7 @@
 #' @importFrom magrittr %>%
 #' @export
 
-boundary_jointefftox <- function(H0, a, n, nIA, lambda, gamma, eta,  method = "power",seed = 123) {
+boundary_jointefftox <- function(H0, a, n, nIA, lambda, gamma, eta=NULL,  method = NULL,seed = 123) {
   calculate_postp <- function(H0, beta_a, beta_b) {
     1 - pbeta(H0, beta_a, beta_b)
   }
@@ -35,7 +35,9 @@ boundary_jointefftox <- function(H0, a, n, nIA, lambda, gamma, eta,  method = "p
   # check here if lambda, gamma and eta values are given and are single number
   # if not call the optimal par function
   # if lambda, gamma and eta values are vector call optimal var get the optimal values
-
+  if (is.null(eta)|is.null(method)) {
+    method <- "OBrien-Fleming"
+  }
 
   cf_values <- sapply(seq_along(n), function(i) {
     lambda * (sum(n[1:i]) / nsum)^gamma
@@ -61,7 +63,7 @@ boundary_jointefftox <- function(H0, a, n, nIA, lambda, gamma, eta,  method = "p
       for (Y12 in 0:(n - Y11)) {
         for (Y13 in 0:(n - Y11 - Y12)) {
           Y14 <- n - Y11 - Y12 - Y13
-          data <- bind_rows(data, data.frame(Y11, Y12, Y13, Y14))
+          data <- dplyr::bind_rows(data, data.frame(Y11, Y12, Y13, Y14))
         }
       }
     }

@@ -4,7 +4,17 @@
 \alias{boundary_nested}
 \title{Boundery values for Nested Endpoint}
 \usage{
-boundary_nested(H0, a, n, nIA, lambda, gamma, eta, method = NULL, seed = 123)
+boundary_nested(
+  H0,
+  a,
+  n,
+  nIA,
+  lambda,
+  gamma,
+  eta = NULL,
+  method = NULL,
+  seed = 123
+)
 }
 \arguments{
 \item{H0}{Response rate under the null}
@@ -21,7 +31,7 @@ boundary_nested(H0, a, n, nIA, lambda, gamma, eta, method = NULL, seed = 123)
 
 \item{eta}{optimal value for eta of the cut-off probability}
 
-\item{method}{method for the cut-off probability}
+\item{method}{type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative}
 
 \item{seed}{seed number}
 }

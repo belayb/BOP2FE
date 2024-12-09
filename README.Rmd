@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# BOP2FE
+# BOP2-FE
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -22,12 +22,12 @@ knitr::opts_chunk$set(
 The primary purpose of an oncology single-arm trial is to evaluate the effectiveness
 of anticancer agents and make a go / no-go decision while maintaining patient safety.
 This R-package implements a flexible Bayesian optimal phase II design with futility and efficacy
-stopping boundaries for single-arm clinical trials, named the BOP2-FE design, proposed by Xu et al (). The
+stopping boundaries for single-arm clinical trials, named the BOP2-FE design, proposed by Xu et al (under review). The
 proposed BOP2-FE design allows for early stopping of efficacy when the observed
 antitumor effect is sufficiently higher than the null hypothesis value in the interim
 looks and retains the benefits of the original BOP2 design, such as explicitly controlling the type I error rate while maximizing power, accommodating different types
 of endpoint, flexible number of interim looks, and stopping boundaries calculated
-before the start of the trial.
+before the start of the trial. The package handles multiple endpoints including binary, nested, co-primary and joint efficacy and toxicity. 
 
 ## Installation
 
@@ -40,7 +40,7 @@ pak::pak("belayb/BOP2FE")
 
 ## Example
 
-This is a basic example which shows you how to use BOPFE:
+This is a basic example which shows you how to use BOP2FE:
 
 ```{r example}
 library(BOP2FE)
@@ -50,25 +50,36 @@ library(BOP2FE)
 ### Binary endpoint 
 
 ```{r binary}
-BOP2FE_binary(H0 =0.2, n = c(10,5,5,5,5,5,5), lambda = 0.909, gamma=1, eta=NULL, nsim = 10000, seed = 1234)
+BOP2FE_binary(H0 =0.2, n = c(10,5,5,5,5,5,5), lambda = 0.909, gamma=1, nsim = 10000, seed = 1234)
 ```
 
 ### Nested endpoint 
 
 ```{r nested}
-BOP2FE_nested(CR0 = 0.15, CRPR0 = 0.30, n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, eta=NULL,  method = "obrian",seed = 123)
+BOP2FE_nested(CR0 = 0.15, CRPR0 = 0.30, n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, seed = 123)
 ```
 
 
 ### Co-primary endpoint 
 
 ```{r coprimary}
-BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, eta=NULL,  method = NULL,seed = 123)
+BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1,seed = 123)
 ```
 
 
 ### Joint endpoint 
 
 ```{r joint}
-BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), n=c(10,5,5,5,5,5,5), lambda = 0.7, gamma=1, eta=NULL,  method = "O’Brien-Fleming",seed = 123)
+BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), n=c(10,5,5,5,5,5,5), lambda = 0.7, gamma=1, seed = 123)
 ```
+
+### Optimizing Design Parameters 
+The operating characteristics of the BOP2-FE design with futility and efficacy stopping rules depend on the specification of the probability cutoffs for futility and efficacy. To maximize statistical power while controlling the type I error rate at a certain prespecified level, the tuning parameters, (lambda, gamma, eta) when using the power function for the probability cutoffs for efficacy, and (lambda, gamma) when using the O’Brien-Fleming type function for the probability cutoffs for efficacy, should be identified through simulation as follows. 
+
+```{r optimal}
+Sim_res <- Optimal_pars_nested(CR0=0.15, CRPR0=0.30, CR1=0.25, CRPR1=0.50, n=c(20,10,10), nsim=1000, t1e=0.1, t2e=0.2, method="power",
+                                lambda1=0.85, lambda2=1, grid1=5, gamma1=0.9, gamma2=1.1, grid2=5, eta1=0.9, eta2=1.1, grid3=5)
+
+head(Sim_res)
+```
+

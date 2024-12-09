@@ -2,12 +2,14 @@ Package: BOP2FE
 Type: Package
 Title: Bayesain optimal design for phase II oncology using futility and efficacy boundery 
 Version: 0.1.0
-Author: Belay B Yimer
-Maintainer: <belaybirlie.yimer@astellas.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Authors@R: c(
+    person("Belay Birlie", "Yimer", email = "belayabyimer@gmail.com", role =  c("aut", "cre")),
+    person("Xinling", "Xu", role = "aut"),
+    person("Atsuki", "Hashimoto", role = "aut"),
+    person("Kentaro", "Takeda", role = "aut"))
+Description: This R-package implements a flexible Bayesian optimal phase II design proposed by Xu et al (under review).
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
-Depends: dplyr, purrr, rlang, magrittr, tidyselect, gridExtra, patchwork, ggplot2, tibble
+Imports: dplyr, purrr, rlang, magrittr, tidyselect, gridExtra, patchwork, ggplot2, tibble

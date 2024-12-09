@@ -29,7 +29,7 @@ BOP2FE_nested(
 
 \item{eta}{optimal value for eta of the cut-off probability}
 
-\item{method}{type of function to be used for the cut off probability for superiority. The default is power function}
+\item{method}{type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative}
 
 \item{nsim}{number of simulation}
 

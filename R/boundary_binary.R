@@ -7,7 +7,7 @@
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is power function
+#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
 #' @param seed for reproducibility
 #' @importFrom purrr map_dbl
 #' @importFrom dplyr lead lag
@@ -15,7 +15,7 @@
 #' @importFrom magrittr %>%
 #' @export
 
-boundary_binary <- function(H0, a1, b1, nIA, n, lambda, gamma, eta=NULL,  method = "power",seed = 123) {
+boundary_binary <- function(H0, a1, b1, nIA, n, lambda, gamma, eta=NULL,  method = NULL,seed = 123) {
   set.seed(seed)
 
   if (length(n) != nIA){
@@ -31,10 +31,10 @@ boundary_binary <- function(H0, a1, b1, nIA, n, lambda, gamma, eta=NULL,  method
     lambda * (sum(n[1:i]) / nsum)^gamma
   })
 
-  # Set default method to "obrain" if eta is NULL
-  if (is.null(eta)) {
+  if (is.null(eta)|is.null(method)) {
     method <- "OBrien-Fleming"
   }
+  
 
   if(method == "power"){
     cs_values <- sapply(seq_along(n), function(i) {
