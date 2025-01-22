@@ -2,7 +2,7 @@
 % Please edit documentation in R/mains.R
 \name{BOP2FE_binary}
 \alias{BOP2FE_binary}
-\title{BOP2 design for binary endpoint}
+\title{BOP2-FE design for binary endpoint}
 \usage{
 BOP2FE_binary(
   H0,
@@ -16,9 +16,9 @@ BOP2FE_binary(
 )
 }
 \arguments{
-\item{H0}{Response rate}
+\item{H0}{the probability of response under the null hypothesis}
 
-\item{n}{vector of sample size at each interim look (Note that the sample size at interim i is the difference between sample size at interim i and at interim i-1)}
+\item{n}{vector of sample size at each interim look (Note that the sample size at interim is the difference between sample size at interim i and at interim i-1)}
 
 \item{lambda}{optimal value for lambda of the cut-off probability}
 
@@ -32,6 +32,17 @@ BOP2FE_binary(
 
 \item{seed}{for reproducibility}
 }
+\value{
+A list of class \code{"BOP2FE"} containing the following elements:
+\item{boundary}{A table of stopping boundaries.}
+\item{Oc}{A table of operating characteristics.}
+\item{plot}{A plot that shows the boundaries graphically along with tables of 
+boundary values and operating characteristics}
+}
 \description{
-BOP2 design for binary endpoint
+Computes stopping boundaries and operating characteristics of Bayesian optimal phase II
+design with efficacy and futility stopping for a binary endpoint given optimal
+design parameter values that are identified to optimize power while controlling
+type I error rate at a specified value. The optimal parameters (i.e., lambda, gamma, and eta)
+can be obtained by calling `Optimal_pars_binary()` function.
 }

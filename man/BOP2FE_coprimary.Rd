@@ -2,7 +2,7 @@
 % Please edit documentation in R/mains.R
 \name{BOP2FE_coprimary}
 \alias{BOP2FE_coprimary}
-\title{BOP2 design for co-primary endpoint}
+\title{BOP2-FE design for co-primary endpoint}
 \usage{
 BOP2FE_coprimary(
   H0,
@@ -32,6 +32,17 @@ BOP2FE_coprimary(
 
 \item{seed}{for reproducibility}
 }
+\value{
+A list of class \code{"BOP2FE"} containing the following elements:
+\item{boundary}{A table of stopping boundaries.}
+\item{Oc}{A table of operating characteristics.}
+\item{plot}{A plot that shows the boundaries graphically along with tables of 
+boundary values and operating characteristics}
+}
 \description{
-BOP2 design for co-primary endpoint
+Computes stopping boundaries and operating characteristics of Bayesian optimal phase II
+design with efficacy and futility stopping for a co-primary endpoint given optimal
+design parameter values that are identified to optimize power while controlling
+type I error rate at a specified value. The optimal parameters (i.e., lambda, gamma, and eta)
+can be obtained by calling `Optimal_pars_coprimary()` function.
 }
