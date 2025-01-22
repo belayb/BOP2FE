@@ -2,9 +2,9 @@
 % Please edit documentation in R/utils.R
 \name{calculate_posterior_binary}
 \alias{calculate_posterior_binary}
-\title{function title- under construction}
+\title{Compute Posterior Probability of Observing a given Response Under the null for a binary outcome}
 \usage{
-calculate_posterior_binary(xdata, H0, H1, n_stage)
+calculate_posterior_binary(xdata, H0, H1, n_stage, n)
 }
 \arguments{
 \item{xdata}{a given data set}
@@ -13,8 +13,10 @@ calculate_posterior_binary(xdata, H0, H1, n_stage)
 
 \item{H1}{alternative hypothesis}
 
-\item{n_stage}{the number of interm analysis}
+\item{n_stage}{the number of interim analysis}
+
+\item{n}{A vector of sample sizes for each interim analysis.}
 }
 \description{
-function title- under construction
+Compute Posterior Probability of Observing a given Response Under the null for a binary outcome
 }

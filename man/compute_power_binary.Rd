@@ -2,21 +2,39 @@
 % Please edit documentation in R/utils.R
 \name{compute_power_binary}
 \alias{compute_power_binary}
-\title{function title- under construction}
+\title{Compute power and type I error rate for binary endpoint}
 \usage{
-compute_power_binary(H0, H1, n, nsim, n_stage)
+compute_power_binary(
+  H0,
+  H1,
+  n,
+  nsim,
+  lambda = NULL,
+  gamma = NULL,
+  eta = NULL,
+  method = NULL,
+  seed = NULL
+)
 }
 \arguments{
-\item{H0}{null hypothesis}
+\item{H0}{the null hypothesis}
 
-\item{H1}{alternative hypothesis}
+\item{H1}{the alternative hypothesis}
 
-\item{n}{sample size vector}
+\item{n}{vector of sample sizes}
 
-\item{nsim}{number of simulation}
+\item{nsim}{number of simulation to run}
 
-\item{n_stage}{the number of interm analysis}
+\item{lambda}{lambda value for}
+
+\item{gamma}{gamma value for}
+
+\item{eta}{eta value for}
+
+\item{method}{method to use for cutoff probability}
+
+\item{seed}{for reproducability}
 }
 \description{
-function title- under construction
+Compute power and type I error rate for binary endpoint
 }
