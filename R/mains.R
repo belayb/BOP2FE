@@ -11,7 +11,7 @@
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
+#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function and method=power is an alternative
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -27,10 +27,15 @@
 #' \item{Oc}{A table of operating characteristics.}
 #' \item{plot}{A plot that shows the boundaries graphically along with tables of 
 #' boundary values and operating characteristics}
-
+#' @examples
+#' \dontrun{
+#' # Example with 7 interim looks
+#' BOP2FE_binary(H0 = 0.2, n = c(10, 5, 5, 5, 5, 5, 5), 
+#' lambda = 0.909, gamma = 1, nsim = 10000, seed = 1234)
+#' }
 #' @export
 #'
-BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method = NULL, nsim = NULL, seed = NULL) {
+BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method = "OF", nsim = NULL, seed = NULL) {
   
   a1 <- H0
   b1 <- 1 - H0
@@ -39,23 +44,30 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method
   
   # Check total sample size
   if (nsum == 0) {
-    stop("nsum cannot be zero.")
+    stop("The total (final) sample size can not be zero.")
   }
   
   # Set default method to "OBrien-Fleming" if eta is NULL
   if (is.null(eta) | is.null(method)) {
-    method <- "OBrien-Fleming"
+    method <- "OF"
   }
   if (is.null(gamma)) {
     gamma <- 0.95
-    message("gamma value should be provided")
+    message("gamma value should be provided. The defult gamma = 0.95 used")
   }
   if (is.null(lambda)) {
     lambda <- 0.95
-    message("lambda value should be provided")
+    message("lambda value should be provided. The defult lambda=0.95 used")
   }
+  if (is.null(eta) & method == "power") {
+    eta <- 0.95
+    message("eta value should be provided. The defult eta=0.95 used")
+  }
+  
   if (is.null(nsim)) {
     nsim <- 10000
+    message("The defult 10000 simulation used")
+    
   }
   if (is.null(seed)) {
     seed <- 1234
@@ -143,7 +155,7 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
+#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming (OF)" function and method=power is an alternative
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -160,11 +172,16 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method
 #' \item{Oc}{A table of operating characteristics.}
 #' \item{plot}{A plot that shows the boundaries graphically along with tables of 
 #' boundary values and operating characteristics}
-#' 
+#' @examples
+#' \dontrun{
+#' # Example with 7 interim looks
+#' BOP2FE_nested(CR0 = 0.15, CRPR0 = 0.30, n=c(10,5,5,5,5,5,5), 
+#' lambda = 0.95, gamma=1, seed = 123)
+#' }
 #' @export
 #'
 
-BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = NULL, nsim = NULL, seed = NULL){
+BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "OF", nsim = NULL, seed = NULL){
   H0 <- c(CR0, CRPR0 - CR0, 1 - CRPR0)
   a <- H0
   p1 = H0[1]
@@ -174,17 +191,34 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
   nsum<- sum(n)
   # Check total sample size
   if (nsum == 0) {
-    stop("nsum cannot be zero.")
+    stop("The total (final) sample size can not be zero.")
   }
 
-  # Set default method to "obrain" if eta is NULL
-  if (is.null(eta)|is.null(method)) {
-    method <- "OBrien-Fleming"
+  # Set default method to "OBrien-Fleming" if eta is NULL
+  if (is.null(eta) | is.null(method)) {
+    method <- "OF"
   }
-  if(is.null (gamma)) {gamma = 1; message("gamma value should be provided")}
-  if(is.null (lambda)) {lambda = 0.95; message("lambda value should be provided")}
-  if(is.null (nsim)) {nsim = 10000; }
-  if(is.null (seed)) {seed = 1234; }
+  if (is.null(gamma)) {
+    gamma <- 0.95
+    message("gamma value should be provided. The defult gamma = 0.95 used")
+  }
+  if (is.null(lambda)) {
+    lambda <- 0.95
+    message("lambda value should be provided. The defult lambda=0.95 used")
+  }
+  if (is.null(eta) & method == "power") {
+    eta <- 0.95
+    message("eta value should be provided. The defult eta=0.95 used")
+  }
+  
+  if (is.null(nsim)) {
+    nsim <- 10000
+    message("The defult 10000 simulation used")
+    
+  }
+  if (is.null(seed)) {
+    seed <- 1234
+  }
 
 
   boundary_tab <- boundary_nested(H0 = H0, a=a, nIA=nIA, n=n,
@@ -274,7 +308,7 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
+#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming (OF)" function and method=power is an alternative
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -291,29 +325,50 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
 #' \item{Oc}{A table of operating characteristics.}
 #' \item{plot}{A plot that shows the boundaries graphically along with tables of 
 #' boundary values and operating characteristics}
-#' 
+#' @examples
+#' \dontrun{
+#' # Example with 7 interim looks
+#' BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), n=c(10,5,5,5,5,5,5), 
+#' lambda = 0.95, gamma=1,seed = 123)
+#' }
 #' @export
 #'
 
-BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = NULL, nsim = NULL, seed = NULL){
+BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "OF", nsim = NULL, seed = NULL){
 
   a <- H0
   nIA <- length(n)
   nsum<- sum(n)
   # Check total sample size
   if (nsum == 0) {
-    stop("nsum cannot be zero.")
+    stop("The total (final) sample size can not be zero.")
   }
 
-  # Set default method to "obrain" if eta is NULL
-  if (is.null(eta)|is.null(method)) {
-    method <- "OBrien-Fleming"
+  # Set default method to "OBrien-Fleming" if eta is NULL
+  if (is.null(eta) | is.null(method)) {
+    method <- "OF"
   }
-  if(is.null (gamma)) {gamma = 1; message("gamma value should be provided")}
-  if(is.null (lambda)) {lambda = 0.95; message("lambda value should be provided")}
-  if(is.null (nsim)) {nsim = 10000; }
-  if(is.null (seed)) {seed = 1234; }
-
+  if (is.null(gamma)) {
+    gamma <- 0.95
+    message("gamma value should be provided. The defult gamma = 0.95 used")
+  }
+  if (is.null(lambda)) {
+    lambda <- 0.95
+    message("lambda value should be provided. The defult lambda=0.95 used")
+  }
+  if (is.null(eta) & method == "power") {
+    eta <- 0.95
+    message("eta value should be provided. The defult eta=0.95 used")
+  }
+  
+  if (is.null(nsim)) {
+    nsim <- 10000
+    message("The defult 10000 simulation used")
+    
+  }
+  if (is.null(seed)) {
+    seed <- 1234
+  }
 
   boundary_tab <- boundary_coprimary(H0 = H0, a=a, nIA=nIA, n=n,
                                   lambda=lambda, gamma=gamma, eta = eta,
@@ -404,7 +459,7 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
+#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming (OF)" function and method=power is an alternative
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -420,27 +475,49 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
 #' \item{Oc}{A table of operating characteristics.}
 #' \item{plot}{A plot that shows the boundaries graphically along with tables of 
 #' boundary values and operating characteristics}
-#' 
+#' @examples
+#' \dontrun{
+#' # Example with 7 interim looks
+#' BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), n=c(10,5,5,5,5,5,5), 
+#' lambda = 0.7, gamma=1, seed = 123)
+#' }
 #' @export
 #'
-BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = NULL, nsim = NULL, seed = NULL){
+BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "OF", nsim = NULL, seed = NULL){
 
   a <- H0
   nIA <- length(n)
   nsum<- sum(n)
   # Check total sample size
   if (nsum == 0) {
-    stop("nsum cannot be zero.")
+    stop("The total (final) sample size can not be zero.")
   }
 
-  # Set default method to "obrain" if eta is NULL
-  if (is.null(eta)|is.null(method)) {
-    method <- "OBrien-Fleming"
+  # Set default method to "OBrien-Fleming" if eta is NULL
+  if (is.null(eta) | is.null(method)) {
+    method <- "OF"
   }
-  if(is.null (gamma)) {gamma = 1; message("gamma value should be provided")}
-  if(is.null (lambda)) {lambda = 0.95; message("lambda value should be provided")}
-  if(is.null (nsim)) {nsim = 10000; }
-  if(is.null (seed)) {seed = 1234; }
+  if (is.null(gamma)) {
+    gamma <- 0.95
+    message("gamma value should be provided. The defult gamma = 0.95 used")
+  }
+  if (is.null(lambda)) {
+    lambda <- 0.95
+    message("lambda value should be provided. The defult lambda=0.95 used")
+  }
+  if (is.null(eta) & method == "power") {
+    eta <- 0.95
+    message("eta value should be provided. The defult eta=0.95 used")
+  }
+  
+  if (is.null(nsim)) {
+    nsim <- 10000
+    message("The defult 10000 simulation used")
+    
+  }
+  if (is.null(seed)) {
+    seed <- 1234
+  }
 
 
   boundary_tab <- boundary_jointefftox(H0 = H0, a=a, nIA=nIA, n=n,

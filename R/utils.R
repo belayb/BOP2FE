@@ -15,14 +15,9 @@
 #' \item{cf_values}{A numeric vector of cutoff values for futility stopping.}
 #' \item{cs_values}{A numeric vector of corresponding probability cutoffs.}
 #'
-#' @examples
-#' # Example usage of the get_cf_cs_values function
-#' result <- get_cf_cs_values(n = c(100, 150, 200), lambda = 0.05,
-#' gamma = 1, eta = 0.5, method = "power")
-#' print(result)
 #' @importFrom magrittr %>%
 #' @importFrom stats qnorm pnorm
-#' @export
+#' 
 get_cf_cs_values<- function(n, lambda=NULL, gamma=NULL, eta= NULL, method = NULL){
   nsum<- sum(n)
   cf_values <- sapply(seq_along(n), function(i) {
@@ -55,12 +50,8 @@ get_cf_cs_values<- function(n, lambda=NULL, gamma=NULL, eta= NULL, method = NULL
 #'
 #' @return A data frame containing the simulated data for each observation, including cumulative sums for each stage.
 #'
-#' @examples
-#' # Example usage of the simulate_data_nested function
-#' result <- simulate_data_binary(0.2, 4, n=c(4,2,2,2), nsim=5)
-#' print(result)
 #' @importFrom magrittr %>%
-#' @export
+#' 
 simulate_data_binary <- function(p, n_stage, n, nsim, seed = 23456) {
   set.seed(seed)
   # Initialize empty data frame
@@ -103,13 +94,8 @@ simulate_data_binary <- function(p, n_stage, n, nsim, seed = 23456) {
 #'
 #' @return A data frame containing the simulated data for each observation, including cumulative sums for each stage.
 #'
-#' @examples
-#' # Example usage of the simulate_data_nested function
-#' result <- simulate_data_nested(p1 = 0.5, p2 = 0.3, p3 = 0.2,
-#'  n_stage = 3, n = c(100, 150, 200), nsim = 10)
-#' print(result)
 #' @importFrom magrittr %>%
-#' @export
+#' 
 simulate_data_nested <- function(p1, p2, p3, n_stage, n, nsim, seed = 23456) {
   set.seed(seed)
   # Initialize empty data frame
@@ -168,13 +154,8 @@ simulate_data_nested <- function(p1, p2, p3, n_stage, n, nsim, seed = 23456) {
 #'
 #' @return A data frame containing the simulated data for each observation, including cumulative sums for each stage.
 #'
-#' @examples
-#' # Example usage of the simulate_data_nested function
-#' result <- simulate_data_nested(p1 = 0.5, p2 = 0.3, p3 = 0.2,
-#'  n_stage = 3, n = c(100, 150, 200), nsim = 10)
-#' print(result)
 #' @importFrom magrittr %>%
-#' @export
+#' 
 simulate_data_coprimary <- function(p1, p2, p3, p4, n_stage, n, nsim, seed = 23456) {
   set.seed(seed)
   # Initialize empty data frame
@@ -236,13 +217,8 @@ simulate_data_coprimary <- function(p1, p2, p3, p4, n_stage, n, nsim, seed = 234
 #'
 #' @return A data frame containing the simulated data for each observation, including cumulative sums for each stage.
 #'
-#' @examples
-#' # Example usage of the simulate_data_jointefftox function
-#' result <- simulate_data_jointefftox(p1 = 0.5, p2 = 0.3, p3 = 0.1, p4=0.1,
-#'  n_stage = 3, n = c(100, 150, 200), nsim = 10)
-#' print(result)
 #' @importFrom magrittr %>%
-#' @export
+#' 
 simulate_data_jointefftox <- function(p1, p2, p3, p4, n_stage, n, nsim, seed = 23456) {
   set.seed(seed)
   # Initialize empty data frame
@@ -324,19 +300,11 @@ calculate_posterior_binary <- function(xdata, H0, H1, n_stage, n) {
 #'
 #' @return A data frame with additional columns for the posterior probabilities calculated for each stage.
 #'
-#' @examples
-#' # Example usage of the calculate_posterior_nested function
-#' #xdata <- data.frame(tsum11 = c(10, 20), tsum12 = c(5, 15), tsum13 = c(2, 8))
-#' #h0 <- c(0.5, 0.3, 0.2)
-#' #h1 <- c(0.6, 0.4, 0.3)
-#' #result <- calculate_posterior_nested(xdata, h0, h1, n_stage = 3)
-#' #print(result)
 #' @importFrom magrittr %>%
 #' @importFrom stats pbeta
 #' @importFrom dplyr select
 #' @importFrom tidyselect all_of
 #' @importFrom purrr pmap_dbl
-#' @export
 #'
 calculate_posterior_nested <- function(xdata, H0, H1, n_stage) {
   H0 <- as.numeric(H0)
@@ -386,19 +354,11 @@ calculate_posterior_nested <- function(xdata, H0, H1, n_stage) {
 #'
 #' @return A data frame with additional columns for the posterior probabilities calculated for each stage.
 #'
-#' @examples
-#' # Example usage of the calculate_posterior_coprimary function
-#' #xdata <- data.frame(tsum11 = c(10, 20), tsum12 = c(5, 15), tsum13 = c(2, 8))
-#' #h0 <- c(0.5, 0.3, 0.1,0.1)
-#' #h1 <- c(0.6, 0.4, 0.1,0.1)
-#' #result <- calculate_posterior_coprimary(xdata, h0, h1, n_stage = 3)
-#' #print(result)
 #' @importFrom magrittr %>%
 #' @importFrom stats pbeta
 #' @importFrom dplyr select
 #' @importFrom tidyselect all_of
 #' @importFrom purrr pmap_dbl
-#' @export
 #'
 calculate_posterior_coprimary <- function(xdata, H0, H1, n_stage) {
   H0 <- as.numeric(H0)
@@ -449,19 +409,11 @@ calculate_posterior_coprimary <- function(xdata, H0, H1, n_stage) {
 #'
 #' @return A data frame with additional columns for the posterior probabilities calculated for each stage.
 #'
-#' @examples
-#' # Example usage of the calculate_posterior_jointefftox function
-#' #xdata <- data.frame(tsum11 = c(10, 20), tsum12 = c(5, 15), tsum13 = c(2, 8))
-#' #h0 <- c(0.5, 0.3, 0.1,0.1)
-#' #h1 <- c(0.6, 0.4, 0.1,0.1)
-#' #result <- calculate_posterior_jointefftox(xdata, h0, h1, n_stage = 3)
-#' #print(result)
 #' @importFrom magrittr %>%
 #' @importFrom stats pbeta
 #' @importFrom dplyr select
 #' @importFrom tidyselect all_of
 #' @importFrom purrr pmap_dbl
-#' @export
 #'
 calculate_posterior_jointefftox <- function(xdata, H0, H1, n_stage) {
   H0 <- as.numeric(H0)
@@ -519,8 +471,11 @@ calculate_posterior_jointefftox <- function(xdata, H0, H1, n_stage) {
 #' @param eta eta value for
 #' @param method method to use for cutoff probability 
 #' @param seed for reproducability 
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select mutate case_when
+#' @importFrom purrr reduce
 #'
-#'
+#'@export
 compute_power_binary <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = NULL, seed = NULL){
   
   n_stage <- length(n)
@@ -580,8 +535,11 @@ compute_power_binary <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, e
 #' @param eta eta value for
 #' @param method method to use for cutoff probability 
 #' @param seed for reproducability 
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select mutate case_when
+#' @importFrom purrr reduce
 #' 
-#add documentation
+#' @export
 compute_power_nested <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = NULL, seed = NULL) {
   n_stage <- length(n)
   H0 <- H0
@@ -642,8 +600,11 @@ compute_power_nested <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, e
 #' @param eta eta value for
 #' @param method method to use for cutoff probability 
 #' @param seed for reproducability 
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select mutate case_when
+#' @importFrom purrr reduce
 #' 
-#add documentation
+#' @export
 compute_power_coprimary <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = NULL, seed = NULL) {
   n_stage <- length(n)
   H0 <- H0
@@ -704,8 +665,11 @@ compute_power_coprimary <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL
 #' @param eta eta value for
 #' @param method method to use for cutoff probability 
 #' @param seed for reproducability 
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select mutate case_when
+#' @importFrom purrr reduce
 #' 
-#add documentation
+#' @export
 compute_power_jointefftox <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = NULL, seed = NULL) {
   n_stage <- length(n)
   H0 <- H0

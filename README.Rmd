@@ -78,7 +78,7 @@ The operating characteristics of the BOP2-FE design with futility and efficacy s
 
 ```{r optimal}
 Sim_res <- Optimal_pars_nested(CR0=0.15, CRPR0=0.30, CR1=0.25, CRPR1=0.50, n=c(20,10,10), nsim=1000, t1e=0.1, t2e=0.2, method="power",
-                                lambda1=0.85, lambda2=1, grid1=5, gamma1=0.9, gamma2=1.1, grid2=5, eta1=0.9, eta2=1.1, grid3=5)
+                                lambda1=0.85, lambda2=1, grid1=5, gamma1=0.9, gamma2=1, grid2=5, eta1=0.9, eta2=1, grid3=5)
 
 head(Sim_res)
 ```

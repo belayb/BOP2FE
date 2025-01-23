@@ -29,9 +29,3 @@ A data frame containing the simulated data for each observation, including cumul
 \description{
 This function simulates joint efficacy and toxicity endpoint data across multiple stages based on specified probabilities and sample sizes.
 }
-\examples{
-# Example usage of the simulate_data_jointefftox function
-result <- simulate_data_jointefftox(p1 = 0.5, p2 = 0.3, p3 = 0.1, p4=0.1,
- n_stage = 3, n = c(100, 150, 200), nsim = 10)
-print(result)
-}

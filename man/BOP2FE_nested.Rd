@@ -11,7 +11,7 @@ BOP2FE_nested(
   lambda = NULL,
   gamma = NULL,
   eta = NULL,
-  method = NULL,
+  method = "OF",
   nsim = NULL,
   seed = NULL
 )
@@ -29,7 +29,7 @@ BOP2FE_nested(
 
 \item{eta}{optimal value for eta of the cut-off probability}
 
-\item{method}{type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative}
+\item{method}{type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming (OF)" function and method=power is an alternative}
 
 \item{nsim}{number of simulation}
 
@@ -48,4 +48,11 @@ design with efficacy and futility stopping for a nested (ordinal) endpoint given
 design parameter values that are identified to optimize power while controlling
 type I error rate at a specified value. The optimal parameters (i.e., lambda, gamma, and eta)
 can be obtained by calling `Optimal_pars_nested()` function.
+}
+\examples{
+\dontrun{
+# Example with 7 interim looks
+BOP2FE_nested(CR0 = 0.15, CRPR0 = 0.30, n=c(10,5,5,5,5,5,5), 
+lambda = 0.95, gamma=1, seed = 123)
+}
 }

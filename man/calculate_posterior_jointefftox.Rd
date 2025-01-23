@@ -22,11 +22,3 @@ A data frame with additional columns for the posterior probabilities calculated 
 This function computes the posterior probability of observing a given response under the null hypothesis
 across multiple stages of a trial.
 }
-\examples{
-# Example usage of the calculate_posterior_jointefftox function
-#xdata <- data.frame(tsum11 = c(10, 20), tsum12 = c(5, 15), tsum13 = c(2, 8))
-#h0 <- c(0.5, 0.3, 0.1,0.1)
-#h1 <- c(0.6, 0.4, 0.1,0.1)
-#result <- calculate_posterior_jointefftox(xdata, h0, h1, n_stage = 3)
-#print(result)
-}

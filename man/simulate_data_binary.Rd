@@ -23,8 +23,3 @@ A data frame containing the simulated data for each observation, including cumul
 \description{
 This function simulates binary data across multiple stages based on specified probabilities and sample sizes.
 }
-\examples{
-# Example usage of the simulate_data_nested function
-result <- simulate_data_binary(0.2, 4, n=c(4,2,2,2), nsim=5)
-print(result)
-}

@@ -27,9 +27,3 @@ A list containing two elements:
 This function computes the probability cutoffs for futility stopping using two methods:
 power and O'Brien-Fleming type function.
 }
-\examples{
-# Example usage of the get_cf_cs_values function
-result <- get_cf_cs_values(n = c(100, 150, 200), lambda = 0.05,
-gamma = 1, eta = 0.5, method = "power")
-print(result)
-}
