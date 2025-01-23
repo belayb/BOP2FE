@@ -13,7 +13,6 @@
 #' @importFrom stats pbeta rbinom
 #' @importFrom rlang :=
 #' @importFrom magrittr %>%
-#' @export
 #'
 Oc_jointefftox <- function(p1, p2, p3, p4, n_stage, n, nsim, fb, sb, seed = 12345) {
   set.seed(seed)

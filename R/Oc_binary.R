@@ -8,7 +8,6 @@
 #' @importFrom dplyr mutate case_when
 #' @importFrom stats pbeta rbinom
 #' @importFrom rlang :=
-#' @export
 
 Oc_binary <- function(p, n, nsim, fb, sb, seed = 12345) {
   set.seed(seed)

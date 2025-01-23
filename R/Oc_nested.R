@@ -12,7 +12,6 @@
 #' @importFrom stats pbeta rbinom
 #' @importFrom rlang :=
 #' @importFrom magrittr %>%
-#' @export
 #'
 Oc_nested <- function(p1, p2, p3, n_stage, n, nsim, fb, sb, seed = 12345) {
   set.seed(seed)
