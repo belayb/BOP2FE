@@ -171,7 +171,10 @@ controlling the type I error rate at a certain prespecified level, the
 tuning parameters, (lambda, gamma, eta) when using the power function
 for the probability cutoffs for efficacy, and (lambda, gamma) when using
 the O’Brien-Fleming type function for the probability cutoffs for
-efficacy, should be identified through simulation as follows.
+efficacy, should be identified through simulation.
+*Optimal_pars_binary*, *Optimal_pars_nested*, *Optimal_pars_coprimary*,
+and *Optimal_pars_jointefftox* can facilitate one to do a grid search.
+An example for a nested outcome is given below.
 
 ``` r
 Sim_res <- Optimal_pars_nested(CR0=0.15, CRPR0=0.30, CR1=0.25, CRPR1=0.50, n=c(20,10,10), nsim=1000, t1e=0.1, t2e=0.2, method="power",
@@ -188,4 +191,42 @@ head(Sim_res)
 #> 4 0.15, 0.15 0.25, 0.25   0.91  0.94  0.96       0.097      0.865
 #> 5 0.15, 0.15 0.25, 0.25   0.91  0.94  0.98       0.097      0.865
 #> 6 0.15, 0.15 0.25, 0.25   0.91  0.94  1          0.097      0.865
+```
+
+However, these functions only use a single core and the process might be
+slow. If one has access to multiple cores, we can directly call the
+compute_power function using the parallel backend back end as follows
+
+``` r
+# Load necessary libraries
+library(foreach)
+library(doParallel)
+library(BOP2FE)
+
+# Define the parameter ranges
+lambda_range <- seq(0, 1, by = 0.01)
+gamma_range <- seq(0, 1, by = 0.01)
+eta_range <- seq(0, 1, by = 0.01)
+
+# Set up parallel backend
+num_cores <- detectCores() - 1  # Use one less than the total number of cores
+cl <- makeCluster(num_cores)
+registerDoParallel(cl)
+
+# Run the function in parallel
+results <- foreach(lambda = lambda_range, .combine = 'rbind') %:%
+  foreach(gamma = gamma_range, .combine = 'rbind') %:%
+  foreach(eta = eta_range, .combine = 'rbind') %dopar% {
+    BOP2FE::compute_power_binary(H0 = 0.5, H1 = 0.60, n = c(20, 30, 30, 40), nsim = 1000, 
+                                 lambda = lambda, gamma = gamma, eta = eta, method = "power")
+  }
+
+# Stop the parallel backend
+stopCluster(cl)
+
+# View the results
+results%>%
+  filter(reject_mean <= 0.1)%>%
+  arrange(desc(power_mean))%>%
+  head()
 ```

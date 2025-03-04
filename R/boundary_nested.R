@@ -12,6 +12,7 @@
 #' @importFrom stats pbeta rbinom
 #' @importFrom rlang :=
 #' @importFrom magrittr %>%
+#' @export
 
 boundary_nested <- function(H0, a, n, nIA, lambda, gamma, eta=NULL,  method = NULL,seed = 123) {
   calculate_postp <- function(H0, beta_a, beta_b) {

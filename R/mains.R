@@ -90,21 +90,23 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method
   
   # Calculate postprob_sup based on method
   if (method == "power") {
-    plot_dat$postprob_sup <- 1 - (1 - lambda) * (plot_dat$n / nsum)^eta
+    plot_dat$postprob_sup <- (1 - (1 - lambda) * (plot_dat$n/nsum)^eta)*100
   } else { # "OBrien-Fleming"
     plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
   }
   
   # Plot
+  IAs<- cumsum(n)
+  
   p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
     ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
     ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
     ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
-    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
+    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1, alpha=0.7) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.8) +
     ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
     ggplot2::scale_y_continuous(name = "Cut-off Probability (%)", breaks = seq(0, 100, by = 20)) +
-    ggplot2::geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
+    ggplot2::geom_vline(xintercept = IAs, linetype = "dashed") +
     ggplot2::theme_minimal()
   
   Oc_tabs <- tibble::tibble(Statistic = c("Early stopping for Futility (%)",
@@ -113,13 +115,13 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method
                                           "Null rejection (%)"),
                             Value = c(Oc_tab$earlystopfuti_mean, Oc_tab$earlystopsupe_mean, Oc_tab$ss_mean, Oc_tab$rejectnull_mean))
   
-  Oc_tabs2 <- dplyr::as_tibble(Oc_tabs) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  Oc_tabs2 <- dplyr::as_tibble(Oc_tabs,.name_repair = "minimal") %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
   names(boundary_tab) <- c("Futility boundary", "Superiority boundary")
   boundary_tab <- tibble::as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
   colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
-  boundary_tab2 <- dplyr::as_tibble(boundary_tab) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  boundary_tab2 <- dplyr::as_tibble(boundary_tab,.name_repair = "minimal") %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
   
-  Info <- paste0("lambda=", lambda, " ", "gamma=", gamma)
+  Info <- paste0("Efficacy-cutoff prob - ", method, ":", " ", "lambda=", lambda, " ", "gamma=", gamma, " ",  "eta=", ifelse(is.null(eta), NA, eta))
   layout <- patchwork::wrap_plots(p1, Oc_tabs2, boundary_tab2, nrow = 3)
   layout <- layout +
     patchwork::plot_annotation(

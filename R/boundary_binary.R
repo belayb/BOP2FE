@@ -13,6 +13,7 @@
 #' @importFrom dplyr lead lag
 #' @importFrom stats pbeta rbinom
 #' @importFrom magrittr %>%
+#' @export
 
 boundary_binary <- function(H0, a1, b1, nIA, n, lambda, gamma, eta=NULL,  method = NULL,seed = 123) {
   set.seed(seed)
