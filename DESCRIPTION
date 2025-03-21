@@ -1,7 +1,7 @@
 Package: BOP2FE
 Type: Package
 Title: Bayesain optimal design for phase II oncology using futility and efficacy boundery 
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person("Belay Birlie", "Yimer", email = "belayabyimer@gmail.com", role =  c("aut", "cre")),
     person("Xinling", "Xu", role = "aut"),
