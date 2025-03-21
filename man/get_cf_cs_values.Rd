@@ -4,7 +4,7 @@
 \alias{get_cf_cs_values}
 \title{Compute Probability Cutoffs for Futility Stopping}
 \usage{
-get_cf_cs_values(n, lambda = NULL, gamma = NULL, eta = NULL, method = NULL)
+get_cf_cs_values(n, lambda = NULL, gamma = NULL, eta = NULL, method = "power")
 }
 \arguments{
 \item{n}{A vector of sample sizes for each interim analysis of the trial.}
@@ -16,7 +16,7 @@ get_cf_cs_values(n, lambda = NULL, gamma = NULL, eta = NULL, method = NULL)
 \item{eta}{A numeric value used in the power method calculation (default is NULL).}
 
 \item{method}{A character string specifying the method to use for calculating cutoff values.
-Options are "power" (default) or "obrien-fleming".}
+Options are "power" (default) or "OF" for "O'Brien-Fleming".}
 }
 \value{
 A list containing two elements:

@@ -11,7 +11,8 @@
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function and method=power is an alternative
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -35,7 +36,7 @@
 #' }
 #' @export
 #'
-BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method = "OF", nsim = NULL, seed = NULL) {
+BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method = "power", nsim = NULL, seed = NULL) {
   
   a1 <- H0
   b1 <- 1 - H0
@@ -48,9 +49,9 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method
   }
   
   # Set default method to "OBrien-Fleming" if eta is NULL
-  if (is.null(eta) | is.null(method)) {
-    method <- "OF"
-  }
+  #if (is.null(eta) | is.null(method)) {
+  #  method <- "OF"
+  #}
   if (is.null(gamma)) {
     gamma <- 0.95
     message("gamma value should be provided. The defult gamma = 0.95 used")
@@ -89,10 +90,10 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method
   plot_dat$postprob_fut <- lambda * (plot_dat$n / nsum)^gamma * 100
   
   # Calculate postprob_sup based on method
-  if (method == "power") {
-    plot_dat$postprob_sup <- (1 - (1 - lambda) * (plot_dat$n/nsum)^eta)*100
-  } else { # "OBrien-Fleming"
+  if (method == "OF") {
     plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
+  } else { # "power"
+    plot_dat$postprob_sup <- (1 - (1 - lambda) * (plot_dat$n/nsum)^eta)*100
   }
   
   # Plot
@@ -121,7 +122,7 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method
   colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
   boundary_tab2 <- dplyr::as_tibble(boundary_tab,.name_repair = "minimal") %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
   
-  Info <- paste0("Efficacy-cutoff prob - ", method, ":", " ", "lambda=", lambda, " ", "gamma=", gamma, " ",  "eta=", ifelse(is.null(eta), NA, eta))
+  Info <- paste0("Efficacy-cutoff prob - ", method, ":", " ", "lambda=", lambda, " ", "gamma=", gamma, " ",  "eta=", ifelse(is.null(eta)&(method=="OF"), NA, eta))
   layout <- patchwork::wrap_plots(p1, Oc_tabs2, boundary_tab2, nrow = 3)
   layout <- layout +
     patchwork::plot_annotation(
@@ -157,7 +158,8 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming (OF)" function and method=power is an alternative
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -183,7 +185,7 @@ BOP2FE_binary <- function(H0, n, lambda = NULL, gamma = NULL, eta = NULL, method
 #' @export
 #'
 
-BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "OF", nsim = NULL, seed = NULL){
+BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "power", nsim = NULL, seed = NULL){
   H0 <- c(CR0, CRPR0 - CR0, 1 - CRPR0)
   a <- H0
   p1 = H0[1]
@@ -197,9 +199,9 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
   }
 
   # Set default method to "OBrien-Fleming" if eta is NULL
-  if (is.null(eta) | is.null(method)) {
-    method <- "OF"
-  }
+  #if (is.null(eta) | is.null(method)) {
+  #  method <- "OF"
+  #}
   if (is.null(gamma)) {
     gamma <- 0.95
     message("gamma value should be provided. The defult gamma = 0.95 used")
@@ -241,10 +243,10 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
   plot_dat$postprob_fut <- lambda * (plot_dat$n / nsum)^gamma * 100
 
   # Calculate postprob_sup based on method
-  if (method == "power") {
-    plot_dat$postprob_sup <- 1 - (1 - lambda) * (plot_dat$n / nsum)^eta
-  } else {
+  if (method == "OF") {
     plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
+  } else { # "power"
+    plot_dat$postprob_sup <- (1 - (1 - lambda) * (plot_dat$n/nsum)^eta)*100
   }
 
   # Plot
@@ -273,7 +275,8 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
   colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
   boundary_tab2 <- dplyr::as_tibble(boundary_tab) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
   
-  Info <- paste0("lambda=", lambda, " ", "gamma=", gamma)
+  Info <- paste0("Efficacy-cutoff prob - ", method, ":", " ", "lambda=", lambda, " ", "gamma=", gamma, " ",  "eta=", ifelse(is.null(eta)&(method=="OF"), NA, eta))
+  
   layout <- patchwork::wrap_plots(p1, Oc_tabs2, boundary_tab2, nrow = 3)
   layout <- layout +
     patchwork::plot_annotation(
@@ -310,7 +313,8 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming (OF)" function and method=power is an alternative
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -336,7 +340,7 @@ BOP2FE_nested <- function(CR0, CRPR0, n, lambda = NULL, gamma=NULL, eta=NULL,  m
 #' @export
 #'
 
-BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "OF", nsim = NULL, seed = NULL){
+BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "power", nsim = NULL, seed = NULL){
 
   a <- H0
   nIA <- length(n)
@@ -347,9 +351,9 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
   }
 
   # Set default method to "OBrien-Fleming" if eta is NULL
-  if (is.null(eta) | is.null(method)) {
-    method <- "OF"
-  }
+  #if (is.null(eta) | is.null(method)) {
+  #  method <- "OF"
+  #}
   if (is.null(gamma)) {
     gamma <- 0.95
     message("gamma value should be provided. The defult gamma = 0.95 used")
@@ -390,12 +394,11 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
   plot_dat$postprob_fut <- lambda * (plot_dat$n / nsum)^gamma * 100
 
   # Calculate postprob_sup based on method
-  if (method == "power") {
-    plot_dat$postprob_sup <- 1 - (1 - lambda) * (plot_dat$n / nsum)^eta
-  } else {
+  if (method == "OF") {
     plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
+  } else { # "power"
+    plot_dat$postprob_sup <- (1 - (1 - lambda) * (plot_dat$n/nsum)^eta)*100
   }
-
   # Plot
   p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
     ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
@@ -422,7 +425,7 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
   colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
   boundary_tab2 <- dplyr::as_tibble(boundary_tab) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
   
-  Info <- paste0("lambda=", lambda, " ", "gamma=", gamma)
+  Info <- paste0("Efficacy-cutoff prob - ", method, ":", " ", "lambda=", lambda, " ", "gamma=", gamma, " ",  "eta=", ifelse(is.null(eta)&(method=="OF"), NA, eta))
   layout <- patchwork::wrap_plots(p1, Oc_tabs2, boundary_tab2, nrow = 3)
   layout <- layout +
     patchwork::plot_annotation(
@@ -461,7 +464,8 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming (OF)" function and method=power is an alternative
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param nsim number of simulation
 #' @param seed for reproducibility
 #' @importFrom dplyr mutate case_when
@@ -485,7 +489,7 @@ BOP2FE_coprimary <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method
 #' }
 #' @export
 #'
-BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "OF", nsim = NULL, seed = NULL){
+BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "power", nsim = NULL, seed = NULL){
 
   a <- H0
   nIA <- length(n)
@@ -496,9 +500,9 @@ BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  meth
   }
 
   # Set default method to "OBrien-Fleming" if eta is NULL
-  if (is.null(eta) | is.null(method)) {
-    method <- "OF"
-  }
+  #if (is.null(eta) | is.null(method)) {
+  #  method <- "OF"
+  #}
   if (is.null(gamma)) {
     gamma <- 0.95
     message("gamma value should be provided. The defult gamma = 0.95 used")
@@ -540,10 +544,10 @@ BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  meth
   plot_dat$postprob_fut <- lambda * (plot_dat$n / nsum)^gamma * 100
 
   # Calculate postprob_sup based on method
-  if (method == "power") {
-    plot_dat$postprob_sup <- 1 - (1 - lambda) * (plot_dat$n / nsum)^eta
-  } else {
+  if (method == "OF") {
     plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
+  } else { # "power"
+    plot_dat$postprob_sup <- (1 - (1 - lambda) * (plot_dat$n/nsum)^eta)*100
   }
 
   # Plot
@@ -572,7 +576,7 @@ BOP2FE_jointefftox <- function(H0, n, lambda = NULL, gamma=NULL, eta=NULL,  meth
   colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
   boundary_tab2 <- dplyr::as_tibble(boundary_tab) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
   
-  Info <- paste0("lambda=", lambda, " ", "gamma=", gamma)
+  Info <- paste0("Efficacy-cutoff prob - ", method, ":", " ", "lambda=", lambda, " ", "gamma=", gamma, " ",  "eta=", ifelse(is.null(eta)&(method=="OF"), NA, eta))
   layout <- patchwork::wrap_plots(p1, Oc_tabs2, boundary_tab2, nrow = 3)
   layout <- layout +
     patchwork::plot_annotation(

@@ -43,7 +43,7 @@ library(BOP2FE)
 ### Binary endpoint
 
 ``` r
-BOP2FE_binary(H0 =0.2, n = c(10,5,5,5,5,5,5), lambda = 0.909, gamma=1, nsim = 10000, seed = 1234)
+BOP2FE_binary(H0 =0.2, n = c(10,5,5,5,5,5,5), lambda = 0.909, gamma=1, method = "OF", nsim = 10000, seed = 1234)
 #> $boundary
 #> # A tibble: 2 × 8
 #>   `Interim analysis`   `1`   `2`   `3`   `4`   `5`   `6`   `7`  
@@ -72,7 +72,7 @@ BOP2FE_binary(H0 =0.2, n = c(10,5,5,5,5,5,5), lambda = 0.909, gamma=1, nsim = 10
 ### Nested endpoint
 
 ``` r
-BOP2FE_nested(CR0 = 0.15, CRPR0 = 0.30, n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, seed = 123)
+BOP2FE_nested(CR0 = 0.15, CRPR0 = 0.30, n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, method = "OF", seed = 123)
 #> $boundary
 #> # A tibble: 4 × 8
 #>   `Interim analysis`         `1`   `2`   `3`   `4`   `5`   `6`   `7`  
@@ -103,7 +103,7 @@ BOP2FE_nested(CR0 = 0.15, CRPR0 = 0.30, n=c(10,5,5,5,5,5,5), lambda = 0.95, gamm
 ### Co-primary endpoint
 
 ``` r
-BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1,seed = 123)
+BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, method = "OF", seed = 123)
 #> $boundary
 #> # A tibble: 4 × 8
 #>   `Interim analysis`        `1`   `2`   `3`   `4`   `5`   `6`   `7`  
@@ -134,7 +134,7 @@ BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), n=c(10,5,5,5,5,5,5), lambda = 0.95
 ### Joint endpoint
 
 ``` r
-BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), n=c(10,5,5,5,5,5,5), lambda = 0.7, gamma=1, seed = 123)
+BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), n=c(10,5,5,5,5,5,5), lambda = 0.7, gamma=1, method = "OF", seed = 123)
 #> $boundary
 #> # A tibble: 4 × 8
 #>   `Interim analysis`            `1`   `2`   `3`   `4`   `5`   `6`   `7`  

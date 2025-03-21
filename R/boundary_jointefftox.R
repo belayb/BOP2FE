@@ -6,7 +6,7 @@
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
-#' @param method type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative
+#' @param method type of function to be used for the cut off probability for superiority. The default is "power" type function. method=OF is an alternative for "O'Brien-Fleming" 
 #' @param seed seed number
 #' @importFrom dplyr if_else mutate filter
 #' @importFrom stats pbeta rbinom
@@ -14,7 +14,7 @@
 #' @importFrom magrittr %>%
 #' @export
 
-boundary_jointefftox <- function(H0, a, n, nIA, lambda, gamma, eta=NULL,  method = NULL,seed = 123) {
+boundary_jointefftox <- function(H0, a, n, nIA, lambda, gamma, eta=NULL,  method = "power",seed = 123) {
   calculate_postp <- function(H0, beta_a, beta_b) {
     1 - pbeta(H0, beta_a, beta_b)
   }
@@ -32,28 +32,26 @@ boundary_jointefftox <- function(H0, a, n, nIA, lambda, gamma, eta=NULL,  method
   }
   nsum <- sum(n)
 
-  # check here if lambda, gamma and eta values are given and are single number
-  # if not call the optimal par function
-  # if lambda, gamma and eta values are vector call optimal var get the optimal values
-  if (is.null(eta)|is.null(method)) {
-    method <- "OBrien-Fleming"
-  }
-
+  
   cf_values <- sapply(seq_along(n), function(i) {
     lambda * (sum(n[1:i]) / nsum)^gamma
   })
-
-  if(method == "power"){
-    cs_values <- sapply(seq_along(n), function(i) {
-      1- (1-lambda)  * (sum(n[1:i]) / nsum)^eta
-    })
+  
+  
+  if (is.null(eta)& method=="power") {
+    stop("eta value should be specified for method-power")
   }
-  else{
+  
+  if(method == "OF"){
     cs_values <- sapply(seq_along(n), function(i) {
       2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(sum(n[1:i]) / nsum)) - 1
     })
   }
-
+  else{#power
+    cs_values <- sapply(seq_along(n), function(i) {
+      1- (1-lambda)  * (sum(n[1:i]) / nsum)^eta
+    })
+  }
 
   # Function to find boundaries
   find_boundaries <- function(n, H0, a, cf, cs) {

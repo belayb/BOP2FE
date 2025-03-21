@@ -12,7 +12,7 @@ boundary_jointefftox(
   lambda,
   gamma,
   eta = NULL,
-  method = NULL,
+  method = "power",
   seed = 123
 )
 }
@@ -31,7 +31,7 @@ boundary_jointefftox(
 
 \item{eta}{optimal value for eta of the cut-off probability}
 
-\item{method}{type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming" function. method=power is an alternative}
+\item{method}{type of function to be used for the cut off probability for superiority. The default is "power" type function. method=OF is an alternative for "O'Brien-Fleming"}
 
 \item{seed}{seed number}
 }

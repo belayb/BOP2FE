@@ -50,27 +50,27 @@ library(BOP2FE)
 ### Binary endpoint 
 
 ```{r binary}
-BOP2FE_binary(H0 =0.2, n = c(10,5,5,5,5,5,5), lambda = 0.909, gamma=1, nsim = 10000, seed = 1234)
+BOP2FE_binary(H0 =0.2, n = c(10,5,5,5,5,5,5), lambda = 0.909, gamma=1, method = "OF", nsim = 10000, seed = 1234)
 ```
 
 ### Nested endpoint 
 
 ```{r nested}
-BOP2FE_nested(CR0 = 0.15, CRPR0 = 0.30, n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, seed = 123)
+BOP2FE_nested(CR0 = 0.15, CRPR0 = 0.30, n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, method = "OF", seed = 123)
 ```
 
 
 ### Co-primary endpoint 
 
 ```{r coprimary}
-BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1,seed = 123)
+BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, method = "OF", seed = 123)
 ```
 
 
 ### Joint endpoint 
 
 ```{r joint}
-BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), n=c(10,5,5,5,5,5,5), lambda = 0.7, gamma=1, seed = 123)
+BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), n=c(10,5,5,5,5,5,5), lambda = 0.7, gamma=1, method = "OF", seed = 123)
 ```
 
 ### Optimizing Design Parameters 

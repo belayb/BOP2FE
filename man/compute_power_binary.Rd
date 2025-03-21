@@ -12,7 +12,7 @@ compute_power_binary(
   lambda = NULL,
   gamma = NULL,
   eta = NULL,
-  method = NULL,
+  method = "power",
   seed = NULL
 )
 }
@@ -31,7 +31,8 @@ compute_power_binary(
 
 \item{eta}{eta value for}
 
-\item{method}{method to use for cutoff probability}
+\item{method}{A character string specifying the method to use for calculating cutoff values.
+Options are "power" (default) or "OF" for "O'Brien-Fleming".}
 
 \item{seed}{for reproducability}
 }

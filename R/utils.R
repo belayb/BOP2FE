@@ -9,7 +9,7 @@
 #' @param gamma A numeric value used in the calculation of cutoff values (default is NULL).
 #' @param eta A numeric value used in the power method calculation (default is NULL).
 #' @param method A character string specifying the method to use for calculating cutoff values.
-#'               Options are "power" (default) or "obrien-fleming".
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #'
 #' @return A list containing two elements:
 #' \item{cf_values}{A numeric vector of cutoff values for futility stopping.}
@@ -18,20 +18,20 @@
 #' @importFrom magrittr %>%
 #' @importFrom stats qnorm pnorm
 #' 
-get_cf_cs_values<- function(n, lambda=NULL, gamma=NULL, eta= NULL, method = NULL){
+get_cf_cs_values<- function(n, lambda=NULL, gamma=NULL, eta= NULL, method = "power"){
   nsum<- sum(n)
   cf_values <- sapply(seq_along(n), function(i) {
     lambda * (sum(n[1:i]) / nsum)^gamma
   })
   
-  if(method == "power"){
-    cs_values <- sapply(seq_along(n), function(i) {
-      1- (1-lambda)  * (sum(n[1:i]) / nsum)^eta
+  if(method == "OF"){
+    ccs_values <- sapply(seq_along(n), function(i) {
+      2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(sum(n[1:i]) / nsum)) - 1
     })
   }
-  else{
+  else{#power
     cs_values <- sapply(seq_along(n), function(i) {
-      2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(sum(n[1:i]) / nsum)) - 1
+      1- (1-lambda)  * (sum(n[1:i]) / nsum)^eta
     })
   }
   return(list(cf_values=cf_values, cs_values=cs_values))
@@ -469,14 +469,15 @@ calculate_posterior_jointefftox <- function(xdata, H0, H1, n_stage) {
 #' @param lambda lambda value for
 #' @param gamma gamma value for
 #' @param eta eta value for
-#' @param method method to use for cutoff probability 
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming". 
 #' @param seed for reproducability 
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select mutate case_when
 #' @importFrom purrr reduce
 #'
 #'@export
-compute_power_binary <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = NULL, seed = NULL){
+compute_power_binary <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = "power", seed = NULL){
   
   n_stage <- length(n)
   
@@ -533,14 +534,15 @@ compute_power_binary <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, e
 #' @param lambda lambda value for
 #' @param gamma gamma value for
 #' @param eta eta value for
-#' @param method method to use for cutoff probability 
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming". 
 #' @param seed for reproducability 
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select mutate case_when
 #' @importFrom purrr reduce
 #' 
 #' @export
-compute_power_nested <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = NULL, seed = NULL) {
+compute_power_nested <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = "power", seed = NULL) {
   n_stage <- length(n)
   H0 <- H0
   H1 <- H1
@@ -598,14 +600,15 @@ compute_power_nested <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, e
 #' @param lambda lambda value for
 #' @param gamma gamma value for
 #' @param eta eta value for
-#' @param method method to use for cutoff probability 
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming". 
 #' @param seed for reproducability 
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select mutate case_when
 #' @importFrom purrr reduce
 #' 
 #' @export
-compute_power_coprimary <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = NULL, seed = NULL) {
+compute_power_coprimary <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = "power", seed = NULL) {
   n_stage <- length(n)
   H0 <- H0
   H1 <- H1
@@ -663,14 +666,15 @@ compute_power_coprimary <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL
 #' @param lambda lambda value for
 #' @param gamma gamma value for
 #' @param eta eta value for
-#' @param method method to use for cutoff probability 
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming". 
 #' @param seed for reproducability 
 #' @importFrom magrittr %>%
 #' @importFrom dplyr select mutate case_when
 #' @importFrom purrr reduce
 #' 
 #' @export
-compute_power_jointefftox <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = NULL, seed = NULL) {
+compute_power_jointefftox <- function(H0, H1, n, nsim, lambda = NULL, gamma = NULL, eta = NULL, method = "power", seed = NULL) {
   n_stage <- length(n)
   H0 <- H0
   H1 <- H1
@@ -730,7 +734,8 @@ compute_power_jointefftox <- function(H0, H1, n, nsim, lambda = NULL, gamma = NU
 #' @param nsim Number of simulation runs to perform.
 #' @param t1e Desired Type - I error rate
 #' @param t2e Desired Type - II error rate
-#' @param method method to use for cutoff
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param lambda1 starting value for lambda values to search
 #' @param lambda2 ending value for lambda values to search
 #' @param grid1 number of lambda values to consider between lambda1 and lambda2
@@ -746,7 +751,7 @@ compute_power_jointefftox <- function(H0, H1, n, nsim, lambda = NULL, gamma = NU
 #' @importFrom magrittr %>%
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @export
-Optimal_pars_binary <- function(H0, H1, n, nsim, t1e, t2e, method,
+Optimal_pars_binary <- function(H0, H1, n, nsim, t1e, t2e, method ="power",
                                 lambda1, lambda2, grid1, gamma1, gamma2, grid2, eta1, eta2, grid3) {
  
   # Initialize result a data frame
@@ -828,7 +833,8 @@ Optimal_pars_binary <- function(H0, H1, n, nsim, t1e, t2e, method,
 #' @param nsim Number of simulation runs to perform.
 #' @param t1e Desired Type - I error rate
 #' @param t2e Desired Type - II error rate
-#' @param method method to use for cutoff
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param lambda1 starting value for lambda values to search
 #' @param lambda2 ending value for lambda values to search
 #' @param grid1 number of lambda values to consider between lambda1 and lambda2
@@ -844,7 +850,7 @@ Optimal_pars_binary <- function(H0, H1, n, nsim, t1e, t2e, method,
 #' @importFrom magrittr %>%
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #' @export
-Optimal_pars_nested <- function(CR0, CRPR0, CR1, CRPR1, n, nsim, t1e, t2e, method,
+Optimal_pars_nested <- function(CR0, CRPR0, CR1, CRPR1, n, nsim, t1e, t2e, method ="power",
                                 lambda1, lambda2, grid1, gamma1, gamma2, grid2, eta1, eta2, grid3) {
   # Define H0 and H1
   H0 <- c(CR0, CRPR0 - CR0, 1 - CRPR0)
@@ -935,7 +941,8 @@ Optimal_pars_nested <- function(CR0, CRPR0, CR1, CRPR1, n, nsim, t1e, t2e, metho
 #' @param nsim Number of simulation runs to perform.
 #' @param t1e Desired Type - I error rate
 #' @param t2e Desired Type - II error rate
-#' @param method method to use for cutoff
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param lambda1 starting value for lambda values to search
 #' @param lambda2 ending value for lambda values to search
 #' @param grid1 number of lambda values to consider between lambda1 and lambda2
@@ -953,7 +960,7 @@ Optimal_pars_nested <- function(CR0, CRPR0, CR1, CRPR1, n, nsim, t1e, t2e, metho
 #' @export
 Optimal_pars_coprimary <- function(theta01, theta02, theta03, theta04, 
                                    theta11, theta12, theta13, theta14, 
-                                   n, nsim, t1e, t2e, method, 
+                                   n, nsim, t1e, t2e, method ="power", 
                                    lambda1, lambda2, grid1, 
                                    gamma1, gamma2, grid2, 
                                    eta1, eta2, grid3) {
@@ -1046,7 +1053,8 @@ Optimal_pars_coprimary <- function(theta01, theta02, theta03, theta04,
 #' @param nsim Number of simulation runs to perform.
 #' @param t1e Desired Type - I error rate
 #' @param t2e Desired Type - II error rate
-#' @param method method to use for cutoff
+#' @param method A character string specifying the method to use for calculating cutoff values.
+#'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param lambda1 starting value for lambda values to search
 #' @param lambda2 ending value for lambda values to search
 #' @param grid1 number of lambda values to consider between lambda1 and lambda2
@@ -1064,7 +1072,7 @@ Optimal_pars_coprimary <- function(theta01, theta02, theta03, theta04,
 #' @export
 Optimal_pars_jointefftox <- function(theta01, theta02, theta03, theta04, 
                                    theta11, theta12, theta13, theta14, 
-                                   n, nsim, t1e, t2e, method, 
+                                   n, nsim, t1e, t2e, method ="power", 
                                    lambda1, lambda2, grid1, 
                                    gamma1, gamma2, grid2, 
                                    eta1, eta2, grid3) {

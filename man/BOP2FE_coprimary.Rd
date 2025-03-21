@@ -10,7 +10,7 @@ BOP2FE_coprimary(
   lambda = NULL,
   gamma = NULL,
   eta = NULL,
-  method = "OF",
+  method = "power",
   nsim = NULL,
   seed = NULL
 )
@@ -26,7 +26,8 @@ BOP2FE_coprimary(
 
 \item{eta}{optimal value for eta of the cut-off probability}
 
-\item{method}{type of function to be used for the cut off probability for superiority. The default is "OBrien-Fleming (OF)" function and method=power is an alternative}
+\item{method}{A character string specifying the method to use for calculating cutoff values.
+Options are "power" (default) or "OF" for "O'Brien-Fleming".}
 
 \item{nsim}{number of simulation}
 

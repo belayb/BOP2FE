@@ -17,7 +17,7 @@ Optimal_pars_jointefftox(
   nsim,
   t1e,
   t2e,
-  method,
+  method = "power",
   lambda1,
   lambda2,
   grid1,
@@ -54,7 +54,8 @@ Optimal_pars_jointefftox(
 
 \item{t2e}{Desired Type - II error rate}
 
-\item{method}{method to use for cutoff}
+\item{method}{A character string specifying the method to use for calculating cutoff values.
+Options are "power" (default) or "OF" for "O'Brien-Fleming".}
 
 \item{lambda1}{starting value for lambda values to search}
 
