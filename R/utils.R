@@ -25,7 +25,7 @@ get_cf_cs_values<- function(n, lambda=NULL, gamma=NULL, eta= NULL, method = "pow
   })
   
   if(method == "OF"){
-    ccs_values <- sapply(seq_along(n), function(i) {
+    cs_values <- sapply(seq_along(n), function(i) {
       2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(sum(n[1:i]) / nsum)) - 1
     })
   }
