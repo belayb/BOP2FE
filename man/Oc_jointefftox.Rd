@@ -4,28 +4,50 @@
 \alias{Oc_jointefftox}
 \title{Operating characteristics for for joint Endpoint}
 \usage{
-Oc_jointefftox(p1, p2, p3, p4, n_stage, n, nsim, fb, sb, seed = 12345)
+Oc_jointefftox(p1, p2, p3, p4, n, nsim, fb, sb, seed = 12345)
 }
 \arguments{
-\item{p1}{Response rate (toxicity - OR)}
+\item{p1}{Response rate (Response - toxicity)}
 
-\item{p2}{Response rate (no toxicity - OR)}
+\item{p2}{Response rate (Response - no toxicity)}
 
-\item{p3}{Response rate (toxicity - no OR)}
+\item{p3}{Response rate (No Response - toxicity)}
 
-\item{p4}{Response rate (no toxicity - No OR)}
+\item{p4}{Response rate (No Response - no toxicity)}
 
-\item{n_stage}{number of interim analysis}
-
-\item{n}{vector of sample size at each interim look (Note that the sample size at interim i is the difference between sample size at interim i and at interim i-1)}
+\item{n}{A numeric vector representing the additional patients enrolled at each interim analysis. 
+The value at index `i` indicates the number of new patients added at interim analysis `i`. 
+The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
+the vector would be represented as `n = c(10, 5, 5, 10)`, where:
+- 10 is the number of patients enrolled at interim 1,
+- 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+- 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+- 10 (30 - 20) is the additional number of patients enrolled at interim 4.}
 
 \item{nsim}{number of simulation}
 
-\item{fb}{vector of futility boundary at each interim}
+\item{fb}{vector of futility boundary at each interim analysis specified 
+in the following order: c(resp_1, tox_1, resp_2, tox_2, resp_3, tox_3, ...)}
 
-\item{sb}{vector of superiority boundary at each interim}
+\item{sb}{vector of superiority boundary at each interim analysis specified 
+in the following order: c(resp_1, tox_1, resp_2, tox_2, resp_3, tox_3, ...)}
 
 \item{seed}{for reproducibility}
+}
+\value{
+A data frame with the following columns
+\itemize{
+\item{earlystopfuti_mean: }{Average number of early stopping due to futility}
+ \item{earlystopsupe_mean: }{Average number of early stopping for futility due to efficacy}
+  \item{ss_mean: }{Average sample size"} 
+  \item{rejectnull_mean: }{"Average number of hypothesis rejection at the final analysis (aka Type-I error 
+  if the response rate is the null rate or Power if the response rate is the alternative rate.} 
+  \item{earlystopfuti_sum: }{Total number of early stopping due to futility} 
+  \item{earlystopsupe_sum: }{Total number of early early stopping due to efficacy} 
+  \item{ss_sum: }{Sum of sample sizes across simulation"} 
+  \item{rejectnull_sum: }{Total number of hypothesis rejection at the final analysis} 
+  }
 }
 \description{
 Operating characteristics for for joint Endpoint

@@ -1,7 +1,7 @@
 Package: BOP2FE
 Type: Package
-Title: Bayesain optimal design for phase II oncology using futility and efficacy boundery 
-Version: 0.2.0
+Title:  Bayesian optimal phase II design with futility and efficacy stopping boundaries 
+Version: 0.3.0
 Authors@R: c(
     person("Belay Birlie", "Yimer", email = "belayabyimer@gmail.com", role =  c("aut", "cre")),
     person("Xinling", "Xu", role = "aut"),
@@ -12,4 +12,4 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2
-Imports: dplyr, purrr, rlang, magrittr, tidyselect, gridExtra, patchwork, ggplot2, tibble
+Imports: dplyr, purrr, rlang, magrittr, gridExtra, patchwork, ggplot2, tibble

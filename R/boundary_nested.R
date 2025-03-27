@@ -1,8 +1,18 @@
-#' Boundery values for Nested Endpoint
-#' @param H0 Response rate under the null
+#' Boundary values for Nested Endpoint
+#' @param H0 Response rate under the null , specified in the following order:
+#' - `H0[1]`: Complete Remission (CR) rate,
+#' - `H0[2]`: Partial Remission (PR) rate,
+#' - `H0[3]`: No Complete Remission or Partial Remission rate, calculated as `1 - (CR + PR)`.
 #' @param a alpha values for the beta prior (i.e. usually set to the null response rate)
-#' @param n sample size at each  interim analysis
-#' @param nIA number of interim analysis
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
+#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
+#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
+#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
+#' - 10 is the number of patients enrolled at interim 1,
+#' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
@@ -13,8 +23,18 @@
 #' @importFrom rlang :=
 #' @importFrom magrittr %>%
 #' @export
+#' 
+#' @returns A data frame with the following columns
+#' \itemize{
+#' \item{cn11f_max: }{Futility boundry for CR}
+#'  \item{cn11s_min: }{superiority boundry for CR}
+#'   \item{cn11s_min: }{superiority boundry for CR} 
+#'   \item{cn12s_min: }{superiority boundry for CR/PR} 
+#'   } 
 
-boundary_nested <- function(H0, a, n, nIA, lambda, gamma, eta=NULL,  method = "power",seed = 123) {
+boundary_nested <- function(H0, a, n, lambda, gamma, eta=NULL,  method = "power",seed = 123) {
+  
+  
   calculate_postp <- function(H0, beta_a, beta_b) {
     1 - pbeta(H0, beta_a, beta_b)
   }
@@ -25,9 +45,8 @@ boundary_nested <- function(H0, a, n, nIA, lambda, gamma, eta=NULL,  method = "p
   phi1 <- sum(H0 * b1)
   phi2 <- sum(H0 * b2)
 
-  if (length(n) != nIA){
-    stop("sample size vector not equal to number of interm analysis")
-  }
+  # number of interim analysis
+  nIA<- length(n)
   nsum <- sum(n)
 
 

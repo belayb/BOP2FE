@@ -8,7 +8,6 @@ boundary_binary(
   H0,
   a1,
   b1,
-  nIA,
   n,
   lambda,
   gamma,
@@ -24,9 +23,15 @@ boundary_binary(
 
 \item{b1}{beta values for the beta prior (i.e, usually set to 1-null response rate)}
 
-\item{nIA}{number of interim analysis}
-
-\item{n}{sample size at each interim look}
+\item{n}{A numeric vector representing the additional patients enrolled at each interim analysis. 
+The value at index `i` indicates the number of new patients added at interim analysis `i`. 
+The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
+the vector would be represented as `n = c(10, 5, 5, 10)`, where:
+- 10 is the number of patients enrolled at interim 1,
+- 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+- 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+- 10 (30 - 20) is the additional number of patients enrolled at interim 4.}
 
 \item{lambda}{optimal value for lambda of the cut-off probability}
 
@@ -37,6 +42,13 @@ boundary_binary(
 \item{method}{type of function to be used for the cut off probability for superiority. The default is "power" type function. method=OF is an alternative for "O'Brien-Fleming"}
 
 \item{seed}{for reproducibility}
+}
+\value{
+A data frame with the following columns
+\itemize{
+\item{cnf: }{Futility boundry}
+ \item{cns: }{superiority boundry}
+  }
 }
 \description{
 Boundary values for Binary Endpoint

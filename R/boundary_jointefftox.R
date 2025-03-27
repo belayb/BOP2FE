@@ -1,8 +1,15 @@
 #' Boundary values for joint Endpoint
 #' @param H0 Response rate under the null (toxicity - OR, no toxicity - OR, toxicity - no OR, no toxicity - No OR)
 #' @param a alpha values for the beta prior (i.e. usually set to the null response rate)
-#' @param n sample size at each  interim analysis
-#' @param nIA number of interim analysis
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
+#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
+#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
+#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
+#' - 10 is the number of patients enrolled at interim 1,
+#' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
@@ -13,8 +20,17 @@
 #' @importFrom rlang :=
 #' @importFrom magrittr %>%
 #' @export
+#' 
+#' @returns A data frame with the following columns
+#' \itemize{
+#' \item{cn11f_max: }{Futility boundry for response}
+#'  \item{cn11s_min: }{superiority boundry for toxicity}
+#'   \item{cn11s_min: }{superiority boundry for response} 
+#'   \item{cn12s_min: }{superiority boundry for toxicity} 
+#'   } 
 
-boundary_jointefftox <- function(H0, a, n, nIA, lambda, gamma, eta=NULL,  method = "power",seed = 123) {
+
+boundary_jointefftox <- function(H0, a, n, lambda, gamma, eta=NULL,  method = "power",seed = NULL) {
   calculate_postp <- function(H0, beta_a, beta_b) {
     1 - pbeta(H0, beta_a, beta_b)
   }
@@ -27,9 +43,8 @@ boundary_jointefftox <- function(H0, a, n, nIA, lambda, gamma, eta=NULL,  method
   phi1 <- sum(H0 * b1)
   phi2 <- sum(H0 * b2)
 
-  if (length(n) != nIA){
-    stop("sample size vector not equal to number of interm analysis")
-  }
+  #number of interim analysis
+  nIA <- length(n)
   nsum <- sum(n)
 
   

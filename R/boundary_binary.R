@@ -2,8 +2,15 @@
 #' @param H0 Response rate under the null
 #' @param a1 alpha values for the beta prior (i.e. usually set to the null response rate)
 #' @param b1 beta values for the beta prior (i.e, usually set to 1-null response rate)
-#' @param nIA number of interim analysis
-#' @param n sample size at each interim look
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
+#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
+#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
+#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
+#' - 10 is the number of patients enrolled at interim 1,
+#' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
 #' @param lambda optimal value for lambda of the cut-off probability
 #' @param gamma optimal value for gamma of the cut-off probability
 #' @param eta optimal value for eta of the cut-off probability
@@ -14,13 +21,19 @@
 #' @importFrom stats pbeta rbinom
 #' @importFrom magrittr %>%
 #' @export
+#' 
+#' @returns A data frame with the following columns
+#' \itemize{
+#' \item{cnf: }{Futility boundry}
+#'  \item{cns: }{superiority boundry}
+#'   } 
 
-boundary_binary <- function(H0, a1, b1, nIA, n, lambda, gamma, eta=NULL,  method = "power",seed = 123) {
+
+boundary_binary <- function(H0, a1, b1, n, lambda, gamma, eta=NULL,  method = "power",seed = 123) {
   set.seed(seed)
 
-  if (length(n) != nIA){
-    stop("sample size vector not equal to number of interm analysis")
-  }
+  #number of interim analysis
+  nIA <- length(n)
   nsum <- sum(n)
 
   cf_values <- sapply(seq_along(n), function(i) {
@@ -43,7 +56,9 @@ boundary_binary <- function(H0, a1, b1, nIA, n, lambda, gamma, eta=NULL,  method
   }
 
   calculate_postp <- function(x, H0, a1, b1, n) {
-    1 - pbeta(H0, a1 + x, b1 + n - x)
+    #1 - pbeta(H0, a1 + x, b1 + n - x)
+    ifelse(x > n | x < 0, NA, 1 - pbeta(H0, a1 + x, b1 + n - x))
+    
   }
 
   find_boundaries <- function(x_range, H0, a1, b1, n, cf, cs) {
@@ -64,7 +79,15 @@ boundary_binary <- function(H0, a1, b1, nIA, n, lambda, gamma, eta=NULL,  method
     if (i == 1) {
       x_range <- 0:n[i]
     } else {
-      x_range <- (cnf_values[i-1] + 1):(sum(n[1:i]))
+      #x_range <- (cnf_values[i-1] + 1):(sum(n[1:i]))
+      if (is.na(cnf_values[i-1])) {
+        start_value <- -1
+      } else {
+        start_value <- cnf_values[i-1]
+      }
+      
+      x_range <- (start_value + 1):(sum(n[1:i]))
+    
     }
 
     boundaries <- find_boundaries(x_range, H0, a1, b1, sum(n[1:i]), cf_values[i], cs_values[i])

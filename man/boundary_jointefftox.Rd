@@ -8,12 +8,11 @@ boundary_jointefftox(
   H0,
   a,
   n,
-  nIA,
   lambda,
   gamma,
   eta = NULL,
   method = "power",
-  seed = 123
+  seed = NULL
 )
 }
 \arguments{
@@ -21,9 +20,15 @@ boundary_jointefftox(
 
 \item{a}{alpha values for the beta prior (i.e. usually set to the null response rate)}
 
-\item{n}{sample size at each  interim analysis}
-
-\item{nIA}{number of interim analysis}
+\item{n}{A numeric vector representing the additional patients enrolled at each interim analysis. 
+The value at index `i` indicates the number of new patients added at interim analysis `i`. 
+The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
+the vector would be represented as `n = c(10, 5, 5, 10)`, where:
+- 10 is the number of patients enrolled at interim 1,
+- 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+- 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+- 10 (30 - 20) is the additional number of patients enrolled at interim 4.}
 
 \item{lambda}{optimal value for lambda of the cut-off probability}
 
@@ -34,6 +39,15 @@ boundary_jointefftox(
 \item{method}{type of function to be used for the cut off probability for superiority. The default is "power" type function. method=OF is an alternative for "O'Brien-Fleming"}
 
 \item{seed}{seed number}
+}
+\value{
+A data frame with the following columns
+\itemize{
+\item{cn11f_max: }{Futility boundry for response}
+ \item{cn11s_min: }{superiority boundry for toxicity}
+  \item{cn11s_min: }{superiority boundry for response} 
+  \item{cn12s_min: }{superiority boundry for toxicity} 
+  }
 }
 \description{
 Boundary values for joint Endpoint

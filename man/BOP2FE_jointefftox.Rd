@@ -6,6 +6,7 @@
 \usage{
 BOP2FE_jointefftox(
   H0,
+  H1,
   n,
   lambda = NULL,
   gamma = NULL,
@@ -18,13 +19,23 @@ BOP2FE_jointefftox(
 \arguments{
 \item{H0}{Response rate under the null (toxicity - OR, no toxicity - OR, toxicity - no OR, no toxicity - No OR)}
 
-\item{n}{vector of sample size at each interim look (Note that the sample size at interim i is the difference between sample size at interim i and at interim i-1)}
+\item{H1}{Response rate under the alternative (toxicity - OR, no toxicity - OR, toxicity - no OR, no toxicity - No OR)}
 
-\item{lambda}{optimal value for lambda of the cut-off probability}
+\item{n}{A numeric vector representing the additional patients enrolled at each interim analysis. 
+The value at index `i` indicates the number of new patients added at interim analysis `i`. 
+The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
+the vector would be represented as `n = c(10, 5, 5, 10)`, where:
+- 10 is the number of patients enrolled at interim 1,
+- 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+- 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+- 10 (30 - 20) is the additional number of patients enrolled at interim 4.}
 
-\item{gamma}{optimal value for gamma of the cut-off probability}
+\item{lambda}{A numeric value for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)}
 
-\item{eta}{optimal value for eta of the cut-off probability}
+\item{gamma}{A numeric value for parameter `gamma` of the cut-off probability for futility}
+
+\item{eta}{A numeric value for parameter `eta` of the cut-off probability for efficacy}
 
 \item{method}{A character string specifying the method to use for calculating cutoff values.
 Options are "power" (default) or "OF" for "O'Brien-Fleming".}
@@ -45,12 +56,14 @@ Computes stopping boundaries and operating characteristics of Bayesian optimal p
 design with efficacy and futility stopping for a joint efficacy and toxicity endpoint given optimal
 design parameter values that are identified to optimize power while controlling
 type I error rate at a specified value. The optimal parameters (i.e., lambda, gamma, and eta)
-can be obtained by calling `Optimal_pars_jointefftox()` function.
+can be obtained by calling `search_optimal_pars_efftox()` function. The function produce a plot
+that can be saved as a pdf file for documentation.
 }
 \examples{
 \dontrun{
 # Example with 7 interim looks
-BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), n=c(10,5,5,5,5,5,5), 
+BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), H1=c(0.18, 0.42, 0.02, 0.38), 
+n=c(10,5,5,5,5,5,5), 
 lambda = 0.7, gamma=1, seed = 123)
 }
 }

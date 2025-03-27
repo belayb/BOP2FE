@@ -2,13 +2,12 @@
 % Please edit documentation in R/boundary_nested.R
 \name{boundary_nested}
 \alias{boundary_nested}
-\title{Boundery values for Nested Endpoint}
+\title{Boundary values for Nested Endpoint}
 \usage{
 boundary_nested(
   H0,
   a,
   n,
-  nIA,
   lambda,
   gamma,
   eta = NULL,
@@ -17,13 +16,22 @@ boundary_nested(
 )
 }
 \arguments{
-\item{H0}{Response rate under the null}
+\item{H0}{Response rate under the null , specified in the following order:
+- `H0[1]`: Complete Remission (CR) rate,
+- `H0[2]`: Partial Remission (PR) rate,
+- `H0[3]`: No Complete Remission or Partial Remission rate, calculated as `1 - (CR + PR)`.}
 
 \item{a}{alpha values for the beta prior (i.e. usually set to the null response rate)}
 
-\item{n}{sample size at each  interim analysis}
-
-\item{nIA}{number of interim analysis}
+\item{n}{A numeric vector representing the additional patients enrolled at each interim analysis. 
+The value at index `i` indicates the number of new patients added at interim analysis `i`. 
+The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
+the vector would be represented as `n = c(10, 5, 5, 10)`, where:
+- 10 is the number of patients enrolled at interim 1,
+- 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+- 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+- 10 (30 - 20) is the additional number of patients enrolled at interim 4.}
 
 \item{lambda}{optimal value for lambda of the cut-off probability}
 
@@ -35,6 +43,15 @@ boundary_nested(
 
 \item{seed}{seed number}
 }
+\value{
+A data frame with the following columns
+\itemize{
+\item{cn11f_max: }{Futility boundry for CR}
+ \item{cn11s_min: }{superiority boundry for CR}
+  \item{cn11s_min: }{superiority boundry for CR} 
+  \item{cn12s_min: }{superiority boundry for CR/PR} 
+  }
+}
 \description{
-Boundery values for Nested Endpoint
+Boundary values for Nested Endpoint
 }
