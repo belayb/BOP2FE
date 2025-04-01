@@ -56,6 +56,7 @@ get_boundary_oc_binary <- function(H0, H1, n, nsim, lambda, gamma, eta=NULL,
                       sb = boundary_tab$cns)
   
   # Combine results into a single vector
+  if(is.null(eta)) {eta=NA}
   all_res <- c(boundary_tab[, 1], boundary_tab[, 2], 
                null_oc[1:4], alt_oc[1:4], 
                lambda, gamma, eta)
@@ -149,6 +150,7 @@ get_boundary_oc_nested <- function(H0, H1, n, nsim, lambda, gamma, eta=NULL,
                       sb = sb)
   
   # Combine results into a single vector
+  if(is.null(eta)) {eta=NA}
   all_res <- c(boundary_tab[, 1], boundary_tab[, 2], 
                boundary_tab[, 3], boundary_tab[, 4],
                null_oc[1:4], alt_oc[1:4], lambda, gamma, eta)
@@ -247,6 +249,7 @@ get_boundary_oc_coprimary <- function(H0, H1, n, nsim, lambda, gamma, eta=NULL,
                       seed = seed)
   
   # Combine results into a single vector
+  if(is.null(eta)) {eta=NA}
   all_res <- c(boundary_tab[, 1], boundary_tab[, 2], 
                boundary_tab[, 3], boundary_tab[, 4],
                null_oc[1:4], alt_oc[1:4], lambda, gamma, eta)
@@ -345,9 +348,11 @@ get_boundary_oc_efftox <- function(H0, H1, n, nsim, lambda, gamma, eta=NULL,
                          seed = seed)
   
   # Combine results into a single vector
+  if(is.null(eta)) {eta=NA}
   all_res <- c(boundary_tab[, 1], boundary_tab[, 2], 
                boundary_tab[, 3], boundary_tab[, 4],
                null_oc[1:4], alt_oc[1:4], lambda, gamma, eta)
+  
   
   # names for data frame
   names(all_res) <- c(paste0("fut_boundary_resp_", 1:nIA), 
