@@ -588,7 +588,7 @@ search_optimal_pars_nested <- function(H0, H1, n, nsim, t1e=NULL, method ="power
         g <- if (grid2 == 1) gamma1 else ((gamma2 - gamma1) / grid2) * (j-1) + gamma1
         
         # Call the compute_power_nested function without eta
-        result <-  opt_par_binary(H0 = H0, H1 = H1, nsim=nsim, n = n,
+        result <-  get_boundary_oc_nested(H0 = H0, H1 = H1, nsim=nsim, n = n,
                                   lambda = l, gamma = g, eta = NULL, method = method, seed = seed)
         # Append the results
         results <- rbind(results, result)
@@ -714,7 +714,7 @@ search_optimal_pars_coprimary <- function(H0, H1, n, nsim, t1e=NULL, method ="po
         g <- if (grid2 == 1) gamma1 else ((gamma2 - gamma1) / grid2) * (j-1) + gamma1
         
         # Call the compute_power_nested function without eta
-        result <-  opt_par_binary(H0 = H0, H1 = H1, nsim=nsim, n = n,
+        result <-  get_boundary_oc_coprimary(H0 = H0, H1 = H1, nsim=nsim, n = n,
                                   lambda = l, gamma = g, eta = NULL, method = method, seed=seed)
         # Append the results
         results <- rbind(results, result)
@@ -839,7 +839,7 @@ search_optimal_pars_efftox <- function(H0, H1, n, nsim, t1e=NULL, method ="power
         g <- if (grid2 == 1) gamma1 else ((gamma2 - gamma1) / grid2) * (j-1) + gamma1
         
         # Call the compute_power_nested function without eta
-        result <-  opt_par_binary(H0 = H0, H1 = H1, nsim=nsim, n = n,
+        result <-  get_boundary_oc_efftox(H0 = H0, H1 = H1, nsim=nsim, n = n,
                                   lambda = l, gamma = g, eta = NULL, method = method, seed=seed)
         # Append the results
         results <- rbind(results, result)
