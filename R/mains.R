@@ -407,10 +407,10 @@ summary.bop2fe <- function(object) {
     row.names(summary_tab1) <- c("Futility boundary", "Efficacy boundary")
     colnames(summary_tab1) <- paste0("IA", seq(nc))
   }else if(object$end_point == "nested"){
-    fut_boundary_CR <- grab(selected_res, 'fut_boundary_CR')
-    fut_boundary_CRPR <- grab(selected_res, 'fut_boundary_CR/PR')
-    sup_boundary_CR <- grab(selected_res, 'sup_boundary_CR')
-    sup_boundary_CRPR <- grab(selected_res, 'sup_boundary_CR/PR')
+    fut_boundary_CR <- grab(selected_res, 'fut_boundary_CR_')
+    fut_boundary_CRPR <- grab(selected_res, 'fut_boundary_CR/PR_')
+    sup_boundary_CR <- grab(selected_res, 'sup_boundary_CR_')
+    sup_boundary_CRPR <- grab(selected_res, 'sup_boundary_CR/PR_')
     nc <- fut_boundary_CR$nc # Number of columns
     summary_tab1 <- matrix(0, 4, nc)
     summary_tab1[1, ] <- fut_boundary_CR$values

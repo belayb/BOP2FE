@@ -84,6 +84,10 @@ summary(test_nested)
 #plot(test_nested)
 ```
 
+```{r nested2}
+plot(test_nested)
+```
+
 
 ### Co-primary endpoint 
 

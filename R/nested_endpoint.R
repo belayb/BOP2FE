@@ -571,12 +571,12 @@ get_boundary_oc_nested <- function(
   )]
   colnames(all_res_df) <- ifelse(
     colnames(all_res_df) %in% c(paste0('f1', seq(n)),paste0('f2', seq(n))),
-    c(paste0('fut_boundary_CR', seq(n)), paste0('fut_boundary_CR/PR', seq(n))),
+    c(paste0('fut_boundary_CR_', seq(n)), paste0('fut_boundary_CR/PR_', seq(n))),
     colnames(all_res_df)
   )
   colnames(all_res_df) <- ifelse(
     colnames(all_res_df) %in% c(paste0('s1', seq(n)),paste0('s2', seq(n))),
-    c(paste0('sup_boundary_CR', seq(n)),paste0('sup_boundary_CR/PR', seq(n))),
+    c(paste0('sup_boundary_CR_', seq(n)),paste0('sup_boundary_CR/PR_', seq(n))),
     colnames(all_res_df)
   )
   return(all_res_df)

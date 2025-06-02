@@ -84,10 +84,10 @@ summary(test_binary)
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.873    0.119
-#> Early stop for efficacy    0.087    0.850
-#> Average sample size       20.445   20.865
-#> Reject null                0.096    0.868
+#> Early stop for futility    0.861    0.093
+#> Early stop for efficacy    0.089    0.881
+#> Average sample size       20.740   20.175
+#> Reject null                0.095    0.892
 #plot(test_binary)
 ```
 
@@ -136,25 +136,26 @@ summary(test_nested)
 #> 1    0.1   0.9   0
 #> 
 #> $boundary
-#>                           IA1 IA2 IA3 IA4 IA5 IA6 IA7 IA8 IA9 IA10 IA11 IA12
-#> Futility boundary (CR)      5   9  12  16  20  24  28   5   9   14   18   22
-#> Futility boundary (CR/PR)   5   9  14  18  22  26  30   5   9   14   18   22
-#> Efficacy boundary (CR)      7  10  14  18  22  25  29   7  11   15   19   23
-#> Efficacy boundary (CR/PR)   7  11  15  19  23  27  31   7  11   15   19   23
-#>                           IA13 IA14
-#> Futility boundary (CR)      26   30
-#> Futility boundary (CR/PR)   26   30
-#> Efficacy boundary (CR)      27   31
-#> Efficacy boundary (CR/PR)   27   31
+#>                           IA1 IA2 IA3 IA4 IA5 IA6 IA7
+#> Futility boundary (CR)      5   9  12  16  20  24  28
+#> Futility boundary (CR/PR)   5   9  14  18  22  26  30
+#> Efficacy boundary (CR)      7  10  14  18  22  25  29
+#> Efficacy boundary (CR/PR)   7  11  15  19  23  27  31
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.946    0.604
-#> Early stop for efficacy    0.054    0.396
-#> Average sample size       10.640   11.725
-#> Reject null                0.054    0.396
+#> Early stop for futility    0.942    0.574
+#> Early stop for efficacy    0.058    0.426
+#> Average sample size       10.610   11.310
+#> Reject null                0.058    0.426
 #plot(test_nested)
 ```
+
+``` r
+plot(test_nested)
+```
+
+<img src="man/figures/README-nested2-1.png" width="100%" />
 
 ### Co-primary endpoint
 
@@ -192,21 +193,21 @@ summary(test_coprimary)
 #> 
 #> $opt_pars
 #>   lambda gamma eta
-#> 1    0.9   0.3 2.6
+#> 1    0.9   0.4 2.3
 #> 
 #> $boundary
 #>                          IA1 IA2 IA3 IA4 IA5 IA6 IA7
-#> Futility boundary (OR)     1   2   3   4   4   5   6
+#> Futility boundary (OR)     1   2   2   3   4   5   6
 #> Futility boundary (PFS6)   2   3   5   6   8   9  11
-#> Efficacy boundary (OR)     5   6   6   7   7   7   7
+#> Efficacy boundary (OR)     5   6   6   6   7   7   7
 #> Efficacy boundary (PFS6)   7   8   9  10  11  11  12
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.882    0.097
-#> Early stop for efficacy    0.084    0.896
-#> Average sample size       16.620   18.940
-#> Reject null                0.099    0.902
+#> Early stop for futility    0.876    0.080
+#> Early stop for efficacy    0.086    0.909
+#> Average sample size       16.910   18.635
+#> Reject null                0.098    0.919
 #plot(test_coprimary)
 ```
 
@@ -246,20 +247,20 @@ summary(test_joint)
 #> 
 #> $opt_pars
 #>   lambda gamma eta
-#> 1    0.6   0.9 1.2
+#> 1    0.6   0.7 2.7
 #> 
 #> $boundary
 #>                         IA1 IA2 IA3 IA4 IA5 IA6 IA7
 #> Futility boundary (OR)    3   5   8  10  13  16  18
-#> Futility boundary (Tox)   5   6   8   9  10  11  12
-#> Efficacy boundary (OR)    7  10  12  14  16  17  19
-#> Efficacy boundary (Tox)   1   2   4   5   7   9  11
+#> Futility boundary (Tox)   5   6   7   9  10  11  12
+#> Efficacy boundary (OR)    9  11  13  15  17  18  19
+#> Efficacy boundary (Tox)   0   1   3   4   6   9  11
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.888    0.242
-#> Early stop for efficacy    0.093    0.733
-#> Average sample size       18.150   22.880
-#> Reject null                0.098    0.751
+#> Early stop for futility    0.877    0.265
+#> Early stop for efficacy    0.066    0.669
+#> Average sample size       18.955   27.220
+#> Reject null                0.099    0.725
 #plot(test_joint)
 ```
