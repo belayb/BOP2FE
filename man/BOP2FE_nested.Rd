@@ -80,7 +80,7 @@ design with efficacy and futility stopping for a nested (ordinal) endpoint
 }
 \examples{
 \dontrun{
-test_nested <- search_optimal_pars_nested(
+test_nested <- BOP2FE_nested(
  H0=c(0.05,0.05, 0.15, 0.75),
  H1= c(0.15,0.15, 0.20, 0.50),
  n = c(10, 5, 5, 5, 5, 5, 5),

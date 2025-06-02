@@ -63,6 +63,10 @@ summary(test_binary)
 #plot(test_binary)
 ```
 
+```{r binary2}
+plot(test_binary)
+```
+
 ### Nested endpoint 
 
 ```{r nested}
@@ -98,7 +102,6 @@ summary(test_coprimary)
 #plot(test_coprimary)
 ```
 
-
 ### Joint endpoint 
 
 ```{r joint}
@@ -115,6 +118,4 @@ test_joint <- BOP2FE_jointefftox(
 summary(test_joint)
 #plot(test_joint)
 ```
-
-
 

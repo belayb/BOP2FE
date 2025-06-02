@@ -75,21 +75,27 @@ summary(test_binary)
 #> 
 #> $opt_pars
 #>   lambda gamma eta
-#> 1    0.9     1 2.1
+#> 1    0.9     1   2
 #> 
 #> $boundary
 #>                   IA1 IA2 IA3 IA4 IA5 IA6 IA7
 #> Futility boundary   1   2   3   5   7   9  11
-#> Efficacy boundary   6   8   9  10  10  11  12
+#> Efficacy boundary   6   7   9   9  10  11  12
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.868    0.095
-#> Early stop for efficacy    0.090    0.882
-#> Average sample size       20.195   22.085
-#> Reject null                0.099    0.897
+#> Early stop for futility    0.878    0.099
+#> Early stop for efficacy    0.092    0.872
+#> Average sample size       20.355   20.575
+#> Reject null                0.096    0.894
 #plot(test_binary)
 ```
+
+``` r
+plot(test_binary)
+```
+
+<img src="man/figures/README-binary2-1.png" width="100%" />
 
 ### Nested endpoint
 
@@ -155,26 +161,26 @@ summary(test_nested)
 #>  3rd Qu.:19.0        3rd Qu.:23.00       3rd Qu.:27.00      
 #>  Max.   :20.0        Max.   :25.00       Max.   :30.00      
 #>  sup_boundary_CR/PR6 sup_boundary_CR/PR7 earlystopfuti_mean_h0
-#>  Min.   :27.0        Min.   :31.00       Min.   :0.9390       
+#>  Min.   :27.0        Min.   :31.00       Min.   :0.9440       
 #>  1st Qu.:29.0        1st Qu.:32.00       1st Qu.:1.0000       
 #>  Median :30.0        Median :34.00       Median :1.0000       
 #>  Mean   :30.4        Mean   :33.99       Mean   :0.9989       
 #>  3rd Qu.:31.0        3rd Qu.:36.00       3rd Qu.:1.0000       
 #>  Max.   :35.0        Max.   :40.00       Max.   :1.0000       
 #>  earlystopsupe_mean_h0   ss_mean_h0    rejectnull_mean_h0 earlystopfuti_mean_h1
-#>  Min.   :0.000000      Min.   :10.00   Min.   :0.000000   Min.   :0.5800       
-#>  1st Qu.:0.000000      1st Qu.:10.02   1st Qu.:0.000000   1st Qu.:0.9650       
-#>  Median :0.000000      Median :10.07   Median :0.000000   Median :0.9830       
-#>  Mean   :0.001131      Mean   :10.16   Mean   :0.001131   Mean   :0.9662       
-#>  3rd Qu.:0.000000      3rd Qu.:10.30   3rd Qu.:0.000000   3rd Qu.:0.9910       
-#>  Max.   :0.061000      Max.   :11.03   Max.   :0.061000   Max.   :0.9910       
+#>  Min.   :0.000000      Min.   :10.00   Min.   :0.000000   Min.   :0.6170       
+#>  1st Qu.:0.000000      1st Qu.:10.01   1st Qu.:0.000000   1st Qu.:0.9790       
+#>  Median :0.000000      Median :10.07   Median :0.000000   Median :0.9900       
+#>  Mean   :0.001132      Mean   :10.16   Mean   :0.001132   Mean   :0.9725       
+#>  3rd Qu.:0.000000      3rd Qu.:10.29   3rd Qu.:0.000000   3rd Qu.:0.9930       
+#>  Max.   :0.056000      Max.   :11.03   Max.   :0.056000   Max.   :0.9930       
 #>  earlystopsupe_mean_h1   ss_mean_h1    rejectnull_mean_h1     lambda      
 #>  Min.   :0.00000       Min.   :10.00   Min.   :0.00000    Min.   :0.1000  
-#>  1st Qu.:0.00900       1st Qu.:10.34   1st Qu.:0.00900    1st Qu.:0.2000  
-#>  Median :0.01300       Median :11.38   Median :0.01700    Median :0.4000  
-#>  Mean   :0.03215       Mean   :11.66   Mean   :0.03261    Mean   :0.4644  
-#>  3rd Qu.:0.02100       3rd Qu.:12.67   3rd Qu.:0.02700    3rd Qu.:0.7000  
-#>  Max.   :0.42000       Max.   :16.36   Max.   :0.42000    Max.   :1.0000  
+#>  1st Qu.:0.00700       1st Qu.:10.30   1st Qu.:0.00700    1st Qu.:0.2000  
+#>  Median :0.00900       Median :11.15   Median :0.00900    Median :0.4000  
+#>  Mean   :0.02638       Mean   :11.47   Mean   :0.02674    Mean   :0.4644  
+#>  3rd Qu.:0.01500       3rd Qu.:12.38   3rd Qu.:0.01700    3rd Qu.:0.7000  
+#>  Max.   :0.38300       Max.   :16.12   Max.   :0.38300    Max.   :1.0000  
 #>      gamma             eta       
 #>  Min.   :0.0000   Min.   :0.000  
 #>  1st Qu.:0.2000   1st Qu.:0.400  
@@ -221,21 +227,21 @@ summary(test_coprimary)
 #> 
 #> $opt_pars
 #>   lambda gamma eta
-#> 1    0.9   0.4 2.6
+#> 1    0.9   0.3 2.1
 #> 
 #> $boundary
 #>                          IA1 IA2 IA3 IA4 IA5 IA6 IA7
-#> Futility boundary (OR)     1   2   2   3   4   5   6
+#> Futility boundary (OR)     1   2   3   4   4   5   6
 #> Futility boundary (PFS6)   2   3   5   6   8   9  11
-#> Efficacy boundary (OR)     5   6   6   7   7   7   7
-#> Efficacy boundary (PFS6)   7   8   9  10  11  11  12
+#> Efficacy boundary (OR)     5   5   6   6   7   7   7
+#> Efficacy boundary (PFS6)   6   8   9  10  10  11  12
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.880    0.088
-#> Early stop for efficacy    0.082    0.904
-#> Average sample size       17.250   19.225
-#> Reject null                0.095    0.910
+#> Early stop for futility    0.889    0.082
+#> Early stop for efficacy    0.091    0.912
+#> Average sample size       16.400   17.365
+#> Reject null                0.099    0.917
 #plot(test_coprimary)
 ```
 
@@ -275,20 +281,20 @@ summary(test_joint)
 #> 
 #> $opt_pars
 #>   lambda gamma eta
-#> 1    0.6   0.9 2.7
+#> 1    0.6   0.7   3
 #> 
 #> $boundary
 #>                         IA1 IA2 IA3 IA4 IA5 IA6 IA7
 #> Futility boundary (OR)    3   5   8  10  13  16  18
-#> Futility boundary (Tox)   5   6   8   9  10  11  12
+#> Futility boundary (Tox)   5   6   7   9  10  11  12
 #> Efficacy boundary (OR)    9  11  13  15  17  18  19
-#> Efficacy boundary (Tox)   0   1   3   4   6   9  11
+#> Efficacy boundary (Tox)   0   1   2   4   6   8  11
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.881    0.258
-#> Early stop for efficacy    0.067    0.675
-#> Average sample size       19.365   27.450
-#> Reject null                0.099    0.726
+#> Early stop for futility    0.875    0.244
+#> Early stop for efficacy    0.056    0.606
+#> Average sample size       19.620   28.100
+#> Reject null                0.099    0.743
 #plot(test_joint)
 ```
