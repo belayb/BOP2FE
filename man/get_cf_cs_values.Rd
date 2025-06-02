@@ -2,26 +2,34 @@
 % Please edit documentation in R/utils.R
 \name{get_cf_cs_values}
 \alias{get_cf_cs_values}
-\title{Compute Probability Cutoffs for Futility Stopping}
+\title{Compute Probability Cutoffs for Futility and efficacy Stopping}
 \usage{
 get_cf_cs_values(n, lambda = NULL, gamma = NULL, eta = NULL, method = "power")
 }
 \arguments{
-\item{n}{A vector of sample sizes for each interim analysis of the trial.}
+\item{n}{A numeric vector representing the additional patients enrolled at each interim analysis. 
+The value at index `i` indicates the number of new patients added at interim analysis `i`. 
+The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
+the vector would be represented as `n = c(10, 5, 5, 10)`, where:
+ - 10 is the number of patients enrolled at interim 1,
+ - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+ - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+ - 10 (30 - 20) is the additional number of patients enrolled at interim 4.}
 
-\item{lambda}{A numeric value representing the baseline probability (default is NULL).}
+\item{lambda}{A vector of values for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)}
 
-\item{gamma}{A numeric value used in the calculation of cutoff values (default is NULL).}
+\item{gamma}{A vector of values for parameter `gamma` of the cut-off probability for futility}
 
-\item{eta}{A numeric value used in the power method calculation (default is NULL).}
+\item{eta}{A vector of values for parameter `eta` of the cut-off probability for efficacy}
 
-\item{method}{A character string specifying the method to use for calculating cutoff values.
-Options are "power" (default) or "OF" for "O'Brien-Fleming".}
+\item{method}{type of function to be used for the cut off probability for superiority. The default is "power" type function. method=OF 
+is an alternative for "O'Brien-Fleming"}
 }
 \value{
 A list containing two elements:
-\item{cf_values}{A numeric vector of cutoff values for futility stopping.}
-\item{cs_values}{A numeric vector of corresponding probability cutoffs.}
+\item{cf_values}{A matrix of cutoff values for futility stopping.}
+\item{cs_values}{A matrix of cutoff values for efficacy.}
 }
 \description{
 This function computes the probability cutoffs for futility stopping using two methods:

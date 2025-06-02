@@ -1,15 +1,10 @@
 #' BOP2-FE design for binary endpoint 
 #' 
 #' Computes stopping boundaries and operating characteristics of Bayesian optimal phase II
-#' design with efficacy and futility stopping for a binary endpoint given optimal
-#' design parameter values that are identified to optimize power while controlling
-#' type I error rate at a specified value. The optimal parameters (i.e., lambda, gamma, and eta)
-#' can be obtained by calling `search_optimal_pars_binary()` function. The function produce a plot
-#' that can be saved as a pdf file for documentation.  
+#' design with efficacy and futility stopping for a binary endpoint
 #' 
-#' 
-#' @param H0 the probability of response under the null hypothesis 
-#' @param H1 the probability of response under the alternative hypothesis 
+#' @param H0 A numeric value for the response rate under the null hypothesis
+#' @param H1 A numeric value for the response rate under the alternative hypothesis
 #' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
 #' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
 #' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
@@ -19,141 +14,76 @@
 #' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
 #' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
 #' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
-#' @param lambda A numeric value for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)
-#' @param gamma A numeric value for parameter `gamma` of the cut-off probability for futility 
-#' @param eta A numeric value for parameter `eta` of the cut-off probability for efficacy 
-#' @param method A character string specifying the method to use for calculating cutoff values.
+#' @param nsim number of simulation. A value at least 1000 for better result
+#' @param t1e Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value 
+#' @param lambda1 starting value for `lambda` values to search
+#' @param lambda2 ending value for `lambda` values to search
+#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2
+#' @param gamma1 starting value for `gamma` values to search
+#' @param gamma2 ending value for `gamma` values to search
+#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2
+#' @param eta1 starting value for `eta` values to search
+#' @param eta2 ending value for `eta` values to search
+#' @param grid3 number of eta values to consider between eta1 and eta2
+#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
-#' @param nsim number of simulation
-#' @param seed for reproducibility
-#' @importFrom dplyr mutate case_when
-#' @importFrom stats pbeta rbinom
-#' @importFrom rlang :=
-#' @importFrom magrittr %>%
-#' @importFrom patchwork wrap_plots plot_annotation
-#' @importFrom gridExtra tableGrob ttheme_minimal
-#' @importFrom ggplot2  ggplot geom_ribbon geom_line scale_x_continuous scale_y_continuous geom_vline theme_minimal
-#' @importFrom tibble tibble
-#' @return A list of class \code{"BOP2FE"} containing the following elements:
-#' \item{boundary}{A table of stopping boundaries.}
-#' \item{Oc}{A table of operating characteristics.}
-#' \item{plot}{A plot that shows the boundaries graphically along with tables of 
-#' boundary values and operating characteristics}
+#' @param seed for reproducibility             
+#'
+#' @returns An S3 object of class 'bop2fe' 
+#' 
+#' @export
 #' @examples
 #' \dontrun{
-#' # Example with 7 interim looks
-#' BOP2FE_binary(H0 = 0.2, H1=0.4, n = c(10, 5, 5, 5, 5, 5, 5), 
-#' lambda = 0.909, gamma = 1, nsim = 10000, seed = 1234)
+#' test_binary <- BOP2FE_binary(
+#'  H0=0.2, H1= 0.4,
+#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  nsim = 1000, t1e = 0.1, method = "power",
+#'  lambda1 = 0, lambda2 = 1, grid1 = 11,
+#'  gamma1 = 0, gamma2 = 1, grid2 = 11,
+#'  eta1 = 0, eta2 = 3, grid3 = 31,
+#'  seed = 123
+#' )
+#' summary(test_binary)
+#' plot(test_binary)
 #' }
-#' @export
-#'
-BOP2FE_binary <- function(H0, H1, n, lambda = NULL, gamma = NULL, eta = NULL, method = "power", nsim = NULL, seed = NULL) {
+#' 
+#' 
+
+BOP2FE_binary <- function(H0, H1, n, nsim, t1e = NULL, method = "power", 
+                          lambda1, lambda2, grid1, 
+                          gamma1, gamma2, grid2, 
+                          eta1 = NULL, eta2 = NULL, grid3 = NULL, 
+                          seed = NULL) {
   
-  a1 <- H0
-  b1 <- 1 - H0
-  nIA <- length(n)
-  nsum <- sum(n)
+  # Check paramters 
   
-  # Check total sample size
-  if (nsum == 0) {
-    stop("The total (final) sample size can not be zero.")
-  }
   
-  # Set default method to "OBrien-Fleming" if eta is NULL
-  #if (is.null(eta) | is.null(method)) {
-  #  method <- "OF"
-  #}
-  if (is.null(gamma)) {
-    gamma <- 0.95
-    message("gamma value should be provided. The defult gamma = 0.95 used")
-  }
-  if (is.null(lambda)) {
-    lambda <- 0.95
-    message("lambda value should be provided. The defult lambda=0.95 used")
-  }
-  if (is.null(eta) & method == "power") {
-    eta <- 0.95
-    message("eta value should be provided. The defult eta=0.95 used")
-  }
+  design_pars <- list(H0 = H0,
+                      H1 = H1, 
+                      n = n,
+                      nsim = nsim,
+                      t1e = t1e,
+                      method = method)
   
-  if (is.null(nsim)) {
-    nsim <- 10000
-    message("The defult 10000 simulation used")
-    
-  }
-  if (is.null(seed)) {
-    seed <- 1234
-  }
+  # Call search_optimal_pars_efftox
+  all_res <- search_optimal_pars_binary(
+    H0, H1, n, nsim, t1e, method, 
+    lambda1, lambda2, grid1, 
+    gamma1, gamma2, grid2, 
+    eta1, eta2, grid3, 
+    seed)
   
-  boundary_tab <- boundary_binary(H0 = H0, a1 = a1, b1 = b1, n = n,
-                                  lambda = lambda, gamma = gamma, eta = eta,
-                                  method = method, seed = seed)
+  search_result <- as.data.frame(all_res)
   
-  fb <- boundary_tab$cnf
-  sb <- boundary_tab$cns
+  # add function to compute operating charactersics for additional alternative hypothesis using the optimal parmeter
   
-  Oc_tab_null <- Oc_binary(p = H0, n = n, nsim = nsim, fb = fb, sb = sb, seed = seed)
-  Oc_tab_alt <- Oc_binary(p = H1, n = n, nsim = nsim, fb = fb, sb = sb, seed = seed)
-  
-  # Create data frame
-  plot_dat <- data.frame(n = 0:nsum)
-  
-  # Calculate postprob_fut
-  plot_dat$postprob_fut <- lambda * (plot_dat$n / nsum)^gamma * 100
-  
-  # Calculate postprob_sup based on method
-  if (method == "OF") {
-    plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
-  } else { # "power"
-    plot_dat$postprob_sup <- (1 - (1 - lambda) * (plot_dat$n/nsum)^eta)*100
-  }
-  
-  # Plot
-  IAs<- cumsum(n)
-  
-  p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
-    ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
-    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1, alpha=0.7) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.8) +
-    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
-    ggplot2::scale_y_continuous(name = paste("Cut-off", "\n", "Probability (%)"), breaks = seq(0, 100, by = 20)) +
-    ggplot2::geom_vline(xintercept = IAs, linetype = "dashed") +
-    ggplot2::theme_minimal()
-  
-  Oc_tabs <- tibble::tibble(Statistic = c("Early stopping for Futility (%)",
-                                          "Early stopping for Superiority (%)",
-                                          "Average sample size",
-                                          "Null rejection (%)"),
-                            Under_H0 = c(Oc_tab_null$earlystopfuti_mean*100, Oc_tab_null$earlystopsupe_mean*100, Oc_tab_null$ss_mean, Oc_tab_null$rejectnull_mean*100),
-                            Under_H1 = c(Oc_tab_alt$earlystopfuti_mean*100, Oc_tab_alt$earlystopsupe_mean*100, Oc_tab_alt$ss_mean, Oc_tab_alt$rejectnull_mean*100))
-  
-  Oc_tabs2 <- dplyr::as_tibble(Oc_tabs,.name_repair = "minimal") %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
-  names(boundary_tab) <- c("Futility boundary", "Superiority boundary")
-  boundary_tab <- tibble::as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
-  colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
-  boundary_tab2 <- dplyr::as_tibble(boundary_tab,.name_repair = "minimal") %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
-  
-  run_date <- Sys.Date()
-  Info <- paste0("Efficacy cutoff probabilities method - ", method, ":", " ", "lambda=", lambda, " ", "gamma=", gamma, " ",  "eta=", ifelse(is.null(eta)&(method=="OF"), NA, eta))
-  layout <- patchwork::wrap_plots(p1, Oc_tabs2, boundary_tab2, nrow = 3)
-  layout <- layout +
-    patchwork::plot_annotation(
-      title = "BOP2 FE for binary outcome",
-      subtitle = paste(Info, "\n", "Run Date:", run_date, "\n", "H0:", H0, ", ", "H1:", H1),
-      theme = ggplot2::theme(plot.title = ggplot2::element_text(size = 20, hjust = 0.5, face = "bold"))
-    )
-  
-  # Create a list to return
   result <- list(
-    boundary = boundary_tab,
-    Oc = Oc_tabs,
-    plot = layout
+    end_point = "binary",
+    design_pars = design_pars,
+    search_result = search_result
   )
   
-  # Assign the S3 class
-  class(result) <- "BOP2FE"
+  class(result) <- "bop2fe"
   
   return(result)
 }
@@ -161,20 +91,16 @@ BOP2FE_binary <- function(H0, H1, n, lambda = NULL, gamma = NULL, eta = NULL, me
 #' BOP2-FE design for nested (ordinal) endpoint 
 #' 
 #' Computes stopping boundaries and operating characteristics of Bayesian optimal phase II
-#' design with efficacy and futility stopping for a nested (ordinal) endpoint given optimal
-#' design parameter values that are identified to optimize power while controlling
-#' type I error rate at a specified value. The optimal parameters (i.e., lambda, gamma, and eta)
-#' can be obtained by calling `search_optimal_pars_nested()` function. The function produce a plot
-#' that can be saved as a pdf file for documentation.  
+#' design with efficacy and futility stopping for a nested (ordinal) endpoint
 #' 
 #' @param H0 A numeric vector representing the null response rates for different outcomes, specified in the following order:
-#' - `H0[1]`: Complete Remission (CR) rate,
-#' - `H0[2]`: Partial Remission (PR) rate,
-#' - `H0[3]`: No Complete Remission or Partial Remission rate, calculated as `1 - (CR + PR)`.
+#'  - `H0[1]`: CR: Complete remission,
+#'  - `H0[2]`: PR: Partial remission,
+#'  - `H0[3]`: 1-(CR+PR)
 #' @param H1 A numeric vector representing the null response rates for different outcomes, specified in the following order:
-#' - `H1[1]`: Complete Remission (CR) rate,
-#' - `H1[2]`: Partial Remission (PR) rate,
-#' - `H1[3]`: No Complete Remission or Partial Remission rate, calculated as `1 - (CR + PR)`.
+#'  - `H1[1]`: CR: Complete remission,
+#'  - `H1[2]`: PR: Partial remission,
+#'  - `H1[3]`: 1-(CR+PR)
 #' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
 #' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
 #' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
@@ -184,170 +110,95 @@ BOP2FE_binary <- function(H0, H1, n, lambda = NULL, gamma = NULL, eta = NULL, me
 #' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
 #' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
 #' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
-#' @param lambda A numeric value for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)
-#' @param gamma A numeric value for parameter `gamma` of the cut-off probability for futility 
-#' @param eta A numeric value for parameter `eta` of the cut-off probability for efficacy 
-#' @param method A character string specifying the method to use for calculating cutoff values.
+#' @param nsim number of simulation. A value at least 1000 for better result
+#' @param t1e Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value 
+#' @param lambda1 starting value for `lambda` values to search
+#' @param lambda2 ending value for `lambda` values to search
+#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2
+#' @param gamma1 starting value for `gamma` values to search
+#' @param gamma2 ending value for `gamma` values to search
+#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2
+#' @param eta1 starting value for `eta` values to search
+#' @param eta2 ending value for `eta` values to search
+#' @param grid3 number of eta values to consider between eta1 and eta2
+#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
-#' @param nsim number of simulation
-#' @param seed for reproducibility
-#' @importFrom dplyr mutate case_when
-#' @importFrom stats pbeta rbinom
-#' @importFrom rlang :=
-#' @importFrom magrittr %>%
-#' @importFrom patchwork wrap_plots plot_annotation
-#' @importFrom gridExtra tableGrob ttheme_minimal
-#' @importFrom ggplot2  ggplot geom_ribbon geom_line scale_x_continuous scale_y_continuous geom_vline theme_minimal
-#' @importFrom tibble tibble
+#' @param seed for reproducibility             
 #' 
-#' @return A list of class \code{"BOP2FE"} containing the following elements:
-#' \item{boundary}{A table of stopping boundaries.}
-#' \item{Oc}{A table of operating characteristics.}
-#' \item{plot}{A plot that shows the boundaries graphically along with tables of 
-#' boundary values and operating characteristics}
+#' @returns An S3 object of class 'bop2fe' 
+#' 
+#' @export
+#' 
 #' @examples
 #' \dontrun{
-#' # Example with 7 interim looks
-#' BOP2FE_nested(H0 = c(0.15,0.15,0.70), H1 = c(0.25,0.25,0.50), n=c(10,5,5,5,5,5,5), 
-#' lambda = 0.95, gamma=1, seed = 123)
-#' }
-#' @export
-#'
-
-BOP2FE_nested <- function(H0, H1, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "power", nsim = NULL, seed = NULL){
+#' test_nested <- search_optimal_pars_nested(
+#'  H0=c(0.05,0.05, 0.15, 0.75),
+#'  H1= c(0.15,0.15, 0.20, 0.50),
+#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  nsim = 1000, t1e = 0.1, method = "power",
+#'  lambda1 = 0, lambda2 = 1, grid1 = 11,
+#'  gamma1 = 0, gamma2 = 1, grid2 = 11,
+#'  eta1 = 0, eta2 = 3, grid3 = 31,
+#'  seed = 123
+#')
+#'summary(test_nested)
+#'plot(test_nested)
+#'}
+#' 
+BOP2FE_nested <- function(H0, H1, n, nsim, t1e = NULL, method = "power", 
+                          lambda1, lambda2, grid1, 
+                          gamma1, gamma2, grid2, 
+                          eta1 = NULL, eta2 = NULL, grid3 = NULL, 
+                          seed = NULL) {
   
-  a <- H0
-  p11 = H0[1]; p21 = H1[1];
-  p12 = H0[2]; p22 = H1[2];
-  p13 = H0[3]; p23 = H1[3];
+  # Check paramters 
   
-  nIA <- length(n)
-  nsum<- sum(n)
-  # Check total sample size
-  if (nsum == 0) {
-    stop("The total (final) sample size can not be zero.")
-  }
-
-  # Set default method to "OBrien-Fleming" if eta is NULL
-  #if (is.null(eta) | is.null(method)) {
-  #  method <- "OF"
-  #}
-  if (is.null(gamma)) {
-    gamma <- 0.95
-    message("gamma value should be provided. The defult gamma = 0.95 used")
-  }
-  if (is.null(lambda)) {
-    lambda <- 0.95
-    message("lambda value should be provided. The defult lambda=0.95 used")
-  }
-  if (is.null(eta) & method == "power") {
-    eta <- 0.95
-    message("eta value should be provided. The defult eta=0.95 used")
-  }
   
-  if (is.null(nsim)) {
-    nsim <- 10000
-    message("The defult 10000 simulation used")
-    
-  }
-  if (is.null(seed)) {
-    seed <- 1234
-  }
-
-
-  boundary_tab <- boundary_nested(H0 = H0, a=a,  n=n,
-                                     lambda=lambda, gamma=gamma, eta = eta,
-                                     method = method, seed = seed)
-
-  fb<- c(rbind(boundary_tab$cn11f_max, boundary_tab$cn12f_max))
-  sb <- c(rbind(boundary_tab$cn11s_min, boundary_tab$cn12s_min))
-
-  Oc_tab_null <- Oc_nested(p1 = p11, p2 = p12, p3 = p13, n = n, 
-                           nsim = nsim, fb = fb, sb =sb, seed = seed)
-
-  Oc_tab_alt <- Oc_nested(p1 = p21, p2 = p22, p3 = p23, n = n,
-                           nsim = nsim, fb = fb, sb =sb, seed = seed)
+  design_pars <- list(H0 = H0,
+                      H1 = H1, 
+                      n = n,
+                      nsim = nsim,
+                      t1e = t1e,
+                      method = method)
   
-  # Create data frame
-  plot_dat <- data.frame(n = 0:nsum)
-
-  # Calculate postprob_fut
-  plot_dat$postprob_fut <- lambda * (plot_dat$n / nsum)^gamma * 100
-
-  # Calculate postprob_sup based on method
-  if (method == "OF") {
-    plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
-  } else { # "power"
-    plot_dat$postprob_sup <- (1 - (1 - lambda) * (plot_dat$n/nsum)^eta)*100
-  }
-
-  # Plot
-  p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
-    ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
-    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
-    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
-    ggplot2::scale_y_continuous(name = paste("Cut-off", "\n", "Probability (%)"), breaks = seq(0, 100, by = 20)) +
-    ggplot2::geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
-    #ggplot2::ggtitle("Binary Efficacy Endpoint") +
-    ggplot2::theme_minimal()
+  # Call search_optimal_pars_efftox
+  all_res <- search_optimal_pars_nested(
+    H0, H1, n, nsim, t1e, method, 
+    lambda1, lambda2, grid1, 
+    gamma1, gamma2, grid2, 
+    eta1, eta2, grid3, 
+    seed)
   
-  Oc_tabs <- tibble::tibble(Statistic = c("Early stopping for Futility (%)",
-                                          "Early stopping for Superiority (%)",
-                                          "Average sample size",
-                                          "Null rejection (%)"),
-                            Under_H0 = c(Oc_tab_null$earlystopfuti_mean*100, Oc_tab_null$earlystopsupe_mean*100, 
-                                      Oc_tab_null$ss_mean, Oc_tab_null$rejectnull_mean*100),
-                            Under_H1 = c(Oc_tab_alt$earlystopfuti_mean*100, Oc_tab_alt$earlystopsupe_mean*100, 
-                                      Oc_tab_alt$ss_mean, Oc_tab_alt$rejectnull_mean*100))
+  search_result <- as.data.frame(all_res)
   
-  Oc_tabs2 <- dplyr::as_tibble(Oc_tabs) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  # add function to compute operating charactersics for additional alternative hypothesis using the optimal parmeter
   
-  names(boundary_tab) <- c("Futility boundary CR", "Futility boundary CR/PR", "Superiority boundary CR", "Superiority boundary CR/PR")
-  boundary_tab <- dplyr::as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
-  colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
-  boundary_tab2 <- dplyr::as_tibble(boundary_tab) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
-  
-  Info <- paste0("Efficacy cutoff probabilities method - ", method, ":", " ", "lambda=", lambda, " ", "gamma=", gamma, " ",  "eta=", ifelse(is.null(eta)&(method=="OF"), NA, eta))
-  Info2 <- paste0("CR=", H0[1], " ", "CR/PR=", H0[1] + H0[2])
-  Info3 <- paste0("CR=", H1[1], " ", "CR/PR=", H1[1] + H1[2])
-  run_date <- Sys.Date()
-  layout <- patchwork::wrap_plots(p1, Oc_tabs2, boundary_tab2, nrow = 3)
-  layout <- layout +
-    patchwork::plot_annotation(
-      title = "BOP2 FE for nested outcome",
-      subtitle = paste(Info, "\n", "Run Date:", run_date, "\n", "H0:", Info2, "\n", "H1:", Info3),
-      #caption = paste0("Design Pars: n= ", n, "lambda=", lambda, "gamma=", gamma),
-      theme = ggplot2::theme(plot.title = ggplot2::element_text(size = 16, hjust = 0.5, face = "bold"))
-    )
-  
-  # Create a list to return
   result <- list(
-    boundary = boundary_tab,
-    Oc = Oc_tabs,
-    plot = layout
+    end_point = "nested",
+    design_pars = design_pars,
+    search_result = search_result
   )
   
-  # Assign the S3 class
-  class(result) <- "BOP2FE"
+  class(result) <- "bop2fe"
   
-  return(result)  
+  return(result)
 }
 
 
 #' BOP2-FE design for co-primary endpoint 
 #' 
 #' Computes stopping boundaries and operating characteristics of Bayesian optimal phase II
-#' design with efficacy and futility stopping for a co-primary endpoint given optimal
-#' design parameter values that are identified to optimize power while controlling
-#' type I error rate at a specified value. The optimal parameters (i.e., lambda, gamma, and eta)
-#' can be obtained by calling `search_optimal_pars_coprimary()` function. The function produce a plot
-#' that can be saved as a pdf file for documentation.  
-#' 
-#' @param H0 Response rate under the null (Response - PFS6, Response - no PFS6, No response - PFS6, No response - No PFS6)
-#' @param H1 Response rate under the alternative (Response - PFS6, Response - no PFS6, No response - PFS6, No response - No PFS6)
+#' design with efficacy and futility stopping for a co-primary endpoint.
+#' @param H0 A numeric vector representing the null response rates for different outcomes, specified in the following order:
+#' - `H0[1]`: Response - PFS6,
+#' - `H0[2]`: Response - no PFS6,
+#' - `H0[3]`: No Response - PFS6,
+#' - `H0[4]`: No Response - no PFS6
+#' @param H1 A numeric vector representing the null response rates for different outcomes, specified in the following order:
+#' - `H1[1]`: Response - PFS6,
+#' - `H1[2]`: Response - no PFS6,
+#' - `H1[3]`: No Response - PFS6,
+#' - `H1[4]`: No Response - no PFS6
 #' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
 #' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
 #' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
@@ -357,168 +208,94 @@ BOP2FE_nested <- function(H0, H1, n, lambda = NULL, gamma=NULL, eta=NULL,  metho
 #' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
 #' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
 #' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
-#' @param lambda A numeric value for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)
-#' @param gamma A numeric value for parameter `gamma` of the cut-off probability for futility 
-#' @param eta A numeric value for parameter `eta` of the cut-off probability for efficacy 
-#' @param method A character string specifying the method to use for calculating cutoff values.
+#' @param nsim number of simulation. A value at least 1000 for better result
+#' @param t1e Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value 
+#' @param lambda1 starting value for `lambda` values to search
+#' @param lambda2 ending value for `lambda` values to search
+#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2
+#' @param gamma1 starting value for `gamma` values to search
+#' @param gamma2 ending value for `gamma` values to search
+#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2
+#' @param eta1 starting value for `eta` values to search
+#' @param eta2 ending value for `eta` values to search
+#' @param grid3 number of eta values to consider between eta1 and eta2
+#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
-#' @param nsim number of simulation
-#' @param seed for reproducibility
-#' @importFrom dplyr mutate case_when
-#' @importFrom stats pbeta rbinom
-#' @importFrom rlang :=
-#' @importFrom magrittr %>%
-#' @importFrom patchwork wrap_plots plot_annotation
-#' @importFrom gridExtra tableGrob ttheme_minimal
-#' @importFrom ggplot2  ggplot geom_ribbon geom_line scale_x_continuous scale_y_continuous geom_vline theme_minimal
-#' @importFrom tibble tibble
+#' @param seed for reproducibility             
+#'
+#' @returns An S3 object of class 'bop2fe' 
 #' 
-#' @return A list of class \code{"BOP2FE"} containing the following elements:
-#' \item{boundary}{A table of stopping boundaries.}
-#' \item{Oc}{A table of operating characteristics.}
-#' \item{plot}{A plot that shows the boundaries graphically along with tables of 
-#' boundary values and operating characteristics}
+#' @export
 #' @examples
 #' \dontrun{
-#' # Example with 7 interim looks
-#' BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), H1 =c(0.15,0.15,0.20,0.50), n=c(10,5,5,5,5,5,5), 
-#' lambda = 0.95, gamma=1,seed = 123)
-#' }
-#' @export
-#'
-
-BOP2FE_coprimary <- function(H0, H1, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "power", nsim = NULL, seed = NULL){
-
-  a <- H0
-  nIA <- length(n)
-  nsum<- sum(n)
-  # Check total sample size
-  if (nsum == 0) {
-    stop("The total (final) sample size can not be zero.")
-  }
-
-  # Set default method to "OBrien-Fleming" if eta is NULL
-  #if (is.null(eta) | is.null(method)) {
-  #  method <- "OF"
-  #}
-  if (is.null(gamma)) {
-    gamma <- 0.95
-    message("gamma value should be provided. The defult gamma = 0.95 used")
-  }
-  if (is.null(lambda)) {
-    lambda <- 0.95
-    message("lambda value should be provided. The defult lambda=0.95 used")
-  }
-  if (is.null(eta) & method == "power") {
-    eta <- 0.95
-    message("eta value should be provided. The defult eta=0.95 used")
-  }
+#' test_coprimary <- BOP2FE_coprimary(
+#'  H0=c(0.05,0.05, 0.15, 0.75),
+#'  H1= c(0.15,0.15, 0.20, 0.50),
+#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  nsim = 1000, t1e = 0.1, method = "power",
+#'  lambda1 = 0, lambda2 = 1, grid1 = 11,
+#'  gamma1 = 0, gamma2 = 1, grid2 = 11,
+#'  eta1 = 0, eta2 = 3, grid3 = 31,
+#'  seed = 123
+#')
+#'summary(test_coprimary)
+#'plot(test_coprimary)
+#'}
+#' 
+BOP2FE_coprimary <- function(H0, H1, n, nsim, t1e = NULL, method = "power", 
+                             lambda1, lambda2, grid1, 
+                             gamma1, gamma2, grid2, 
+                             eta1 = NULL, eta2 = NULL, grid3 = NULL, 
+                             seed = NULL) {
   
-  if (is.null(nsim)) {
-    nsim <- 10000
-    message("The defult 10000 simulation used")
-    
-  }
-  if (is.null(seed)) {
-    seed <- 1234
-  }
-
-  boundary_tab <- boundary_coprimary(H0 = H0, a=a, n=n,
-                                  lambda=lambda, gamma=gamma, eta = eta,
-                                  method = method, seed = seed)
-
-  fb<- c(rbind(boundary_tab$cn11f_max, boundary_tab$cn12f_max))
-  sb <- c(rbind(boundary_tab$cn11s_min, boundary_tab$cn12s_min))
-
-  Oc_tab_null <- Oc_coprimary(p1 = H0[1], p2 = H0[2], p3 = H0[3],p4 = H0[4], n = n,
-                              nsim = nsim, fb = fb, sb =sb, seed = seed)
-  Oc_tab_alt <- Oc_coprimary(p1 = H1[1], p2 = H1[2], p3 = H1[3],p4 = H0[4], n = n,
-                              nsim = nsim, fb = fb, sb =sb, seed = seed)
+  # Check paramters 
   
-
-  # Create data frame
-  plot_dat <- data.frame(n = 0:nsum)
-
-  # Calculate postprob_fut
-  plot_dat$postprob_fut <- lambda * (plot_dat$n / nsum)^gamma * 100
-
-  # Calculate postprob_sup based on method
-  if (method == "OF") {
-    plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
-  } else { # "power"
-    plot_dat$postprob_sup <- (1 - (1 - lambda) * (plot_dat$n/nsum)^eta)*100
-  }
-  # Plot
-  p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
-    ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
-    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
-    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
-    ggplot2::scale_y_continuous(name = paste("Cut-off", "\n", "Probability (%)"), breaks = seq(0, 100, by = 20)) +
-    ggplot2::geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
-    #ggplot2::ggtitle("Binary Efficacy Endpoint") +
-    ggplot2::theme_minimal()
   
-  Oc_tabs <- tibble::tibble(Statistic = c("Early stopping for Futility (%)",
-                                          "Early stopping for Superiority (%)",
-                                          "Average sample size",
-                                          "Null rejection (%)"),
-                            Under_H0 = c(Oc_tab_null$earlystopfuti_mean*100, Oc_tab_null$earlystopsupe_mean*100, 
-                                         Oc_tab_null$ss_mean, Oc_tab_null$rejectnull_mean*100),
-                            Under_H1 = c(Oc_tab_alt$earlystopfuti_mean*100, Oc_tab_alt$earlystopsupe_mean*100, 
-                                         Oc_tab_alt$ss_mean, Oc_tab_alt$rejectnull_mean*100))
+  design_pars <- list(H0 = H0,
+                      H1 = H1, 
+                      n = n,
+                      nsim = nsim,
+                      t1e = t1e,
+                      method = method)
   
-  Oc_tabs2 <- dplyr::as_tibble(Oc_tabs) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  # Call search_optimal_pars_efftox
+  all_res <- search_optimal_pars_coprimary(
+    H0, H1, n, nsim, t1e, method, 
+    lambda1, lambda2, grid1, 
+    gamma1, gamma2, grid2, 
+    eta1, eta2, grid3, 
+    seed)
   
-  names(boundary_tab) <- c("Futility boundary ORR", "Futility boundary PFS6", "Superiority boundary ORR", "Superiority boundary PFS6")
-  boundary_tab <- dplyr::as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
-  colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
-  boundary_tab2 <- dplyr::as_tibble(boundary_tab) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
+  search_result <- as.data.frame(all_res)
   
-  run_date <- Sys.Date()
+  # add function to compute operating charactersics for additional alternative hypothesis using the optimal parmeter
   
-  Info <- paste0("Efficacy cutoff probabilities method - ", method, ":", " ", "lambda=", lambda, " ", "gamma=", gamma, " ",  "eta=", ifelse(is.null(eta)&(method=="OF"), NA, eta))
-  Info2 <- paste0("ORR-PFS6=", H0[1], " ", "ORR-no PFS6=", H0[2], " ", "no ORR-PFS6=", H0[3], " ", "no ORR- no PFS6=", H0[4])
-  Info3 <- paste0("ORR-PFS6=", H1[1], " ", "ORR-no PFS6=", H1[2], " ", "no ORR-PFS6=", H1[3], " ", "no ORR- no PFS6=", H1[4])
-  
-  layout <- patchwork::wrap_plots(p1, Oc_tabs2, boundary_tab2, nrow = 3)
-  layout <- layout +
-    patchwork::plot_annotation(
-      title = "BOP2 FE for co-primary outcome",
-      subtitle = paste(Info, "\n", "Run Date:", run_date, "\n", "H0:", Info2, "\n", "H1:", Info3),
-      #caption = paste0("Design Pars: n= ", n, "lambda=", lambda, "gamma=", gamma),
-      theme = ggplot2::theme(plot.title = ggplot2::element_text(size = 16, hjust = 0.5, face = "bold"))
-    )
-  
-  # Create a list to return
   result <- list(
-    boundary = boundary_tab,
-    Oc = Oc_tabs,
-    plot = layout
+    end_point = "coprimary",
+    design_pars = design_pars,
+    search_result = search_result
   )
   
-  # Assign the S3 class
-  class(result) <- "BOP2FE"
+  class(result) <- "bop2fe"
   
-  return(result)  
-
+  return(result)
 }
-
 
 
 #' BOP2-FE design for joint efficacy and toxicity endpoint 
 #' 
 #' Computes stopping boundaries and operating characteristics of Bayesian optimal phase II
-#' design with efficacy and futility stopping for a joint efficacy and toxicity endpoint given optimal
-#' design parameter values that are identified to optimize power while controlling
-#' type I error rate at a specified value. The optimal parameters (i.e., lambda, gamma, and eta)
-#' can be obtained by calling `search_optimal_pars_efftox()` function. The function produce a plot
-#' that can be saved as a pdf file for documentation.  
-#' 
-#' @param H0 Response rate under the null (toxicity - OR, no toxicity - OR, toxicity - no OR, no toxicity - No OR)
-#' @param H1 Response rate under the alternative (toxicity - OR, no toxicity - OR, toxicity - no OR, no toxicity - No OR)
+#' design with efficacy and futility stopping for a joint efficacy and toxicity endpoint.  
+#' @param H0 A numeric vector representing the null response rates for different outcomes, specified in the following order:
+#' - `H0[1]`: Response - toxicity,
+#' - `H0[2]`: Response - no toxicity,
+#' - `H0[3]`: No Response - toxicity,
+#' - `H0[4]`: No Response - no toxicity
+#' @param H1 A numeric vector representing the null response rates for different outcomes, specified in the following order:
+#' - `H1[1]`: Response - toxicity,
+#' - `H1[2]`: Response - no toxicity,
+#' - `H1[3]`: No Response - toxicity,
+#' - `H1[4]`: No Response - no toxicity.
 #' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
 #' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
 #' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
@@ -528,153 +305,255 @@ BOP2FE_coprimary <- function(H0, H1, n, lambda = NULL, gamma=NULL, eta=NULL,  me
 #' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
 #' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
 #' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
-#' @param lambda A numeric value for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)
-#' @param gamma A numeric value for parameter `gamma` of the cut-off probability for futility 
-#' @param eta A numeric value for parameter `eta` of the cut-off probability for efficacy 
-#' @param method A character string specifying the method to use for calculating cutoff values.
+#' @param nsim number of simulation. A value at least 1000 for better result
+#' @param t1e Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value 
+#' @param lambda1 starting value for `lambda` values to search
+#' @param lambda2 ending value for `lambda` values to search
+#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2
+#' @param gamma1 starting value for `gamma` values to search
+#' @param gamma2 ending value for `gamma` values to search
+#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2
+#' @param eta1 starting value for `eta` values to search
+#' @param eta2 ending value for `eta` values to search
+#' @param grid3 number of eta values to consider between eta1 and eta2
+#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
-#' @param nsim number of simulation
-#' @param seed for reproducibility
-#' @importFrom dplyr mutate case_when
-#' @importFrom stats pbeta rbinom
-#' @importFrom rlang :=
-#' @importFrom magrittr %>%
-#' @importFrom patchwork wrap_plots plot_annotation
-#' @importFrom gridExtra tableGrob ttheme_minimal
-#' @importFrom ggplot2  ggplot geom_ribbon geom_line scale_x_continuous scale_y_continuous geom_vline theme_minimal
-#' @importFrom tibble tibble
-#' @return A list of class \code{"BOP2FE"} containing the following elements:
-#' \item{boundary}{A table of stopping boundaries.}
-#' \item{Oc}{A table of operating characteristics.}
-#' \item{plot}{A plot that shows the boundaries graphically along with tables of 
-#' boundary values and operating characteristics}
+#' @param seed for reproducibility             
+#' @export
+#' 
+#' @returns An S3 object of class 'bop2fe' 
+#' 
 #' @examples
 #' \dontrun{
-#' # Example with 7 interim looks
-#' BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), H1=c(0.18, 0.42, 0.02, 0.38), 
-#' n=c(10,5,5,5,5,5,5), 
-#' lambda = 0.7, gamma=1, seed = 123)
-#' }
-#' @export
+#' test_joint <- BOP2FE_jointefftox(
+#'  H0=c(0.15,0.30, 0.15, 0.40),
+#'  H1= c(0.18,0.42, 0.02, 0.38),
+#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  nsim = 1000, t1e = 0.1, method = "power",
+#'  lambda1 = 0, lambda2 = 1, grid1 = 11,
+#'  gamma1 = 0, gamma2 = 1, grid2 = 11,
+#'  eta1 = 0, eta2 = 3, grid3 = 31,
+#'  seed = 123
+#')
+#'summary(test_joint)
+#'plot(test_joint)
+#'}
+#' 
+BOP2FE_jointefftox <- function(H0, H1, n, nsim, t1e = NULL, method = "power", 
+                               lambda1, lambda2, grid1, 
+                               gamma1, gamma2, grid2, 
+                               eta1 = NULL, eta2 = NULL, grid3 = NULL, 
+                               seed = NULL) {
+  
+  # Check paramters 
+  
+  
+  design_pars <- list(H0 = H0,
+                      H1 = H1, 
+                      n = n,
+                      nsim = nsim,
+                      t1e = t1e,
+                      method = method)
+  
+  # Call search_optimal_pars_efftox
+  all_res <- search_optimal_pars_efftox(
+    H0, H1, n, nsim, t1e, method, 
+    lambda1, lambda2, grid1, 
+    gamma1, gamma2, grid2, 
+    eta1, eta2, grid3, 
+    seed)
+  
+  search_result <- as.data.frame(all_res)
+  
+  # add function to compute operating charactersics for additional alternative hypothesis using the optimal parmeter
+  
+  result <- list(
+    end_point = "efftox",
+    design_pars = design_pars,
+    search_result = search_result
+  )
+  
+  class(result) <- "bop2fe"
+  
+  return(result)
+}
+
+
+#' summrise main results for a given BOP2FE designs
 #'
-BOP2FE_jointefftox <- function(H0, H1, n, lambda = NULL, gamma=NULL, eta=NULL,  method = "power", nsim = NULL, seed = NULL){
-
-  a <- H0
-  nIA <- length(n)
-  nsum<- sum(n)
-  # Check total sample size
-  if (nsum == 0) {
-    stop("The total (final) sample size can not be zero.")
-  }
-
-  # Set default method to "OBrien-Fleming" if eta is NULL
-  #if (is.null(eta) | is.null(method)) {
-  #  method <- "OF"
-  #}
-  if (is.null(gamma)) {
-    gamma <- 0.95
-    message("gamma value should be provided. The defult gamma = 0.95 used")
-  }
-  if (is.null(lambda)) {
-    lambda <- 0.95
-    message("lambda value should be provided. The defult lambda=0.95 used")
-  }
-  if (is.null(eta) & method == "power") {
-    eta <- 0.95
-    message("eta value should be provided. The defult eta=0.95 used")
+#' @param object the object returned by BOP2FE_xx
+#'
+#' @return \code{summary()} returns a list depending on the object entered including design parameters,
+#' boundary, operating characteristics. 
+#' @export
+#' @importFrom utils packageVersion
+#' 
+summary.bop2fe <- function(object) {
+  selected_res <- object$search_result[1,]
+  
+  grab <- function(data, prefix) {
+    cols <- grep(paste0("^", prefix), names(data), value = TRUE)
+    list(values = unlist(data[, cols]), nc = length(cols))
   }
   
-  if (is.null(nsim)) {
-    nsim <- 10000
-    message("The defult 10000 simulation used")
-    
+  # This part is endpoint dependant 
+  if(object$end_point == "binary"){
+    fut_boundary <- grab(selected_res, 'fut_boundary')
+    sup_boundary <- grab(selected_res, 'sup_boundary')
+    nc <- fut_boundary$nc # Number of columns
+    summary_tab1 <- matrix(0, 2, nc)
+    summary_tab1[1, ] <- fut_boundary$values
+    summary_tab1[2, ] <- sup_boundary$values
+    row.names(summary_tab1) <- c("Futility boundary", "Efficacy boundary")
+    colnames(summary_tab1) <- paste0("IA", seq(nc))
+  }else if(object$end_point == "nested"){
+    fut_boundary_CR <- grab(selected_res, 'fut_boundary_CR')
+    fut_boundary_CRPR <- grab(selected_res, 'fut_boundary_CR/PR')
+    sup_boundary_CR <- grab(selected_res, 'sup_boundary_CR')
+    sup_boundary_CRPR <- grab(selected_res, 'sup_boundary_CR/PR')
+    nc <- fut_boundary_CR$nc # Number of columns
+    summary_tab1 <- matrix(0, 4, nc)
+    summary_tab1[1, ] <- fut_boundary_CR$values
+    summary_tab1[2, ] <- fut_boundary_CRPR$values
+    summary_tab1[3, ] <- sup_boundary_CR$values
+    summary_tab1[4, ] <- sup_boundary_CRPR$values
+    row.names(summary_tab1) <- c("Futility boundary (CR)", "Futility boundary (CR/PR)",
+                                 "Efficacy boundary (CR)", "Efficacy boundary (CR/PR)")
+    colnames(summary_tab1) <- paste0("IA", seq(nc))
+  }else if(object$end_point == "coprimary"){
+    fut_boundary_OR <- grab(selected_res, 'fut_boundary_OR')
+    fut_boundary_PFS6 <- grab(selected_res, 'fut_boundary_PFS6')
+    sup_boundary_OR <- grab(selected_res, 'sup_boundary_OR')
+    sup_boundary_PFS6 <- grab(selected_res, 'sup_boundary_PFS6')
+    nc <- fut_boundary_OR$nc # Number of columns
+    summary_tab1 <- matrix(0, 4, nc)
+    summary_tab1[1, ] <- fut_boundary_OR$values
+    summary_tab1[2, ] <- fut_boundary_PFS6$values
+    summary_tab1[3, ] <- sup_boundary_OR$values
+    summary_tab1[4, ] <- sup_boundary_PFS6$values
+    row.names(summary_tab1) <- c("Futility boundary (OR)", "Futility boundary (PFS6)",
+                                 "Efficacy boundary (OR)", "Efficacy boundary (PFS6)")
+    colnames(summary_tab1) <- paste0("IA", seq(nc))
+  } else if(object$end_point == "efftox"){
+    fut_boundary_OR <- grab(selected_res, 'fut_boundary_OR')
+    fut_boundary_Tox <- grab(selected_res, 'fut_boundary_Tox')
+    sup_boundary_OR <- grab(selected_res, 'sup_boundary_OR')
+    sup_boundary_Tox <- grab(selected_res, 'sup_boundary_Tox')
+    nc <- fut_boundary_OR$nc # Number of columns
+    summary_tab1 <- matrix(0, 4, nc)
+    summary_tab1[1, ] <- fut_boundary_OR$values
+    summary_tab1[2, ] <- fut_boundary_Tox$values
+    summary_tab1[3, ] <- sup_boundary_OR$values
+    summary_tab1[4, ] <- sup_boundary_Tox$values
+    row.names(summary_tab1) <- c("Futility boundary (OR)", "Futility boundary (Tox)",
+                                 "Efficacy boundary (OR)", "Efficacy boundary (Tox)")
+    colnames(summary_tab1) <- paste0("IA", seq(nc))
   }
-  if (is.null(seed)) {
-    seed <- 1234
-  }
-
-
-  boundary_tab <- boundary_jointefftox(H0 = H0, a=a, n=n,
-                                     lambda=lambda, gamma=gamma, eta = eta,
-                                     method = method, seed = seed)
-
-  fb<- c(rbind(boundary_tab$cn11f_max, boundary_tab$cn12f_max))
-  sb <- c(rbind(boundary_tab$cn11s_min, boundary_tab$cn12s_min))
-
-  Oc_tab_null <- Oc_jointefftox(p1 = H0[1], p2 = H0[2], p3 = H0[3],p4 = H0[4], n = n,
-                         nsim = nsim, fb = fb, sb =sb, seed = seed)
-  Oc_tab_alt <- Oc_jointefftox(p1 = H1[1], p2 = H1[2], p3 = H1[3],p4 = H1[4], n = n,
-                         nsim = nsim, fb = fb, sb =sb, seed = seed)
+  # end of endpoint dependant 
   
+  summary_tab2 <- matrix(0, 4, 2)
+  summary_tab2[, 1] <- unlist(selected_res[, c('earlystopfuti_mean_h0', 'earlystopsupe_mean_h0', 
+                                               'ss_mean_h0', 'rejectnull_mean_h0')])
+  summary_tab2[, 2] <- unlist(selected_res[, c('earlystopfuti_mean_h1', 'earlystopsupe_mean_h1',
+                                               'ss_mean_h1', 'rejectnull_mean_h1')])
+  row.names(summary_tab2) <- c("Early stop for futility", "Early stop for efficacy",
+                               "Average sample size", "Reject null")
+  colnames(summary_tab2) <- c('Under H0', 'Under H1')
+  
+  opt_pars <- selected_res[c('lambda', 'gamma', 'eta')]
+  row.names(opt_pars) <- NULL
+  
+  list(
+    design_pars = object$design_pars,
+    opt_pars = opt_pars,
+    boundary = summary_tab1,
+    oc = summary_tab2
+  )
+}
 
-  # Create data frame
+
+#' Plot the cut-off probability and simulation results for BOP2FE designs
+#'
+#' Plot the objects returned by other functions, including (1) cut-off probability;
+#' (2) boundary values;
+#' (3) operating characteristics
+#'
+#'
+#' @param object the object returned by BOP2FE_xx
+#'
+#' @return \code{plot()} returns a figure depending on the object entered
+#' @importFrom gridExtra tableGrob ttheme_minimal
+#' @importFrom patchwork plot_annotation wrap_plots 
+#' @import ggplot2
+#' @export
+plot.bop2fe <- function(object) {
+  summary_data <- summary(object)
+  summary_tab1 <- summary_data$boundary
+  summary_tab2 <- summary_data$oc
+  opt_pars <- summary_data$opt_pars
+  
+  nsum <- sum(object$design_pars$n)
   plot_dat <- data.frame(n = 0:nsum)
-
-  # Calculate postprob_fut
-  plot_dat$postprob_fut <- lambda * (plot_dat$n / nsum)^gamma * 100
-
-  # Calculate postprob_sup based on method
-  if (method == "OF") {
-    plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
+  
+  plot_dat$postprob_fut <- opt_pars$lambda * (plot_dat$n / nsum)^opt_pars$gamma * 100
+  if (object$design_pars$method == "OF") {
+    plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + opt_pars$lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
   } else { # "power"
-    plot_dat$postprob_sup <- (1 - (1 - lambda) * (plot_dat$n/nsum)^eta)*100
+    plot_dat$postprob_sup <- (1 - (1 - opt_pars$lambda) * (plot_dat$n / nsum)^opt_pars$eta) * 100
   }
-
-  # Plot
+  
+  IAs <- cumsum(object$design_pars$n)
+  
   p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
     ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
     ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
     ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
-    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.7) +
-    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(n)) +
+    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1, alpha = 0.7) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.8) +
+    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(object$design_pars$n)) +
     ggplot2::scale_y_continuous(name = paste("Cut-off", "\n", "Probability (%)"), breaks = seq(0, 100, by = 20)) +
-    ggplot2::geom_vline(xintercept = c(10, 20, 30), linetype = "dashed") +
-    #ggplot2::ggtitle("Binary Efficacy Endpoint") +
-    ggplot2::theme_minimal()
+    ggplot2::geom_vline(xintercept = IAs, linetype = "dashed") +
+    ggplot2::theme_bw()
   
-  Oc_tabs <- tibble::tibble(Statistic = c("Early stopping for Futility (%)",
-                                          "Early stopping for Superiority (%)",
-                                          "Average sample size",
-                                          "Null rejection (%)"),
-                            Under_H0 = c(Oc_tab_null$earlystopfuti_mean*100, Oc_tab_null$earlystopsupe_mean*100,
-                                         Oc_tab_null$ss_mean, Oc_tab_null$rejectnull_mean*100),
-                            Under_H1 = c(Oc_tab_alt$earlystopfuti_mean*100, Oc_tab_alt$earlystopsupe_mean*100,
-                                         Oc_tab_alt$ss_mean, Oc_tab_alt$rejectnull_mean*100))
+  Oc_tabs2 <- gridExtra::tableGrob(summary_tab2, theme = gridExtra::ttheme_minimal())
+  boundary_tab2 <- gridExtra::tableGrob(summary_tab1, theme = gridExtra::ttheme_minimal())
   
-  Oc_tabs2 <- dplyr::as_tibble(Oc_tabs) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
-  
-  names(boundary_tab) <- c("Futility boundary response", "Futility boundary toxicity", "Superiority boundary response", "Superiority boundary toxicity")
-  boundary_tab <- dplyr::as_tibble(cbind(Pars = names(boundary_tab), t(boundary_tab)))
-  colnames(boundary_tab) <- c("Interim analysis", 1:nIA)
-  boundary_tab2 <- dplyr::as_tibble(boundary_tab) %>% gridExtra::tableGrob(theme = gridExtra::ttheme_minimal(), rows = NULL)
-  
-  Info <- paste0("Efficacy cutoff probabilities method - ", method, ":", " ", "lambda=", lambda, " ", "gamma=", gamma, " ",  "eta=", ifelse(is.null(eta)&(method=="OF"), NA, eta))
   run_date <- Sys.Date()
   
-  Info2 <- paste0("Resp-tox=", H0[1], " ", "Resp-no tox=", H0[2], " ", "no Resp-tox=", H0[3], " ", "no Resp- no tox=", H0[4])
-  Info3 <- paste0("Resp-tox=", H1[1], " ", "Resp-no tox=", H1[2], " ", "no Resp-tox=", H1[3], " ", "no Resp- no tox=", H1[4])
+  # This part is endpoint dependant 
+  if(object$end_point=="binary"){
+    Info <- paste0("Efficacy cutoff probabilities method - ", object$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
+    Info2 <- paste0("Resp =", object$design_pars$H0)
+    Info3 <- paste0("Resp =", object$design_pars$H1)
+    title <- "BOP2 FE for binary endpoint"
+    
+  } else if (object$end_point =="nested"){
+    Info <- paste0("Efficacy cutoff probabilities method - ", object$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
+    Info2 <- paste0("CR =", object$design_pars$H0[1], " ", "CR/PR =", object$design_pars$H0[1] + object$design_pars$H0[2])
+    Info3 <- paste0("CR =", object$design_pars$H1[1], " ", "CR/PR =", object$design_pars$H1[1] + object$design_pars$H1[2])
+    title <- "BOP2 FE for nested endpoint"
+  } else if (object$end_point =="coprimary"){
+    Info <- paste0("Efficacy cutoff probabilities method - ", object$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
+    Info2 <- paste0("ORR-PFS6 =", object$design_pars$H0[1], " ", "ORR-no PFS6 =", object$design_pars$H0[2], " ", "no ORR-PFS6 =", object$design_pars$H0[3], " ", "no ORR- no PFS6 =", object$design_pars$H0[4])
+    Info3 <- paste0("ORR-PFS6 =", object$design_pars$H1[1], " ", "ORR-no PFS6 =", object$design_pars$H1[2], " ", "no ORR-PFS6 =", object$design_pars$H1[3], " ", "no ORR- no PFS6 =", object$design_pars$H1[4])
+    title <- "BOP2 FE for coprimary endpoint"
+  } else if (object$end_point =="efftox"){
+    Info <- paste0("Efficacy cutoff probabilities method - ", object$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
+    Info2 <- paste0("Resp-tox =", object$design_pars$H0[1], " ", "Resp-no tox =", object$design_pars$H0[2], " ", "no Resp-tox =", object$design_pars$H0[3], " ", "no Resp- no tox =", object$design_pars$H0[4])
+    Info3 <- paste0("Resp-tox =", object$design_pars$H1[1], " ", "Resp-no tox =", object$design_pars$H1[2], " ", "no Resp-tox =", object$design_pars$H1[3], " ", "no Resp- no tox =", object$design_pars$H1[4])
+    title <- "BOP2 FE for joint efficacy and toxicity endpoint"
+  } 
+  
+  # end of endpoint dependant part
   
   layout <- patchwork::wrap_plots(p1, Oc_tabs2, boundary_tab2, nrow = 3)
   layout <- layout +
     patchwork::plot_annotation(
-      title = "BOP2 FE for joint efficacy and toxicity",
+      title = title,
       subtitle = paste(Info, "\n", "Run Date:", run_date, "\n", "H0:", Info2, "\n", "H1:", Info3),
-      #caption = paste0("Design Pars: n= ", n, "lambda=", lambda, "gamma=", gamma),
       theme = ggplot2::theme(plot.title = ggplot2::element_text(size = 16, hjust = 0.5, face = "bold"))
     )
   
-  # Create a list to return
-  result <- list(
-    boundary = boundary_tab,
-    Oc = Oc_tabs,
-    plot = layout
-  )
-  
-  # Assign the S3 class
-  class(result) <- "BOP2FE"
-  
-  return(result)  
-
+  print(layout)
 }
 

@@ -8,18 +8,33 @@ BOP2FE_coprimary(
   H0,
   H1,
   n,
-  lambda = NULL,
-  gamma = NULL,
-  eta = NULL,
+  nsim,
+  t1e = NULL,
   method = "power",
-  nsim = NULL,
+  lambda1,
+  lambda2,
+  grid1,
+  gamma1,
+  gamma2,
+  grid2,
+  eta1 = NULL,
+  eta2 = NULL,
+  grid3 = NULL,
   seed = NULL
 )
 }
 \arguments{
-\item{H0}{Response rate under the null (Response - PFS6, Response - no PFS6, No response - PFS6, No response - No PFS6)}
+\item{H0}{A numeric vector representing the null response rates for different outcomes, specified in the following order:
+- `H0[1]`: Response - PFS6,
+- `H0[2]`: Response - no PFS6,
+- `H0[3]`: No Response - PFS6,
+- `H0[4]`: No Response - no PFS6}
 
-\item{H1}{Response rate under the alternative (Response - PFS6, Response - no PFS6, No response - PFS6, No response - No PFS6)}
+\item{H1}{A numeric vector representing the null response rates for different outcomes, specified in the following order:
+- `H1[1]`: Response - PFS6,
+- `H1[2]`: Response - no PFS6,
+- `H1[3]`: No Response - PFS6,
+- `H1[4]`: No Response - no PFS6}
 
 \item{n}{A numeric vector representing the additional patients enrolled at each interim analysis. 
 The value at index `i` indicates the number of new patients added at interim analysis `i`. 
@@ -31,38 +46,54 @@ the vector would be represented as `n = c(10, 5, 5, 10)`, where:
 - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
 - 10 (30 - 20) is the additional number of patients enrolled at interim 4.}
 
-\item{lambda}{A numeric value for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)}
+\item{nsim}{number of simulation. A value at least 1000 for better result}
 
-\item{gamma}{A numeric value for parameter `gamma` of the cut-off probability for futility}
+\item{t1e}{Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value}
 
-\item{eta}{A numeric value for parameter `eta` of the cut-off probability for efficacy}
-
-\item{method}{A character string specifying the method to use for calculating cutoff values.
+\item{method}{A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
 Options are "power" (default) or "OF" for "O'Brien-Fleming".}
 
-\item{nsim}{number of simulation}
+\item{lambda1}{starting value for `lambda` values to search}
+
+\item{lambda2}{ending value for `lambda` values to search}
+
+\item{grid1}{number of `lambda` values to consider between lambda1 and lambda2}
+
+\item{gamma1}{starting value for `gamma` values to search}
+
+\item{gamma2}{ending value for `gamma` values to search}
+
+\item{grid2}{number of `gamma` values to consider between gamma1 and gamma2}
+
+\item{eta1}{starting value for `eta` values to search}
+
+\item{eta2}{ending value for `eta` values to search}
+
+\item{grid3}{number of eta values to consider between eta1 and eta2}
 
 \item{seed}{for reproducibility}
 }
 \value{
-A list of class \code{"BOP2FE"} containing the following elements:
-\item{boundary}{A table of stopping boundaries.}
-\item{Oc}{A table of operating characteristics.}
-\item{plot}{A plot that shows the boundaries graphically along with tables of 
-boundary values and operating characteristics}
+An S3 object of class 'bop2fe'
 }
 \description{
 Computes stopping boundaries and operating characteristics of Bayesian optimal phase II
-design with efficacy and futility stopping for a co-primary endpoint given optimal
-design parameter values that are identified to optimize power while controlling
-type I error rate at a specified value. The optimal parameters (i.e., lambda, gamma, and eta)
-can be obtained by calling `search_optimal_pars_coprimary()` function. The function produce a plot
-that can be saved as a pdf file for documentation.
+design with efficacy and futility stopping for a co-primary endpoint.
 }
 \examples{
 \dontrun{
-# Example with 7 interim looks
-BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), H1 =c(0.15,0.15,0.20,0.50), n=c(10,5,5,5,5,5,5), 
-lambda = 0.95, gamma=1,seed = 123)
+test_coprimary <- BOP2FE_coprimary(
+ H0=c(0.05,0.05, 0.15, 0.75),
+ H1= c(0.15,0.15, 0.20, 0.50),
+ n = c(10, 5, 5, 5, 5, 5, 5),
+ nsim = 1000, t1e = 0.1, method = "power",
+ lambda1 = 0, lambda2 = 1, grid1 = 11,
+ gamma1 = 0, gamma2 = 1, grid2 = 11,
+ eta1 = 0, eta2 = 3, grid3 = 31,
+ seed = 123
+)
+summary(test_coprimary)
+plot(test_coprimary)
 }
+
 }

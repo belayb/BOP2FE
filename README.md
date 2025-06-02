@@ -43,260 +43,252 @@ library(BOP2FE)
 ### Binary endpoint
 
 ``` r
-BOP2FE_binary(H0 =0.2, H1=0.4, n = c(10,5,5,5,5,5,5), lambda = 0.909, gamma=1, method = "OF", nsim = 10000, seed = 1234)
+test_binary <- BOP2FE_binary(
+ H0=0.2, H1= 0.4,
+ n = c(10, 5, 5, 5, 5, 5, 5),
+ nsim = 1000, t1e = 0.1, method = "power",
+ lambda1 = 0, lambda2 = 1, grid1 = 11,
+ gamma1 = 0, gamma2 = 1, grid2 = 11,
+ eta1 = 0, eta2 = 3, grid3 = 31,
+ seed = 123
+)
+summary(test_binary)
+#> $design_pars
+#> $design_pars$H0
+#> [1] 0.2
+#> 
+#> $design_pars$H1
+#> [1] 0.4
+#> 
+#> $design_pars$n
+#> [1] 10  5  5  5  5  5  5
+#> 
+#> $design_pars$nsim
+#> [1] 1000
+#> 
+#> $design_pars$t1e
+#> [1] 0.1
+#> 
+#> $design_pars$method
+#> [1] "power"
+#> 
+#> 
+#> $opt_pars
+#>   lambda gamma eta
+#> 1    0.9     1 2.1
+#> 
 #> $boundary
-#> # A tibble: 2 × 8
-#>   `Interim analysis`   `1`   `2`   `3`   `4`   `5`   `6`   `7`  
-#>   <chr>                <chr> <chr> <chr> <chr> <chr> <chr> <chr>
-#> 1 Futility boundary    1     2     3     5     7     9     11   
-#> 2 Superiority boundary 7     8     9     10    11    11    12   
+#>                   IA1 IA2 IA3 IA4 IA5 IA6 IA7
+#> Futility boundary   1   2   3   5   7   9  11
+#> Efficacy boundary   6   8   9  10  10  11  12
 #> 
-#> $Oc
-#> # A tibble: 4 × 3
-#>   Statistic                          Under_H0 Under_H1
-#>   <chr>                                 <dbl>    <dbl>
-#> 1 Early stopping for Futility (%)       87.7      10.3
-#> 2 Early stopping for Superiority (%)     7.22     85.9
-#> 3 Average sample size                   20.5      23.6
-#> 4 Null rejection (%)                     8.58     88.5
-#> 
-#> $plot
+#> $oc
+#>                         Under H0 Under H1
+#> Early stop for futility    0.868    0.095
+#> Early stop for efficacy    0.090    0.882
+#> Average sample size       20.195   22.085
+#> Reject null                0.099    0.897
+#plot(test_binary)
 ```
-
-<img src="man/figures/README-binary-1.png" width="100%" />
-
-    #> 
-    #> attr(,"class")
-    #> [1] "BOP2FE"
 
 ### Nested endpoint
 
 ``` r
-BOP2FE_nested(H0 = c(0.15,0.15,0.70), H1 = c(0.25,0.25,0.50), n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, method = "OF", seed = 123)
-#> $boundary
-#> # A tibble: 4 × 8
-#>   `Interim analysis`         `1`   `2`   `3`   `4`   `5`   `6`   `7`  
-#>   <chr>                      <chr> <chr> <chr> <chr> <chr> <chr> <chr>
-#> 1 Futility boundary CR       0     1     3     4     5     7     10   
-#> 2 Futility boundary CR/PR    2     3     6     8     10    13    17   
-#> 3 Superiority boundary CR    8     8     8     9     10    10    11   
-#> 4 Superiority boundary CR/PR 9     11    12    13    15    16    18   
-#> 
-#> $Oc
-#> # A tibble: 4 × 3
-#>   Statistic                          Under_H0 Under_H1
-#>   <chr>                                 <dbl>    <dbl>
-#> 1 Early stopping for Futility (%)       81.8      9.95
-#> 2 Early stopping for Superiority (%)     6.06    78.0 
-#> 3 Average sample size                   24.3     26.9 
-#> 4 Null rejection (%)                     7.15    82.2 
-#> 
-#> $plot
+test_nested <- search_optimal_pars_nested(
+ H0=c(0.05,0.05, 0.15, 0.75),
+ H1= c(0.15,0.15, 0.20, 0.50),
+ n = c(10, 5, 5, 5, 5, 5, 5),
+ nsim = 1000, t1e = 0.1, method = "power",
+ lambda1 = 0, lambda2 = 1, grid1 = 11,
+ gamma1 = 0, gamma2 = 1, grid2 = 11,
+ eta1 = 0, eta2 = 3, grid3 = 31,
+ seed = 123
+)
+summary(test_nested)
+#>  fut_boundary_CR1 fut_boundary_CR2 fut_boundary_CR3 fut_boundary_CR4
+#>  Min.   : 5.000   Min.   : 8.00    Min.   :12.00    Min.   :16.00   
+#>  1st Qu.: 6.000   1st Qu.:10.00    1st Qu.:14.00    1st Qu.:18.00   
+#>  Median : 6.000   Median :11.00    Median :15.00    Median :19.00   
+#>  Mean   : 6.472   Mean   :10.45    Mean   :14.54    Mean   :18.59   
+#>  3rd Qu.: 7.000   3rd Qu.:11.00    3rd Qu.:15.00    3rd Qu.:20.00   
+#>  Max.   :10.000   Max.   :15.00    Max.   :20.00    Max.   :25.00   
+#>  fut_boundary_CR5 fut_boundary_CR6 fut_boundary_CR7 fut_boundary_CR/PR1
+#>  Min.   :20.00    Min.   :24.00    Min.   :28.00    Min.   : 5.000     
+#>  1st Qu.:21.00    1st Qu.:25.00    1st Qu.:29.00    1st Qu.: 6.000     
+#>  Median :23.00    Median :27.00    Median :31.00    Median : 7.000     
+#>  Mean   :22.72    Mean   :26.86    Mean   :31.02    Mean   : 6.923     
+#>  3rd Qu.:24.00    3rd Qu.:28.00    3rd Qu.:33.00    3rd Qu.: 7.750     
+#>  Max.   :30.00    Max.   :35.00    Max.   :40.00    Max.   :10.000     
+#>  fut_boundary_CR/PR2 fut_boundary_CR/PR3 fut_boundary_CR/PR4
+#>  Min.   : 9.00       Min.   :14.00       Min.   :18.00      
+#>  1st Qu.:10.00       1st Qu.:15.00       1st Qu.:19.00      
+#>  Median :11.00       Median :16.00       Median :20.00      
+#>  Mean   :11.18       Mean   :15.58       Mean   :19.92      
+#>  3rd Qu.:12.00       3rd Qu.:16.00       3rd Qu.:21.00      
+#>  Max.   :15.00       Max.   :20.00       Max.   :25.00      
+#>  fut_boundary_CR/PR5 fut_boundary_CR/PR6 fut_boundary_CR/PR7 sup_boundary_CR1
+#>  Min.   :22.00       Min.   :26.00       Min.   :30          Min.   : 7.000  
+#>  1st Qu.:23.00       1st Qu.:27.00       1st Qu.:31          1st Qu.: 9.000  
+#>  Median :24.00       Median :29.00       Median :33          Median :10.000  
+#>  Mean   :24.22       Mean   :28.61       Mean   :33          Mean   : 9.562  
+#>  3rd Qu.:25.00       3rd Qu.:30.00       3rd Qu.:35          3rd Qu.:10.000  
+#>  Max.   :30.00       Max.   :35.00       Max.   :40          Max.   :10.000  
+#>  sup_boundary_CR2 sup_boundary_CR3 sup_boundary_CR4 sup_boundary_CR5
+#>  Min.   :10.00    Min.   :14.00    Min.   :18.00    Min.   :22.00   
+#>  1st Qu.:13.00    1st Qu.:17.00    1st Qu.:21.00    1st Qu.:24.00   
+#>  Median :14.00    Median :18.00    Median :22.00    Median :25.00   
+#>  Mean   :13.76    Mean   :17.69    Mean   :21.47    Mean   :25.18   
+#>  3rd Qu.:15.00    3rd Qu.:19.00    3rd Qu.:22.00    3rd Qu.:26.00   
+#>  Max.   :15.00    Max.   :20.00    Max.   :25.00    Max.   :30.00   
+#>  sup_boundary_CR6 sup_boundary_CR7 sup_boundary_CR/PR1 sup_boundary_CR/PR2
+#>  Min.   :25.0     Min.   :29.00    Min.   : 7.000      Min.   :11.00      
+#>  1st Qu.:28.0     1st Qu.:30.00    1st Qu.:10.000      1st Qu.:14.00      
+#>  Median :29.0     Median :32.00    Median :10.000      Median :14.00      
+#>  Mean   :28.8     Mean   :32.01    Mean   : 9.733      Mean   :14.23      
+#>  3rd Qu.:30.0     3rd Qu.:34.00    3rd Qu.:10.000      3rd Qu.:15.00      
+#>  Max.   :35.0     Max.   :40.00    Max.   :10.000      Max.   :15.00      
+#>  sup_boundary_CR/PR3 sup_boundary_CR/PR4 sup_boundary_CR/PR5
+#>  Min.   :15.0        Min.   :19.00       Min.   :23.00      
+#>  1st Qu.:18.0        1st Qu.:22.00       1st Qu.:26.00      
+#>  Median :19.0        Median :23.00       Median :26.00      
+#>  Mean   :18.4        Mean   :22.52       Mean   :26.52      
+#>  3rd Qu.:19.0        3rd Qu.:23.00       3rd Qu.:27.00      
+#>  Max.   :20.0        Max.   :25.00       Max.   :30.00      
+#>  sup_boundary_CR/PR6 sup_boundary_CR/PR7 earlystopfuti_mean_h0
+#>  Min.   :27.0        Min.   :31.00       Min.   :0.9390       
+#>  1st Qu.:29.0        1st Qu.:32.00       1st Qu.:1.0000       
+#>  Median :30.0        Median :34.00       Median :1.0000       
+#>  Mean   :30.4        Mean   :33.99       Mean   :0.9989       
+#>  3rd Qu.:31.0        3rd Qu.:36.00       3rd Qu.:1.0000       
+#>  Max.   :35.0        Max.   :40.00       Max.   :1.0000       
+#>  earlystopsupe_mean_h0   ss_mean_h0    rejectnull_mean_h0 earlystopfuti_mean_h1
+#>  Min.   :0.000000      Min.   :10.00   Min.   :0.000000   Min.   :0.5800       
+#>  1st Qu.:0.000000      1st Qu.:10.02   1st Qu.:0.000000   1st Qu.:0.9650       
+#>  Median :0.000000      Median :10.07   Median :0.000000   Median :0.9830       
+#>  Mean   :0.001131      Mean   :10.16   Mean   :0.001131   Mean   :0.9662       
+#>  3rd Qu.:0.000000      3rd Qu.:10.30   3rd Qu.:0.000000   3rd Qu.:0.9910       
+#>  Max.   :0.061000      Max.   :11.03   Max.   :0.061000   Max.   :0.9910       
+#>  earlystopsupe_mean_h1   ss_mean_h1    rejectnull_mean_h1     lambda      
+#>  Min.   :0.00000       Min.   :10.00   Min.   :0.00000    Min.   :0.1000  
+#>  1st Qu.:0.00900       1st Qu.:10.34   1st Qu.:0.00900    1st Qu.:0.2000  
+#>  Median :0.01300       Median :11.38   Median :0.01700    Median :0.4000  
+#>  Mean   :0.03215       Mean   :11.66   Mean   :0.03261    Mean   :0.4644  
+#>  3rd Qu.:0.02100       3rd Qu.:12.67   3rd Qu.:0.02700    3rd Qu.:0.7000  
+#>  Max.   :0.42000       Max.   :16.36   Max.   :0.42000    Max.   :1.0000  
+#>      gamma             eta       
+#>  Min.   :0.0000   Min.   :0.000  
+#>  1st Qu.:0.2000   1st Qu.:0.400  
+#>  Median :0.5000   Median :1.100  
+#>  Mean   :0.4844   Mean   :1.192  
+#>  3rd Qu.:0.8000   3rd Qu.:1.800  
+#>  Max.   :1.0000   Max.   :3.000
+#plot(test_nested)
 ```
-
-<img src="man/figures/README-nested-1.png" width="100%" />
-
-    #> 
-    #> attr(,"class")
-    #> [1] "BOP2FE"
 
 ### Co-primary endpoint
 
 ``` r
-BOP2FE_coprimary(H0 = c(0.05,0.05,0.15,0.75), H1 =c(0.15,0.15,0.20,0.50) , n=c(10,5,5,5,5,5,5), lambda = 0.95, gamma=1, method = "OF", seed = 123)
+test_coprimary <- BOP2FE_coprimary(
+ H0=c(0.05,0.05, 0.15, 0.75),
+ H1= c(0.15,0.15, 0.20, 0.50),
+ n = c(10, 5, 5, 5, 5, 5, 5),
+ nsim = 1000, t1e = 0.1, method = "power",
+ lambda1 = 0, lambda2 = 1, grid1 = 11,
+ gamma1 = 0, gamma2 = 1, grid2 = 11,
+ eta1 = 0, eta2 = 3, grid3 = 31,
+ seed = 123
+)
+summary(test_coprimary)
+#> $design_pars
+#> $design_pars$H0
+#> [1] 0.05 0.05 0.15 0.75
+#> 
+#> $design_pars$H1
+#> [1] 0.15 0.15 0.20 0.50
+#> 
+#> $design_pars$n
+#> [1] 10  5  5  5  5  5  5
+#> 
+#> $design_pars$nsim
+#> [1] 1000
+#> 
+#> $design_pars$t1e
+#> [1] 0.1
+#> 
+#> $design_pars$method
+#> [1] "power"
+#> 
+#> 
+#> $opt_pars
+#>   lambda gamma eta
+#> 1    0.9   0.4 2.6
+#> 
 #> $boundary
-#> # A tibble: 4 × 8
-#>   `Interim analysis`        `1`   `2`   `3`   `4`   `5`   `6`   `7`  
-#>   <chr>                     <chr> <chr> <chr> <chr> <chr> <chr> <chr>
-#> 1 Futility boundary ORR     0     1     2     3     4     5     7    
-#> 2 Futility boundary PFS6    1     2     4     5     7     9     12   
-#> 3 Superiority boundary ORR  7     7     7     7     7     8     8    
-#> 4 Superiority boundary PFS6 8     9     10    11    11    12    13   
+#>                          IA1 IA2 IA3 IA4 IA5 IA6 IA7
+#> Futility boundary (OR)     1   2   2   3   4   5   6
+#> Futility boundary (PFS6)   2   3   5   6   8   9  11
+#> Efficacy boundary (OR)     5   6   6   7   7   7   7
+#> Efficacy boundary (PFS6)   7   8   9  10  11  11  12
 #> 
-#> $Oc
-#> # A tibble: 4 × 3
-#>   Statistic                          Under_H0 Under_H1
-#>   <chr>                                 <dbl>    <dbl>
-#> 1 Early stopping for Futility (%)       80.8      7.79
-#> 2 Early stopping for Superiority (%)     6.23    82.1 
-#> 3 Average sample size                   24.1     25.9 
-#> 4 Null rejection (%)                     8.39    88.5 
-#> 
-#> $plot
+#> $oc
+#>                         Under H0 Under H1
+#> Early stop for futility    0.880    0.088
+#> Early stop for efficacy    0.082    0.904
+#> Average sample size       17.250   19.225
+#> Reject null                0.095    0.910
+#plot(test_coprimary)
 ```
-
-<img src="man/figures/README-coprimary-1.png" width="100%" />
-
-    #> 
-    #> attr(,"class")
-    #> [1] "BOP2FE"
 
 ### Joint endpoint
 
 ``` r
-BOP2FE_jointefftox(H0 = c(0.15, 0.30, 0.15, 0.40), H1=c(0.18, 0.42, 0.02, 0.38), n=c(10,5,5,5,5,5,5), lambda = 0.7, gamma=1, method = "OF", seed = 123)
+test_joint <- BOP2FE_jointefftox(
+ H0=c(0.15,0.30, 0.15, 0.40),
+ H1= c(0.18,0.42, 0.02, 0.38),
+ n = c(10, 5, 5, 5, 5, 5, 5),
+ nsim = 1000, t1e = 0.1, method = "power",
+ lambda1 = 0, lambda2 = 1, grid1 = 11,
+ gamma1 = 0, gamma2 = 1, grid2 = 11,
+ eta1 = 0, eta2 = 3, grid3 = 31,
+ seed = 123
+)
+summary(test_joint)
+#> $design_pars
+#> $design_pars$H0
+#> [1] 0.15 0.30 0.15 0.40
+#> 
+#> $design_pars$H1
+#> [1] 0.18 0.42 0.02 0.38
+#> 
+#> $design_pars$n
+#> [1] 10  5  5  5  5  5  5
+#> 
+#> $design_pars$nsim
+#> [1] 1000
+#> 
+#> $design_pars$t1e
+#> [1] 0.1
+#> 
+#> $design_pars$method
+#> [1] "power"
+#> 
+#> 
+#> $opt_pars
+#>   lambda gamma eta
+#> 1    0.6   0.9 2.7
+#> 
 #> $boundary
-#> # A tibble: 4 × 8
-#>   `Interim analysis`            `1`   `2`   `3`   `4`   `5`   `6`   `7`  
-#>   <chr>                         <chr> <chr> <chr> <chr> <chr> <chr> <chr>
-#> 1 Futility boundary response    3     5     8     10    13    16    19   
-#> 2 Futility boundary toxicity    5     6     7     8     9     10    11   
-#> 3 Superiority boundary response 8     10    12    14    16    18    20   
-#> 4 Superiority boundary toxicity 0     2     4     5     7     8     10   
+#>                         IA1 IA2 IA3 IA4 IA5 IA6 IA7
+#> Futility boundary (OR)    3   5   8  10  13  16  18
+#> Futility boundary (Tox)   5   6   8   9  10  11  12
+#> Efficacy boundary (OR)    9  11  13  15  17  18  19
+#> Efficacy boundary (Tox)   0   1   3   4   6   9  11
 #> 
-#> $Oc
-#> # A tibble: 4 × 3
-#>   Statistic                          Under_H0 Under_H1
-#>   <chr>                                 <dbl>    <dbl>
-#> 1 Early stopping for Futility (%)       90.2      30.0
-#> 2 Early stopping for Superiority (%)     7.44     65.8
-#> 3 Average sample size                   17.9      22.9
-#> 4 Null rejection (%)                     8.28     68.8
-#> 
-#> $plot
-```
-
-<img src="man/figures/README-joint-1.png" width="100%" />
-
-    #> 
-    #> attr(,"class")
-    #> [1] "BOP2FE"
-
-### Optimizing Design Parameters
-
-The operating characteristics of the BOP2-FE design with futility and
-efficacy stopping rules depend on the specification of the probability
-cutoffs for futility and efficacy. To maximize statistical power while
-controlling the type I error rate at a certain pre-specified level, the
-tuning parameters, (lambda, gamma, eta) when using the power function
-for the probability cutoffs for efficacy, and (lambda, gamma) when using
-the O’Brien-Fleming type function for the probability cutoffs for
-efficacy, should be identified through simulation.
-*search_optimal_pars_binary()*, *search_optimal_pars_nested()*,
-*search_optimal_pars_coprimary()*, and
-*search_optimal_pars_jointefftox()* can facilitate one to do a grid
-search. An example for a nested outcome is given below.
-
-``` r
-Sim_res <- search_optimal_pars_nested(H0 = c(0.15, 0.15, 0.70), H1=c(0.25, 0.25,0.50), n=c(10,5,5,5,5,5,5), nsim=1000, t1e=0.1, method="power",
-                              lambda1=0.85, lambda2=1, grid1=4, gamma1=0.9, gamma2=1, grid2=5, eta1=0.9, eta2=1, grid3=5)
-#>   |                                                                              |                                                                      |   0%  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |===                                                                   |   4%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%  |                                                                              |======                                                                |   9%  |                                                                              |=======                                                               |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |=======                                                               |  11%  |                                                                              |========                                                              |  11%  |                                                                              |========                                                              |  12%  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  13%  |                                                                              |==========                                                            |  14%  |                                                                              |==========                                                            |  15%  |                                                                              |===========                                                           |  16%  |                                                                              |============                                                          |  17%  |                                                                              |============                                                          |  18%  |                                                                              |=============                                                         |  18%  |                                                                              |=============                                                         |  19%  |                                                                              |==============                                                        |  19%  |                                                                              |==============                                                        |  20%  |                                                                              |==============                                                        |  21%  |                                                                              |===============                                                       |  21%  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  22%  |                                                                              |================                                                      |  23%  |                                                                              |=================                                                     |  24%  |                                                                              |==================                                                    |  25%  |                                                                              |==================                                                    |  26%  |                                                                              |===================                                                   |  27%  |                                                                              |===================                                                   |  28%  |                                                                              |====================                                                  |  28%  |                                                                              |====================                                                  |  29%  |                                                                              |=====================                                                 |  29%  |                                                                              |=====================                                                 |  30%  |                                                                              |=====================                                                 |  31%  |                                                                              |======================                                                |  31%  |                                                                              |======================                                                |  32%  |                                                                              |=======================                                               |  32%  |                                                                              |=======================                                               |  33%  |                                                                              |========================                                              |  34%  |                                                                              |========================                                              |  35%  |                                                                              |=========================                                             |  36%  |                                                                              |==========================                                            |  37%  |                                                                              |==========================                                            |  38%  |                                                                              |===========================                                           |  38%  |                                                                              |===========================                                           |  39%  |                                                                              |============================                                          |  39%  |                                                                              |============================                                          |  40%  |                                                                              |============================                                          |  41%  |                                                                              |=============================                                         |  41%  |                                                                              |=============================                                         |  42%  |                                                                              |==============================                                        |  42%  |                                                                              |==============================                                        |  43%  |                                                                              |===============================                                       |  44%  |                                                                              |================================                                      |  45%  |                                                                              |================================                                      |  46%  |                                                                              |=================================                                     |  47%  |                                                                              |=================================                                     |  48%  |                                                                              |==================================                                    |  48%  |                                                                              |==================================                                    |  49%  |                                                                              |===================================                                   |  49%  |                                                                              |===================================                                   |  50%  |                                                                              |===================================                                   |  51%  |                                                                              |====================================                                  |  51%  |                                                                              |====================================                                  |  52%  |                                                                              |=====================================                                 |  52%  |                                                                              |=====================================                                 |  53%  |                                                                              |======================================                                |  54%  |                                                                              |======================================                                |  55%  |                                                                              |=======================================                               |  56%  |                                                                              |========================================                              |  57%  |                                                                              |========================================                              |  58%  |                                                                              |=========================================                             |  58%  |                                                                              |=========================================                             |  59%  |                                                                              |==========================================                            |  59%  |                                                                              |==========================================                            |  60%  |                                                                              |==========================================                            |  61%  |                                                                              |===========================================                           |  61%  |                                                                              |===========================================                           |  62%  |                                                                              |============================================                          |  62%  |                                                                              |============================================                          |  63%  |                                                                              |=============================================                         |  64%  |                                                                              |==============================================                        |  65%  |                                                                              |==============================================                        |  66%  |                                                                              |===============================================                       |  67%  |                                                                              |===============================================                       |  68%  |                                                                              |================================================                      |  68%  |                                                                              |================================================                      |  69%  |                                                                              |=================================================                     |  69%  |                                                                              |=================================================                     |  70%  |                                                                              |=================================================                     |  71%  |                                                                              |==================================================                    |  71%  |                                                                              |==================================================                    |  72%  |                                                                              |===================================================                   |  72%  |                                                                              |===================================================                   |  73%  |                                                                              |====================================================                  |  74%  |                                                                              |====================================================                  |  75%  |                                                                              |=====================================================                 |  76%  |                                                                              |======================================================                |  77%  |                                                                              |======================================================                |  78%  |                                                                              |=======================================================               |  78%  |                                                                              |=======================================================               |  79%  |                                                                              |========================================================              |  79%  |                                                                              |========================================================              |  80%  |                                                                              |========================================================              |  81%  |                                                                              |=========================================================             |  81%  |                                                                              |=========================================================             |  82%  |                                                                              |==========================================================            |  82%  |                                                                              |==========================================================            |  83%  |                                                                              |===========================================================           |  84%  |                                                                              |============================================================          |  85%  |                                                                              |============================================================          |  86%  |                                                                              |=============================================================         |  87%  |                                                                              |=============================================================         |  88%  |                                                                              |==============================================================        |  88%  |                                                                              |==============================================================        |  89%  |                                                                              |===============================================================       |  89%  |                                                                              |===============================================================       |  90%  |                                                                              |===============================================================       |  91%  |                                                                              |================================================================      |  91%  |                                                                              |================================================================      |  92%  |                                                                              |=================================================================     |  92%  |                                                                              |=================================================================     |  93%  |                                                                              |==================================================================    |  94%  |                                                                              |==================================================================    |  95%  |                                                                              |===================================================================   |  96%  |                                                                              |====================================================================  |  97%  |                                                                              |====================================================================  |  98%  |                                                                              |===================================================================== |  98%  |                                                                              |===================================================================== |  99%  |                                                                              |======================================================================|  99%  |                                                                              |======================================================================| 100%
-
-head(Sim_res)
-#>   fut_boundary_CR_1 fut_boundary_CR_2 fut_boundary_CR_3 fut_boundary_CR_4
-#> 1                 0                 1                 3                 4
-#> 2                 0                 1                 3                 4
-#> 3                 0                 1                 3                 4
-#> 4                 0                 1                 3                 4
-#> 5                 0                 1                 3                 4
-#> 6                 0                 1                 3                 4
-#>   fut_boundary_CR_5 fut_boundary_CR_6 fut_boundary_CR_7 fut_boundary_CR.PR_1
-#> 1                 5                 7                10                    2
-#> 2                 5                 7                10                    2
-#> 3                 5                 7                10                    2
-#> 4                 5                 7                10                    2
-#> 5                 5                 7                10                    2
-#> 6                 5                 7                10                    2
-#>   fut_boundary_CR.PR_2 fut_boundary_CR.PR_3 fut_boundary_CR.PR_4
-#> 1                    4                    6                    8
-#> 2                    4                    6                    8
-#> 3                    4                    6                    8
-#> 4                    4                    6                    8
-#> 5                    4                    6                    8
-#> 6                    4                    6                    8
-#>   fut_boundary_CR.PR_5 fut_boundary_CR.PR_6 fut_boundary_CR.PR_7
-#> 1                   10                   13                   17
-#> 2                   10                   13                   17
-#> 3                   10                   13                   17
-#> 4                   10                   13                   17
-#> 5                   10                   13                   17
-#> 6                   10                   13                   17
-#>   Sup_boundary_CR_1 Sup_boundary_CR_2 Sup_boundary_CR_3 Sup_boundary_CR_4
-#> 1                 5                 6                 7                 8
-#> 2                 5                 6                 7                 8
-#> 3                 5                 6                 7                 8
-#> 4                 5                 6                 7                 8
-#> 5                 5                 6                 7                 8
-#> 6                 5                 6                 7                 8
-#>   Sup_boundary_CR_5 Sup_boundary_CR_6 Sup_boundary_CR_7 Sup_boundary_CR.PR_1
-#> 1                 9                10                11                    7
-#> 2                 9                10                11                    7
-#> 3                 9                10                11                    7
-#> 4                 9                10                11                    7
-#> 5                 9                10                11                    7
-#> 6                 9                10                11                    7
-#>   Sup_boundary_CR.PR_2 Sup_boundary_CR.PR_3 Sup_boundary_CR.PR_4
-#> 1                    9                   11                   13
-#> 2                    9                   11                   13
-#> 3                    9                   11                   13
-#> 4                    9                   11                   13
-#> 5                    9                   11                   13
-#> 6                    9                   11                   13
-#>   Sup_boundary_CR.PR_5 Sup_boundary_CR.PR_6 Sup_boundary_CR.PR_7
-#> 1                   15                   16                   18
-#> 2                   15                   16                   18
-#> 3                   15                   16                   18
-#> 4                   15                   16                   18
-#> 5                   15                   16                   18
-#> 6                   15                   16                   18
-#>   earlystopfuti_mean_h0 earlystopsupe_mean_h0 ss_mean_h0 rejectnull_mean_h0
-#> 1                 0.811                 0.063     23.515              0.076
-#> 2                 0.811                 0.063     23.515              0.076
-#> 3                 0.811                 0.063     23.515              0.076
-#> 4                 0.811                 0.063     23.515              0.076
-#> 5                 0.811                 0.063     23.515              0.076
-#> 6                 0.811                 0.063     23.515              0.076
-#>   earlystopfuti_mean_h1 earlystopsupe_mean_h1 ss_mean_h1 rejectnull_mean_h1
-#> 1                 0.095                   0.8     22.645              0.834
-#> 2                 0.095                   0.8     22.645              0.834
-#> 3                 0.095                   0.8     22.645              0.834
-#> 4                 0.095                   0.8     22.645              0.834
-#> 5                 0.095                   0.8     22.645              0.834
-#> 6                 0.095                   0.8     22.645              0.834
-#>   lambda gamma  eta
-#> 1 0.9625     1 0.90
-#> 2 0.9625     1 0.92
-#> 3 0.9625     1 0.94
-#> 4 0.9625     1 0.96
-#> 5 0.9625     1 0.98
-#> 6 0.9625     1 1.00
-```
-
-However, these functions only use a single core and the process might be
-slow. If one has access to multiple cores, we can directly call the
-compute_power function using the parallel backend back end as follows
-
-``` r
-# Load necessary libraries
-library(foreach)
-library(doParallel)
-library(BOP2FE)
-
-# Define the parameter ranges
-lambda_range <- seq(0, 1, by = 0.01)
-gamma_range <- seq(0, 1, by = 0.01)
-eta_range <- seq(0, 1, by = 0.01)
-
-# Set up parallel backend
-num_cores <- detectCores() - 1  # Use one less than the total number of cores
-cl <- makeCluster(num_cores)
-registerDoParallel(cl)
-
-# Run the function in parallel
-results <- foreach(lambda = lambda_range, .combine = 'rbind') %:%
-  foreach(gamma = gamma_range, .combine = 'rbind') %:%
-  foreach(eta = eta_range, .combine = 'rbind') %dopar% {
-    BOP2FE::get_boundary_oc_nested(H0 = H0, H1 = H1, nsim=nsim, n = n,
-                                            lambda = l, gamma = g, eta = e, method = method, seed=seed)
-          
-  }
-
-# Stop the parallel backend
-stopCluster(cl)
-
-# View the results
-results%>%
-  filter(reject_mean <= 0.1)%>%
-  arrange(desc(power_mean))%>%
-  head()
+#> $oc
+#>                         Under H0 Under H1
+#> Early stop for futility    0.881    0.258
+#> Early stop for efficacy    0.067    0.675
+#> Average sample size       19.365   27.450
+#> Reject null                0.099    0.726
+#plot(test_joint)
 ```
