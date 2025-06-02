@@ -81,8 +81,8 @@ design with efficacy and futility stopping for a nested (ordinal) endpoint
 \examples{
 \dontrun{
 test_nested <- BOP2FE_nested(
- H0=c(0.05,0.05, 0.15, 0.75),
- H1= c(0.15,0.15, 0.20, 0.50),
+ H0=c(0.15,0.15, 0.70), 
+ H1= c(0.25,0.25, 0.50),
  n = c(10, 5, 5, 5, 5, 5, 5),
  nsim = 1000, t1e = 0.1, method = "power",
  lambda1 = 0, lambda2 = 1, grid1 = 11,

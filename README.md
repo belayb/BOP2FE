@@ -75,19 +75,19 @@ summary(test_binary)
 #> 
 #> $opt_pars
 #>   lambda gamma eta
-#> 1    0.9     1   2
+#> 1    0.9     1 1.1
 #> 
 #> $boundary
 #>                   IA1 IA2 IA3 IA4 IA5 IA6 IA7
 #> Futility boundary   1   2   3   5   7   9  11
-#> Efficacy boundary   6   7   9   9  10  11  12
+#> Efficacy boundary   6   7   8   9  10  11  12
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.861    0.093
-#> Early stop for efficacy    0.089    0.881
-#> Average sample size       20.740   20.175
-#> Reject null                0.095    0.892
+#> Early stop for futility    0.873    0.109
+#> Early stop for efficacy    0.089    0.868
+#> Average sample size       20.520   19.725
+#> Reject null                0.095    0.878
 #plot(test_binary)
 ```
 
@@ -101,8 +101,7 @@ plot(test_binary)
 
 ``` r
 test_nested <- BOP2FE_nested(
- H0=c(0.05,0.05, 0.15, 0.75),
- H1= c(0.15,0.15, 0.20, 0.50),
+ H0=c(0.15,0.15, 0.70), H1= c(0.25,0.25, 0.50),
  n = c(10, 5, 5, 5, 5, 5, 5),
  nsim = 1000, t1e = 0.1, method = "power",
  lambda1 = 0, lambda2 = 1, grid1 = 11,
@@ -113,10 +112,10 @@ test_nested <- BOP2FE_nested(
 summary(test_nested)
 #> $design_pars
 #> $design_pars$H0
-#> [1] 0.05 0.05 0.15 0.75
+#> [1] 0.15 0.15 0.70
 #> 
 #> $design_pars$H1
-#> [1] 0.15 0.15 0.20 0.50
+#> [1] 0.25 0.25 0.50
 #> 
 #> $design_pars$n
 #> [1] 10  5  5  5  5  5  5
@@ -133,21 +132,21 @@ summary(test_nested)
 #> 
 #> $opt_pars
 #>   lambda gamma eta
-#> 1    0.1   0.9   0
+#> 1    0.9   0.4   2
 #> 
 #> $boundary
 #>                           IA1 IA2 IA3 IA4 IA5 IA6 IA7
-#> Futility boundary (CR)      5   9  12  16  20  24  28
-#> Futility boundary (CR/PR)   5   9  14  18  22  26  30
-#> Efficacy boundary (CR)      7  10  14  18  22  25  29
-#> Efficacy boundary (CR/PR)   7  11  15  19  23  27  31
+#> Futility boundary (CR)      1   2   4   5   6   7   9
+#> Futility boundary (CR/PR)   3   5   7   9  11  13  15
+#> Efficacy boundary (CR)      6   6   7   8   9   9  10
+#> Efficacy boundary (CR/PR)   8   9  11  12  14  15  16
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.942    0.574
-#> Early stop for efficacy    0.058    0.426
-#> Average sample size       10.610   11.310
-#> Reject null                0.058    0.426
+#> Early stop for futility    0.880    0.205
+#> Early stop for efficacy    0.087    0.778
+#> Average sample size       16.995   20.125
+#> Reject null                0.098    0.793
 #plot(test_nested)
 ```
 
@@ -193,21 +192,21 @@ summary(test_coprimary)
 #> 
 #> $opt_pars
 #>   lambda gamma eta
-#> 1    0.9   0.4 2.3
+#> 1    0.9   0.3 2.6
 #> 
 #> $boundary
 #>                          IA1 IA2 IA3 IA4 IA5 IA6 IA7
-#> Futility boundary (OR)     1   2   2   3   4   5   6
+#> Futility boundary (OR)     1   2   3   4   4   5   6
 #> Futility boundary (PFS6)   2   3   5   6   8   9  11
-#> Efficacy boundary (OR)     5   6   6   6   7   7   7
+#> Efficacy boundary (OR)     5   6   6   7   7   7   7
 #> Efficacy boundary (PFS6)   7   8   9  10  11  11  12
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.876    0.080
-#> Early stop for efficacy    0.086    0.909
-#> Average sample size       16.910   18.635
-#> Reject null                0.098    0.919
+#> Early stop for futility    0.882    0.086
+#> Early stop for efficacy    0.087    0.911
+#> Average sample size       16.415   19.245
+#> Reject null                0.098    0.914
 #plot(test_coprimary)
 ```
 
@@ -247,20 +246,20 @@ summary(test_joint)
 #> 
 #> $opt_pars
 #>   lambda gamma eta
-#> 1    0.6   0.7 2.7
+#> 1    0.7   0.8 0.7
 #> 
 #> $boundary
 #>                         IA1 IA2 IA3 IA4 IA5 IA6 IA7
-#> Futility boundary (OR)    3   5   8  10  13  16  18
-#> Futility boundary (Tox)   5   6   7   9  10  11  12
-#> Efficacy boundary (OR)    9  11  13  15  17  18  19
-#> Efficacy boundary (Tox)   0   1   3   4   6   9  11
+#> Futility boundary (OR)    3   5   8  11  13  16  19
+#> Futility boundary (Tox)   5   6   7   8   9  10  11
+#> Efficacy boundary (OR)    7   9  12  14  16  18  20
+#> Efficacy boundary (Tox)   1   2   4   5   7   9  10
 #> 
 #> $oc
 #>                         Under H0 Under H1
-#> Early stop for futility    0.877    0.265
-#> Early stop for efficacy    0.066    0.669
-#> Average sample size       18.955   27.220
-#> Reject null                0.099    0.725
+#> Early stop for futility    0.890    0.273
+#> Early stop for efficacy    0.091    0.722
+#> Average sample size       17.640   21.440
+#> Reject null                0.098    0.725
 #plot(test_joint)
 ```
