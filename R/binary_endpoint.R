@@ -39,6 +39,7 @@
 #' }
 #' 
 get_boundary_binary <- function(H0, a1, b1, n, lambda, gamma, eta = NULL, method = "power", seed=NULL) {
+  set.seed(seed)
   # Obtain cf and cs values
   cf_cs_val <- get_cf_cs_values(n, lambda = lambda, gamma = gamma, eta = eta, method = method)
   cf_values <- cf_cs_val[["cf_values"]]
@@ -384,11 +385,11 @@ get_boundary_oc_binary <- function(
 ) {
   # Generate boundary test results
   boundary_tab <- get_boundary_binary(
-    H0 = H0, a1 = H0, b1 = 1 - H0, n = n, lambda = lambda, gamma = gamma, eta = eta, method = method
+    H0 = H0, a1 = H0, b1 = 1 - H0, n = n, lambda = lambda, gamma = gamma, eta = eta, method = method, seed=seed
   )
   # Calculate operating characteristics for null and alternative hypotheses
   null_oc <- get_oc_binary(
-    p = H0, n = n, nsim = nsim, fb = boundary_tab[['cnf']], sb = boundary_tab[['cns']]
+    p = H0, n = n, nsim = nsim, fb = boundary_tab[['cnf']], sb = boundary_tab[['cns']], seed=seed
   )
   null_oc2 <- null_oc[, colnames(null_oc) %in% c(
     'lambda', 'gamma', 'eta', 'earlystopfuti_mean', 'earlystopsupe_mean', 'ss_mean', 'rejectnull_mean',
@@ -399,7 +400,7 @@ get_boundary_oc_binary <- function(
     paste0('f', seq(n)), paste0('s', seq(n))
   )
   alt_oc <- get_oc_binary(
-    p = H1, n = n, nsim = nsim, fb = boundary_tab[['cnf']], sb = boundary_tab[['cns']]
+    p = H1, n = n, nsim = nsim, fb = boundary_tab[['cnf']], sb = boundary_tab[['cns']], seed=seed
   )
   alt_oc2 <- alt_oc[, colnames(alt_oc) %in% c(
     'lambda', 'gamma', 'eta', 'earlystopfuti_mean', 'earlystopsupe_mean', 'ss_mean', 'rejectnull_mean',
