@@ -590,11 +590,11 @@ get_boundary_oc_efftox <- function(
 ) {
   # Generate boundary test results
   boundary_tab <- get_boundary_jointefftox(
-    H0 = H0, a = H0, n = n, lambda = lambda, gamma = gamma, eta = eta, method = method
+    H0 = H0, a = H0, n = n, lambda = lambda, gamma = gamma, eta = eta, method = method, seed = seed
   )
   # Calculate operating characteristics for null and alternative hypotheses
   null_oc <- get_oc_jointefftox(
-    p1 = H0[1], p2=H0[2], p3=H0[3], p4=H0[4], n = n, nsim = nsim, fb = boundary_tab[['cnf']], sb = boundary_tab[['cns']]
+    p1 = H0[1], p2=H0[2], p3=H0[3], p4=H0[4], n = n, nsim = nsim, fb = boundary_tab[['cnf']], sb = boundary_tab[['cns']],seed = seed
   )
   null_oc2 <- null_oc[, colnames(null_oc) %in% c(
     'lambda', 'gamma', 'eta', 'earlystopfuti_mean', 'earlystopsupe_mean', 'ss_mean', 'rejectnull_mean',
@@ -605,7 +605,7 @@ get_boundary_oc_efftox <- function(
     paste0('f1', seq(n)), paste0('f2', seq(n)), paste0('s1', seq(n)),paste0('s2', seq(n))
   )
   alt_oc <- get_oc_jointefftox(
-    p1 = H1[1], p2=H1[2], p3=H1[3], p4=H1[4], n = n, nsim = nsim, fb = boundary_tab[['cnf']], sb = boundary_tab[['cns']]
+    p1 = H1[1], p2=H1[2], p3=H1[3], p4=H1[4], n = n, nsim = nsim, fb = boundary_tab[['cnf']], sb = boundary_tab[['cns']],seed = seed
   )
   alt_oc2 <- alt_oc[, colnames(alt_oc) %in% c(
     'lambda', 'gamma', 'eta', 'earlystopfuti_mean', 'earlystopsupe_mean', 'ss_mean', 'rejectnull_mean',
