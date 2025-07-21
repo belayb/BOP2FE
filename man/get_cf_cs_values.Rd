@@ -35,3 +35,4 @@ A list containing two elements:
 This function computes the probability cutoffs for futility stopping using two methods:
 power and O'Brien-Fleming type function.
 }
+\keyword{internal}

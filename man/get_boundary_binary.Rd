@@ -58,7 +58,7 @@ seed <- 123
 n <- c(10, 5, 5, 5, 5, 5, 5)
 method <- "power"
 
-boundary_nested<- get_boundary_binary(H0=H0, a=a, n =n,
+boundary_binary<- get_boundary_binary(H0=H0, a=a, n =n,
                      lambda = seq(0, 1, l = 101),
                      gamma  = seq(0, 1, l = 101),
                      eta    = seq(0, 3, l = 301),

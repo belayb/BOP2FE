@@ -23,6 +23,7 @@
 #' \item{cs_values}{A matrix of cutoff values for efficacy.}
 #'
 #' @importFrom stats qnorm pnorm
+#' @keywords internal
 #' @export
 get_cf_cs_values <- function(n, lambda = NULL, gamma = NULL, eta = NULL, method = "power") {
   nsum <- sum(n)

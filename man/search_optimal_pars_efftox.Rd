@@ -93,7 +93,7 @@ A data frame with the following columns
   \item{eta: }{eta valuesfor cut-off probability}}
 }
 \description{
-`search_optimal_pars_efftox()` is a helper function and calls `get_boundary_oc_efftox()` 
+`search_optimal_pars_efftox()` is a helper function and calls `get_boundary_oc_efftox()` to obtain the
 optimal parameter combinations with type I error less than t1e and sorted according to power.
 }
 \examples{
@@ -119,3 +119,4 @@ test_jointy <- search_optimal_pars_efftox(
 }
 
 }
+\keyword{internal}

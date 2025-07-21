@@ -551,6 +551,7 @@ get_oc_jointefftox <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
 #' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility 
+#' @keywords internal
 #' @export
 #' 
 #' @returns A data frame with the following columns
@@ -637,7 +638,7 @@ get_boundary_oc_efftox <- function(
 
 #' Search optimal parameters for joint efficacy and toxicity endpoint
 #' 
-#' `search_optimal_pars_efftox()` is a helper function and calls `get_boundary_oc_efftox()` 
+#' `search_optimal_pars_efftox()` is a helper function and calls `get_boundary_oc_efftox()` to obtain the
 #' optimal parameter combinations with type I error less than t1e and sorted according to power. 
 #'   
 #' @param H0 A numeric vector representing the null response rates for different outcomes, specified in the following order:
@@ -693,6 +694,7 @@ get_boundary_oc_efftox <- function(
 #'   \item{eta: }{eta valuesfor cut-off probability}} 
 #'
 #' @export
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #'test_jointy <- search_optimal_pars_efftox(

@@ -83,7 +83,7 @@ A data frame with the following columns
   \item{eta: }{eta valuesfor cut-off probability}}
 }
 \description{
-`search_optimal_pars_binary()` is a helper function and calls `get_boundary_oc_binary()` 
+`search_optimal_pars_binary()` is a helper function and calls `get_boundary_oc_binary()` to obtain the
  optimal parameter combinations with type I error less than t1e and sorted according to power.
 }
 \examples{
@@ -110,3 +110,4 @@ test_binary <- search_optimal_pars_binary(
 
 
 }
+\keyword{internal}

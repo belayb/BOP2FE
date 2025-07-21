@@ -512,6 +512,7 @@ get_oc_coprimary <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
 #' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility 
+#' @keywords internal
 #' @export
 #' 
 #' @returns A data frame with the following columns
@@ -598,7 +599,7 @@ get_boundary_oc_coprimary <- function(
 
 #' Search optimal parameters for co primary endpoint
 #' 
-#' `search_optimal_pars_coprimary()` is a helper function and calls `get_boundary_oc_coprimary()` 
+#' `search_optimal_pars_coprimary()` is a helper function and calls `get_boundary_oc_coprimary()` to obtain the
 #' optimal parameter combinations with type I error less than t1e and sorted according to power. 
 #'   
 #' @param H0 A numeric vector representing the null response rates for different outcomes, specified in the following order:
@@ -654,6 +655,7 @@ get_boundary_oc_coprimary <- function(
 #'   \item{eta: }{eta valuesfor cut-off probability}} 
 #'
 #' @export
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #'test_comprimary <- search_optimal_pars_coprimary(

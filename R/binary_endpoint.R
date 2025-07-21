@@ -30,7 +30,7 @@
 #' n <- c(10, 5, 5, 5, 5, 5, 5)
 #' method <- "power"
 #' 
-#' boundary_nested<- get_boundary_binary(H0=H0, a=a, n =n,
+#' boundary_binary<- get_boundary_binary(H0=H0, a=a, n =n,
 #'                      lambda = seq(0, 1, l = 101),
 #'                      gamma  = seq(0, 1, l = 101),
 #'                      eta    = seq(0, 3, l = 301),
@@ -348,6 +348,7 @@ get_oc_binary <- function(p, n, nsim, fb, sb, seed = NULL) {
 #' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility 
+#' @keywords internal
 #' @export
 #' 
 #' @returns A data frame with the following columns
@@ -433,7 +434,7 @@ get_boundary_oc_binary <- function(
 
 #' Search optimal parameters for binary endpoint
 #' 
-#' `search_optimal_pars_binary()` is a helper function and calls `get_boundary_oc_binary()` 
+#' `search_optimal_pars_binary()` is a helper function and calls `get_boundary_oc_binary()` to obtain the
 #'  optimal parameter combinations with type I error less than t1e and sorted according to power. 
 
 #' @param H0 A numeric value for the response rate under the null hypothesis
@@ -479,6 +480,7 @@ get_boundary_oc_binary <- function(
 #'   \item{eta: }{eta valuesfor cut-off probability}} 
 #'
 #' @export
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #'test_binary <- search_optimal_pars_binary(

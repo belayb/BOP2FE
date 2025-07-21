@@ -385,6 +385,7 @@ BOP2FE_jointefftox <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #'
 #' @return \code{summary()} returns a list depending on the object entered including design parameters,
 #' boundary, operating characteristics. 
+#' @rdname summary.bop2fe
 #' @export
 #' @importFrom utils packageVersion
 #' 
@@ -486,6 +487,7 @@ summary.bop2fe <- function(object) {
 #' @importFrom patchwork plot_annotation wrap_plots 
 #' @import ggplot2
 #' @export
+#' @rdname plot.bop2fe
 plot.bop2fe <- function(object) {
   summary_data <- summary(object)
   summary_tab1 <- summary_data$boundary
