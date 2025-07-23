@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/belayb/BOP2FE/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/belayb/BOP2FE/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/belayb/BOP2FE/graph/badge.svg)](https://app.codecov.io/gh/belayb/BOP2FE)
 <!-- badges: end -->
 
 This R-package implements a flexible Bayesian optimal phase II design
