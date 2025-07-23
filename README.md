@@ -4,6 +4,8 @@
 # BOP2-FE <img src="man/figures/logo.png" align="right" height="139" alt="BOP2-FE logo" />
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/belayb/BOP2FE/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/belayb/BOP2FE/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 This R-package implements a flexible Bayesian optimal phase II design
