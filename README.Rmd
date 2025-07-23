@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 
-# BOP2-FE <img src="man/figures/logo2.png" align="right" height="139" alt="BOP2-FE logo" />
+# BOP2-FE <img src="man/figures/logo.png" align="right" height="139" alt="BOP2-FE logo" />
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/belayb/BOP2FE/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/belayb/BOP2FE/actions/workflows/R-CMD-check.yaml)

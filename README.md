@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# BOP2-FE <img src="man/figures/logo2.png" align="right" height="139" alt="BOP2-FE logo" />
+# BOP2-FE <img src="man/figures/logo.png" align="right" height="139" alt="BOP2-FE logo" />
 
 <!-- badges: start -->
 
