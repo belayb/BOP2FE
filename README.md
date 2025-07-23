@@ -38,7 +38,6 @@ This is a basic example which shows you how to use BOP2FE:
 
 ``` r
 library(BOP2FE)
-## basic example code
 ```
 
 ### Binary endpoint
@@ -89,8 +88,9 @@ summary(test_binary)
 #> Early stop for efficacy    0.086    0.858
 #> Average sample size       20.060   22.640
 #> Reject null                0.095    0.883
-#plot(test_binary)
 ```
+
+The result of BOP2-FE can be ploted as follow
 
 ``` r
 plot(test_binary)
@@ -148,14 +148,7 @@ summary(test_nested)
 #> Early stop for efficacy    0.088    0.763
 #> Average sample size       15.915   19.415
 #> Reject null                0.098    0.778
-#plot(test_nested)
 ```
-
-``` r
-plot(test_nested)
-```
-
-<img src="man/figures/README-nested2-1.png" width="100%" />
 
 ### Co-primary endpoint
 

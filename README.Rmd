@@ -45,7 +45,6 @@ This is a basic example which shows you how to use BOP2FE:
 
 ```{r example}
 library(BOP2FE)
-## basic example code
 ```
 
 ### Binary endpoint 
@@ -61,12 +60,15 @@ test_binary <- BOP2FE_binary(
  seed = 123
 )
 summary(test_binary)
-#plot(test_binary)
+
 ```
+
+The result of BOP2-FE can be ploted as follow
 
 ```{r binary2}
 plot(test_binary)
 ```
+
 
 ### Nested endpoint 
 
@@ -81,11 +83,6 @@ test_nested <- BOP2FE_nested(
  seed = 123
 )
 summary(test_nested)
-#plot(test_nested)
-```
-
-```{r nested2}
-plot(test_nested)
 ```
 
 
