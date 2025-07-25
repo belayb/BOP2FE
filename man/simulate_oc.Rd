@@ -16,7 +16,7 @@ simulate_oc(object, p, endpoint, seed = NULL)
 \item{seed}{for reproducibility}
 }
 \value{
-\code{plot()} a data frame with the optimal pars and boundary from the given object as well 
+\code{simulate_oc()} returns a data frame with the optimal pars and boundary from the given object as well 
 as the operating characteristics. If a single p vector is supplied the result will be a data frame 
 with a single row. If multiple p vectors are supplied the data frame will be have multiple rows each 
 corresponding to the p vectors in the order of their specification
