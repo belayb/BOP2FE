@@ -559,3 +559,113 @@ plot.bop2fe <- function(object) {
   print(layout)
 }
 
+
+#' Compute operating characteristics at the optimal boundary 
+#'
+#' After identifying the optimal boundary that controls the Type I error rate 
+#' less than or equal to 0.1 under H0 and maximize the power under H1, it might
+#' be of interest to compute the operating characteristics of the optimal boundary 
+#' under a different H1 values. This function accepts a single or multiple values of 
+#' additional H1 values and compute the operating characteristics for each of them. 
+#'
+#'
+#' @param object the object returned by BOP2FE_xx
+#' @param p a single vector or a list of vector for which the operating characteristics is desired.
+#' @param endpoint the type of endpoint. Possible options are 'binary', 'nested', 'coprimary', and 'joint'.
+#' @param seed for reproducibility 
+#'
+#' @return \code{plot()} a data frame with the optimal pars and boundary from the given object as well 
+#' as the operating characteristics. If a single p vector is supplied the result will be a data frame 
+#' with a single row. If multiple p vectors are supplied the data frame will be have multiple rows each 
+#' corresponding to the p vectors in the order of their specification 
+#' @export
+#' 
+#' @examples
+#' \dontrun{
+#' test_nested <- BOP2FE_nested(
+#'  H0=c(0.15,0.15, 0.70), 
+#'  H1= c(0.25,0.25, 0.50),
+#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  nsim = 1000, t1e = 0.1, method = "power",
+#'  lambda1 = 0, lambda2 = 1, grid1 = 11,
+#'  gamma1 = 0, gamma2 = 1, grid2 = 11,
+#'  eta1 = 0, eta2 = 3, grid3 = 31,
+#'  seed = 123
+#')
+#'
+#' # Compute operating characteristics for a single p vector 
+#' simulate_oc(test_nested, p=c(0.30,0.30,0.40), 
+#'              endpoint = 'nested', seed=123)
+#' 
+#' # Compute operating characteristics for multiple p vector
+#'  simulate_oc(test_nested, p=list(c(0.30,0.30,0.40),c(0.35,0.35,0.30)), 
+#'              endpoint = 'nested', seed=123)
+#' 
+#'}
+#' 
+simulate_oc <- function(object, p, endpoint, seed = NULL) {
+  boundary <- summary(object)$boundary
+  opt_pars <- summary(object)$opt_pars
+  design_par <- object$design_pars
+  
+  n <- design_par$n
+  nsim <- design_par$nsim
+  
+  # Helper function to validate and simulate for a single vector
+  simulate_single <- function(p_vec) {
+    # Validate length of p_vec based on endpoint
+    expected_length <- switch(endpoint,
+                              binary = 1,
+                              nested = 3,
+                              coprimary = 4,
+                              joint = 4,
+                              stop("Invalid endpoint specified. Must be one of: 'binary', 'nested', 'coprimary', 'joint'."))
+    
+    if (length(p_vec) != expected_length) {
+      stop(sprintf("For endpoint '%s', expected a vector of length %d, but got length %d.",
+                   endpoint, expected_length, length(p_vec)))
+    }
+    
+    if (!inherits(object,"bop2fe")) {
+      stop("Object should be a class of bop2fe")
+    }
+    # Proceed with simulation
+    if (endpoint == "binary") {
+      cnf <- cbind(opt_pars[, 1:2], t(boundary[1, ]))
+      colnames(cnf) <- c('lambda', 'gamma', paste0('f', seq(n)))
+      cns <- cbind(opt_pars[, c(1, 3)], t(boundary[2, ]))
+      colnames(cns) <- c('lambda', 'eta', paste0('s', seq(n)))
+      return(get_oc_binary(p = p_vec, n = n, nsim = nsim, fb = cnf, sb = cns, seed = seed)[-c(8:11)])
+    } else if (endpoint == "nested") {
+      p1 <- p_vec[1]; p2 <- p_vec[2]; p3 <- p_vec[3]
+      cnf <- cbind(opt_pars[, 1:2], t(boundary[1, ]), t(boundary[2, ]))
+      colnames(cnf) <- c('lambda', 'gamma', paste0('f1', seq(n)), paste0('f2', seq(n)))
+      cns <- cbind(opt_pars[, c(1, 3)], t(boundary[3, ]), t(boundary[4, ]))
+      colnames(cns) <- c('lambda', 'eta', paste0('s1', seq(n)), paste0('s2', seq(n)))
+      return(get_oc_nested(p1 = p1, p2 = p2, p3 = p3, n = n, nsim = nsim, fb = cnf, sb = cns, seed = seed)[-c(8:11)])
+    } else if (endpoint == "coprimary") {
+      p1 <- p_vec[1]; p2 <- p_vec[2]; p3 <- p_vec[3]; p4 <- p_vec[4]
+      cnf <- cbind(opt_pars[, 1:2], t(boundary[1, ]), t(boundary[2, ]))
+      colnames(cnf) <- c('lambda', 'gamma', paste0('f1', seq(n)), paste0('f2', seq(n)))
+      cns <- cbind(opt_pars[, c(1, 3)], t(boundary[3, ]), t(boundary[4, ]))
+      colnames(cns) <- c('lambda', 'eta', paste0('s1', seq(n)), paste0('s2', seq(n)))
+      return(get_oc_coprimary(p1 = p1, p2 = p2, p3 = p3, p4 = p4, n = n, nsim = nsim, fb = cnf, sb = cns, seed = seed)[-c(8:11)])
+    } else if (endpoint == "joint") {
+      p1 <- p_vec[1]; p2 <- p_vec[2]; p3 <- p_vec[3]; p4 <- p_vec[4]
+      cnf <- cbind(opt_pars[, 1:2], t(boundary[1, ]), t(boundary[2, ]))
+      colnames(cnf) <- c('lambda', 'gamma', paste0('f1', seq(n)), paste0('f2', seq(n)))
+      cns <- cbind(opt_pars[, c(1, 3)], t(boundary[3, ]), t(boundary[4, ]))
+      colnames(cns) <- c('lambda', 'eta', paste0('s1', seq(n)), paste0('s2', seq(n)))
+      return(get_oc_jointefftox(p1 = p1, p2 = p2, p3 = p3, p4 = p4, n = n, nsim = nsim, fb = cnf, sb = cns, seed = seed)[-c(8:11)])
+    }
+  }
+  
+  # Check if p is a list or a single vector
+  if (is.list(p)) {
+    results <- lapply(p, simulate_single)
+    return(do.call(rbind, results))
+  } else {
+    return(simulate_single(p))
+  }
+}
+

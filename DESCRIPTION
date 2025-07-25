@@ -1,14 +1,14 @@
 Package: BOP2FE
 Type: Package
 Title:  Bayesian optimal phase II design with futility and efficacy stopping boundaries 
-Version: 0.4.0
+Version: 0.4.1
 Authors@R: c(
     person("Belay Birlie", "Yimer", email = "belayabyimer@gmail.com", role =  c("aut", "cre")),
     person("Xinling", "Xu", role = "aut"),
     person("Atsuki", "Hashimoto", role = "aut"),
     person("Gosuke", "Homma", role = "aut"),
     person("Kentaro", "Takeda", role = "aut"))
-Description: This R-package implements a flexible Bayesian optimal phase II design proposed by Xu et al (under review).
+Description: This R-package implements a flexible Bayesian optimal phase II design proposed by Xu et al,2025.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
