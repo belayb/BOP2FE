@@ -23,15 +23,17 @@ get_boundary_binary(
 
 \item{b1}{beta values for the beta prior (i.e. usually set to 1 - the null response rate)}
 
-\item{n}{A numeric vector representing the additional patients enrolled at each interim analysis. 
-The value at index `i` indicates the number of new patients added at interim analysis `i`. 
-The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+\item{n}{A numeric vector representing the additional patients enrolled at each interim analysis.
+The value at index \code{i} indicates the number of new patients added at interim analysis \code{i}. 
+The total sample size at interim \code{i} is the cumulative sum of the values in \code{n} up to that index. 
 For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
-the vector would be represented as `n = c(10, 5, 5, 10)`, where:
- - 10 is the number of patients enrolled at interim 1,
- - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
- - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
- - 10 (30 - 20) is the additional number of patients enrolled at interim 4.}
+the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
+\itemize{
+  \item 10 is the number of patients enrolled at interim 1,
+  \item 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+  \item 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+  \item 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+}}
 
 \item{lambda}{A vector of values for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)}
 

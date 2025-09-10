@@ -3,15 +3,17 @@
 #' @param H0 Response rate under the null 
 #' @param a1 alpha values for the beta prior (i.e. usually set to the null response rate)
 #' @param b1 beta values for the beta prior (i.e. usually set to 1 - the null response rate)
-#' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
-#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
-#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis.
+#' The value at index \code{i} indicates the number of new patients added at interim analysis \code{i}. 
+#' The total sample size at interim \code{i} is the cumulative sum of the values in \code{n} up to that index. 
 #' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
-#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
-#'  - 10 is the number of patients enrolled at interim 1,
-#'  - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
-#'  - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
-#'  - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
+#' \itemize{
+#'   \item 10 is the number of patients enrolled at interim 1,
+#'   \item 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#'   \item 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#'   \item 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' }
 #' @param lambda A vector of values for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)
 #' @param gamma A vector of values for parameter `gamma` of the cut-off probability for futility 
 #' @param eta A vector of values for parameter `eta` of the cut-off probability for efficacy 
@@ -141,36 +143,39 @@ get_boundary_binary <- function(H0, a1, b1, n, lambda, gamma, eta = NULL, method
 #' Operating characteristics for binary Endpoint
 #' @param p Response rate 
 #' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
-#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
-#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis.
+#' The value at index \code{i} indicates the number of new patients added at interim analysis \code{i}. 
+#' The total sample size at interim \code{i} is the cumulative sum of the values in \code{n} up to that index. 
 #' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
-#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
-#'  - 10 is the number of patients enrolled at interim 1,
-#'  - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
-#'  - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
-#'  - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
+#' \itemize{
+#'   \item 10 is the number of patients enrolled at interim 1,
+#'   \item 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#'   \item 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#'   \item 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' }
 #' @param nsim number of simulation
 #' @param fb vector/matrix of futility boundary at each interim analysis specified 
-#' in the following order: c(f_1,..., f_{length(n)})
+#' in the following order: c(f_1,..., f_length(n))
 #' @param sb vector/matrix  of superiority boundary at each interim analysis specified 
-#' in the following order: c(s_1,..., s_{length(n)})
+#' in the following order: c(s_1,..., s_length(n))
 #' @param seed for reproducibility
 #' @importFrom stats rbinom
 #' @export
 #' 
 #' @returns A data frame with the following columns
-#' \itemize{
+#' \describe{
 #' \item{lambda: }{lambda values for cut-off probability}
 #' \item{gamma: }{gamma valuesfor cut-off probability}
 #' \item{eta: }{eta valuesfor cut-off probability}
 #' \item{earlystopfuti_mean: }{Average number of early stopping due to futility}
 #'  \item{earlystopsupe_mean: }{Average number of early stopping for futility due to efficacy}
-#'   \item{ss_mean: }{Average sample size"} 
-#'   \item{rejectnull_mean: }{"Average number of hypothesis rejection at the final analysis (aka Type-I error 
+#'   \item{ss_mean: }{Average sample size} 
+#'   \item{rejectnull_mean: }{Average number of hypothesis rejection at the final analysis (aka Type-I error 
 #'   if the response rate is the null rate or Power if the response rate is the alternative rate.} 
 #'   \item{earlystopfuti_sum: }{Total number of early stopping due to futility} 
 #'   \item{earlystopsupe_sum: }{Total number of early early stopping due to efficacy} 
-#'   \item{ss_sum: }{Sum of sample sizes across simulation"} 
+#'   \item{ss_sum: }{Sum of sample sizes across simulation} 
 #'   \item{rejectnull_sum: }{Total number of hypothesis rejection at the final analysis} 
 #'   } 
 #'   
@@ -332,15 +337,17 @@ get_oc_binary <- function(p, n, nsim, fb, sb, seed = NULL) {
 #' Computes both the boundary and corresponding operating characteristics for binary endpoints  
 #' @param H0 Null response rates 
 #' @param H1 Alternative response rates 
-#' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
-#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
-#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis.
+#' The value at index \code{i} indicates the number of new patients added at interim analysis \code{i}. 
+#' The total sample size at interim \code{i} is the cumulative sum of the values in \code{n} up to that index. 
 #' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
-#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
-#'  - 10 is the number of patients enrolled at interim 1,
-#'  - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
-#'  - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
-#'  - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
+#' \itemize{
+#'   \item 10 is the number of patients enrolled at interim 1,
+#'   \item 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#'   \item 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#'   \item 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' }
 #' @param nsim number of simulation. A value at least 1000 for better result
 #' @param lambda A vector of values for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)
 #' @param gamma A vector of values for parameter `gamma` of the cut-off probability for futility 
@@ -352,7 +359,7 @@ get_oc_binary <- function(p, n, nsim, fb, sb, seed = NULL) {
 #' @export
 #' 
 #' @returns A data frame with the following columns
-#' \itemize{
+#' \describe{
 #' \item{fut_boundary_i: }{Futility boundary at the ith analysis}
 #' \item{sup_boundary_i: }{Superiority boundary at the ith analysis}
 #' \item{earlystopfuti_mean_h0: }{Average number of early stopping due to futility under the null hypothesis}
@@ -439,15 +446,17 @@ get_boundary_oc_binary <- function(
 
 #' @param H0 A numeric value for the response rate under the null hypothesis
 #' @param H1 A numeric value for the response rate under the alternative hypothesis
-#' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
-#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
-#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis.
+#' The value at index \code{i} indicates the number of new patients added at interim analysis \code{i}. 
+#' The total sample size at interim \code{i} is the cumulative sum of the values in \code{n} up to that index. 
 #' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
-#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
-#' - 10 is the number of patients enrolled at interim 1,
-#' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
-#' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
-#' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
+#' \itemize{
+#'   \item 10 is the number of patients enrolled at interim 1,
+#'   \item 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#'   \item 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#'   \item 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' }
 #' @param nsim number of simulation. A value at least 1000 for better result
 #' @param t1e Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value 
 #' @param lambda1 starting value for `lambda` values to search
@@ -464,7 +473,7 @@ get_boundary_oc_binary <- function(
 #' @param seed for reproducibility             
 #'
 #' @returns A data frame with the following columns
-#' \itemize{
+#' \describe{
 #' \item{fut_boundary_i: }{Futility boundary at the ith analysis}
 #' \item{sup_boundary_i: }{Superiority boundary at the ith analysis}
 #' \item{earlystopfuti_mean_h0: }{Average number of early stopping due to futility under the null hypothesis}
@@ -477,7 +486,8 @@ get_boundary_oc_binary <- function(
 #'   \item{rejectnull_mean_h1: }{Average number of hypothesis rejection at the final analysis under the alternative hypothesis} 
 #'   \item{lambda: }{lambda values for cut-off probability}
 #'   \item{gamma: }{gamma valuesfor cut-off probability}
-#'   \item{eta: }{eta valuesfor cut-off probability}} 
+#'   \item{eta:2 }{eta valuesfor cut-off probability}
+#'   } 
 #'
 #' @export
 #' @keywords internal

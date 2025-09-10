@@ -1,15 +1,17 @@
 #' Boundary values for co-primary Endpoint
 #' @param H0 Response rate under the null (Response - PFS6, Response - no PFS6, No response - PFS6, No response - No PFS6)
 #' @param a alpha values for the beta prior (i.e. usually set to the null response rate)
-#' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
-#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
-#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis.
+#' The value at index \code{i} indicates the number of new patients added at interim analysis \code{i}. 
+#' The total sample size at interim \code{i} is the cumulative sum of the values in \code{n} up to that index. 
 #' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
-#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
-#' - 10 is the number of patients enrolled at interim 1,
-#' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
-#' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
-#' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
+#' \itemize{
+#'   \item 10 is the number of patients enrolled at interim 1,
+#'   \item 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#'   \item 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#'   \item 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' }
 #' @param lambda A vector of values for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)
 #' @param gamma A vector of values for parameter `gamma` of the cut-off probability for futility 
 #' @param eta A vector of values for parameter `eta` of the cut-off probability for efficacy 
@@ -253,26 +255,28 @@ get_boundary_coprimary <- function(H0, a, n, lambda, gamma, eta = NULL, method =
 #' @param p2 Response rate (Response - no PFS6)
 #' @param p3 Response rate (No Response - PFS6)
 #' @param p4 Response rate (No Response - no PFS6)
-#' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
-#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
-#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis.
+#' The value at index \code{i} indicates the number of new patients added at interim analysis \code{i}. 
+#' The total sample size at interim \code{i} is the cumulative sum of the values in \code{n} up to that index. 
 #' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
-#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
-#' - 10 is the number of patients enrolled at interim 1,
-#' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
-#' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
-#' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
+#' \itemize{
+#'   \item 10 is the number of patients enrolled at interim 1,
+#'   \item 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#'   \item 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#'   \item 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' }
 #' @param nsim number of simulation
 #' @param fb vector/matrix of futility boundary at each interim analysis specified 
-#' in the following order: c(resp_1,..., resp_{length(n)}, PFS6_1, ..., PFS6_{length(n)})
+#' in the following order: c(resp_1,..., resp_length(n), PFS6_1, ..., PFS6_length(n))
 #' @param sb vector/matrix  of superiority boundary at each interim analysis specified 
-#' in the following order: c(resp_1,..., resp_{length(n)}, PFS6_1, ..., PFS6_{length(n)})
+#' in the following order: c(resp_1,..., resp_length(n), PFS6_1, ..., PFS6_length(n))
 #' @param seed for reproducibility
 #' @importFrom stats rmultinom
 #' @export
 #' 
 #' @returns A data frame with the following columns
-#' \itemize{
+#' \describe{
 #' \item{lambda: }{lambda values for cut-off probability}
 #' \item{gamma: }{gamma valuesfor cut-off probability}
 #' \item{eta: }{eta valuesfor cut-off probability}
@@ -496,15 +500,17 @@ get_oc_coprimary <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
 #'  - `H1[2]`: Response - no PFS6,
 #'  - `H1[3]`: No Response - PFS6,
 #'  - `H1[4]`: No Response - no PFS6
-#' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
-#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
-#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis.
+#' The value at index \code{i} indicates the number of new patients added at interim analysis \code{i}. 
+#' The total sample size at interim \code{i} is the cumulative sum of the values in \code{n} up to that index. 
 #' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
-#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
-#' - 10 is the number of patients enrolled at interim 1,
-#' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
-#' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
-#' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
+#' \itemize{
+#'   \item 10 is the number of patients enrolled at interim 1,
+#'   \item 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#'   \item 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#'   \item 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' }
 #' @param nsim number of simulation. A value at least 1000 for better result
 #' @param lambda A vector of values for parameter `lambda` of the cut-off probability (i.e common for both efficacy and futility cut-off probability)
 #' @param gamma A vector of values for parameter `gamma` of the cut-off probability for futility 
@@ -516,7 +522,7 @@ get_oc_coprimary <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
 #' @export
 #' 
 #' @returns A data frame with the following columns
-#' \itemize{
+#' \describe{
 #' \item{fut_boundary_resp_i: }{Futility boundary for response at the ith analysis}
 #' \item{fut_boundary_tox_i: }{Futility boundary for toxicity at the ith analysis}
 #' \item{sup_boundary_resp_i: }{Superiority boundary for response at the ith analysis}
@@ -612,15 +618,17 @@ get_boundary_oc_coprimary <- function(
 #' - `H1[2]`: Response - no PFS6,
 #' - `H1[3]`: No Response - PFS6,
 #' - `H1[4]`: No Response - no PFS6
-#' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
-#' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
-#' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+#' @param n A numeric vector representing the additional patients enrolled at each interim analysis.
+#' The value at index \code{i} indicates the number of new patients added at interim analysis \code{i}. 
+#' The total sample size at interim \code{i} is the cumulative sum of the values in \code{n} up to that index. 
 #' For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
-#' the vector would be represented as `n = c(10, 5, 5, 10)`, where:
-#' - 10 is the number of patients enrolled at interim 1,
-#' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
-#' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
-#' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
+#' \itemize{
+#'   \item 10 is the number of patients enrolled at interim 1,
+#'   \item 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+#'   \item 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+#'   \item 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+#' }
 #' @param nsim number of simulation. A value at least 1000 for better result
 #' @param t1e Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value 
 #' @param lambda1 starting value for `lambda` values to search
@@ -637,7 +645,7 @@ get_boundary_oc_coprimary <- function(
 #' @param seed for reproducibility             
 #'
 #' @returns A data frame with the following columns
-#' \itemize{
+#' \describe{
 #' \item{fut_boundary_resp_i: }{Futility boundary for response at the ith analysis}
 #' \item{fut_boundary_tox_i: }{Futility boundary for toxicity at the ith analysis}
 #' \item{sup_boundary_resp_i: }{Superiority boundary for response at the ith analysis}

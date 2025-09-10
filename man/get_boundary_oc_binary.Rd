@@ -21,15 +21,17 @@ get_boundary_oc_binary(
 
 \item{H1}{Alternative response rates}
 
-\item{n}{A numeric vector representing the additional patients enrolled at each interim analysis. 
-The value at index `i` indicates the number of new patients added at interim analysis `i`. 
-The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
+\item{n}{A numeric vector representing the additional patients enrolled at each interim analysis.
+The value at index \code{i} indicates the number of new patients added at interim analysis \code{i}. 
+The total sample size at interim \code{i} is the cumulative sum of the values in \code{n} up to that index. 
 For example, for four interim analyses with total sample sizes of 10, 15, 20, and 30, 
-the vector would be represented as `n = c(10, 5, 5, 10)`, where:
- - 10 is the number of patients enrolled at interim 1,
- - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
- - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
- - 10 (30 - 20) is the additional number of patients enrolled at interim 4.}
+the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
+\itemize{
+  \item 10 is the number of patients enrolled at interim 1,
+  \item 5 (15 - 10) is the additional number of patients enrolled at interim 2,
+  \item 5 (20 - 15) is the additional number of patients enrolled at interim 3,
+  \item 10 (30 - 20) is the additional number of patients enrolled at interim 4.
+}}
 
 \item{nsim}{number of simulation. A value at least 1000 for better result}
 
@@ -46,7 +48,7 @@ Options are "power" (default) or "OF" for "O'Brien-Fleming".}
 }
 \value{
 A data frame with the following columns
-\itemize{
+\describe{
 \item{fut_boundary_i: }{Futility boundary at the ith analysis}
 \item{sup_boundary_i: }{Superiority boundary at the ith analysis}
 \item{earlystopfuti_mean_h0: }{Average number of early stopping due to futility under the null hypothesis}
