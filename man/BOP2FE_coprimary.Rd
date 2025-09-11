@@ -50,7 +50,7 @@ the vector would be represented as `n = c(10, 5, 5, 10)`, where:
 
 \item{t1e}{Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value}
 
-\item{method}{A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
+\item{method}{A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 Options are "power" (default) or "OF" for "O'Brien-Fleming".}
 
 \item{lambda1}{starting value for `lambda` values to search}

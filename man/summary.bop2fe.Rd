@@ -2,17 +2,19 @@
 % Please edit documentation in R/mains.R
 \name{summary.bop2fe}
 \alias{summary.bop2fe}
-\title{summrise main results for a given BOP2FE designs}
+\title{summarize main results for a given BOP2FE designs}
 \usage{
-\method{summary}{bop2fe}(object)
+\method{summary}{bop2fe}(object, ...)
 }
 \arguments{
 \item{object}{the object returned by BOP2FE_xx}
+
+\item{...}{additional parameters}
 }
 \value{
 \code{summary()} returns a list depending on the object entered including design parameters,
 boundary, operating characteristics.
 }
 \description{
-summrise main results for a given BOP2FE designs
+summarize main results for a given BOP2FE designs
 }

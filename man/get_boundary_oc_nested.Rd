@@ -68,8 +68,8 @@ A data frame with the following columns
   \item{ss_mean_h1: }{Average sample size under the alternative hypothesis} 
   \item{rejectnull_mean_h1: }{Average number of hypothesis rejection at the final analysis under the alternative hypothesis} 
   \item{lambda: }{lambda values for cut-off probability}
-  \item{gamma: }{gamma valuesfor cut-off probability}
-  \item{eta: }{eta valuesfor cut-off probability}}
+  \item{gamma: }{gamma values for cut-off probability}
+  \item{eta: }{eta values for cut-off probability}}
 }
 \description{
 Computes both the boundary and corresponding operating characteristics for nested endpoints

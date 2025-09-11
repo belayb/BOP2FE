@@ -60,7 +60,7 @@ get_boundary_coprimary <- function(H0, a, n, lambda, gamma, eta = NULL, method =
   generate_nested_sequences <- function(n, a, b1, b2, phi1, phi2) {
     data_list <- lapply(seq_along(n), function(i) {
       data <- expand.grid(Y1 = 0:n[i], Y2 = 0:n[i], Y3 = 0:n[i])
-      data <- subset(data, Y1 + Y2 + Y3 <= n[i])
+      data <- subset(data, data$Y1 + data$Y2 + data$Y3 <= n[i])
       data[["Y4"]] <- n[i] - data[["Y1"]] - data[["Y2"]] - data[["Y3"]]
       data[["beta_a_11"]] <- b1[1] * (a[1] + data[["Y1"]]) + b1[2] * (a[2] + data[["Y2"]]) + b1[3] * (a[3] + data[["Y3"]]) + b1[4] * (a[4] + data[['Y4']])
       data[["beta_b_11"]] <- (1 - b1[1]) * (a[1] + data[["Y1"]]) + (1 - b1[2]) * (a[2] + data[["Y2"]]) + (1 - b1[3]) * (a[3] + data[["Y3"]]) + (1 - b1[4]) * (a[4] + data[['Y4']])
@@ -82,17 +82,6 @@ get_boundary_coprimary <- function(H0, a, n, lambda, gamma, eta = NULL, method =
   nested_sequences <- generate_nested_sequences(cum_n, a, b1, b2, phi1, phi2)
   
   
-  # Combine into a single matrix
-  # combine_data <- function(nested_sequences, var) {
-  #   do.call(rbind, lapply(nested_sequences, function(data) {
-  #     max_len <- length(nested_sequences[[(length(nested_sequences))]][[var]])
-  #     vec <- data[[var]]
-  #     length(vec) <- max_len
-  #     return(vec)
-  #   }))
-  # }
-  # 
-  
   combine_data <- function(nested_sequences, var) {
     # Remove duplicated rows based on Y12, Y13, postp11, postp12
     nested_sequences <- lapply(nested_sequences, function(data) {
@@ -107,11 +96,6 @@ get_boundary_coprimary <- function(H0, a, n, lambda, gamma, eta = NULL, method =
     }))
   }
   
-  #Y1_range <- combine_data(nested_sequences, "Y1")
-  #Y2_range <- combine_data(nested_sequences, "Y2")
-  #Y3_range <- combine_data(nested_sequences, "Y3")
-  #Y12_range <- Y1_range + Y2_range
-  #Y13_range <- Y1_range + Y3_range
   Y12_range <- combine_data(nested_sequences, "Y12")
   Y13_range <- combine_data(nested_sequences, "Y13")
   postp11_range <- combine_data(nested_sequences, "postp11")
@@ -119,7 +103,6 @@ get_boundary_coprimary <- function(H0, a, n, lambda, gamma, eta = NULL, method =
   
   
   # Maximum values of cnf1
-  #sb1=Sys.time()
   cnf_max1 <- do.call(
     rbind,
     lapply(seq(lambda), function(i) {
@@ -135,8 +118,6 @@ get_boundary_coprimary <- function(H0, a, n, lambda, gamma, eta = NULL, method =
       )
     })
   )
-  #sb2=Sys.time()
-  #sb2-sb1
   
   # Maximum values of cnf2
   cnf_max2 <- do.call(
@@ -278,8 +259,8 @@ get_boundary_coprimary <- function(H0, a, n, lambda, gamma, eta = NULL, method =
 #' @returns A data frame with the following columns
 #' \describe{
 #' \item{lambda: }{lambda values for cut-off probability}
-#' \item{gamma: }{gamma valuesfor cut-off probability}
-#' \item{eta: }{eta valuesfor cut-off probability}
+#' \item{gamma: }{gamma values for cut-off probability}
+#' \item{eta: }{eta values for cut-off probability}
 #' \item{earlystopfuti_mean: }{Average number of early stopping due to futility}
 #'  \item{earlystopsupe_mean: }{Average number of early stopping for futility due to efficacy}
 #'   \item{ss_mean: }{Average sample size"} 
@@ -345,7 +326,7 @@ get_oc_coprimary <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
   uniq_fb <- fb[!duplicated(t((apply(fb[, c(paste0('f1', seq(n)),paste0('f2', seq(n)))], 1, sort)))),]
   # Unique combinations of s_{1},...,s_{length(n)}
   uniq_sb <- sb[!duplicated(t((apply(sb[, c(paste0('s1', seq(n)),paste0('s2', seq(n)))], 1, sort)))),]
-  # Merge two datasets of fb and sb
+  # Merge two data sets of fb and sb
   uniq_fb_and_sb = merge(uniq_fb, uniq_sb)
   
   # temp
@@ -397,11 +378,7 @@ get_oc_coprimary <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
   )
   futi_time[is.na(futi_time)] <- num_interims
   
-  # earlystopsupe<- as.matrix(earlystopsupe)
-  # earlystopfuti<-as.matrix(earlystopfuti)
-  # sup_time<-apply(earlystopsupe, 1, function(x) ifelse(any(x >= 1), which.max(x >=  1), num_interims))
-  # futi_time<-apply(earlystopfuti, 1, function(x) ifelse(any(x > 0), which.max(x >  0), num_interims))
-  # 
+  
   earlystopfuti <- matrix(as.double((rowSums(as.matrix(earlystopfuti)) > 0) & (futi_time < sup_time)), ncol = nsim)
   earlystopsupe <- matrix(as.double((rowSums(as.matrix(earlystopsupe)) > 0) & (futi_time > sup_time)), ncol = nsim)
   
@@ -536,8 +513,8 @@ get_oc_coprimary <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
 #'   \item{ss_mean_h1: }{Average sample size under the alternative hypothesis} 
 #'   \item{rejectnull_mean_h1: }{Average number of hypothesis rejection at the final analysis under the alternative hypothesis} 
 #'   \item{lambda: }{lambda values for cut-off probability}
-#'   \item{gamma: }{gamma valuesfor cut-off probability}
-#'   \item{eta: }{eta valuesfor cut-off probability}} 
+#'   \item{gamma: }{gamma values for cut-off probability}
+#'   \item{eta: }{eta values for cut-off probability}} 
 #' @examples
 #' \dontrun{
 #' oc_coprimary<-get_boundary_oc_coprimary(
@@ -640,7 +617,7 @@ get_boundary_oc_coprimary <- function(
 #' @param eta1 starting value for `eta` values to search
 #' @param eta2 ending value for `eta` values to search
 #' @param grid3 number of eta values to consider between eta1 and eta2
-#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
+#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility             
 #'
@@ -659,8 +636,8 @@ get_boundary_oc_coprimary <- function(
 #'   \item{ss_mean_h1: }{Average sample size under the alternative hypothesis} 
 #'   \item{rejectnull_mean_h1: }{Average number of hypothesis rejection at the final analysis under the alternative hypothesis} 
 #'   \item{lambda: }{lambda values for cut-off probability}
-#'   \item{gamma: }{gamma valuesfor cut-off probability}
-#'   \item{eta: }{eta valuesfor cut-off probability}} 
+#'   \item{gamma: }{gamma values for cut-off probability}
+#'   \item{eta: }{eta values for cut-off probability}} 
 #'
 #' @export
 #' @keywords internal

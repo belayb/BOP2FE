@@ -4,10 +4,12 @@
 \alias{plot.bop2fe}
 \title{Plot the cut-off probability and simulation results for BOP2FE designs}
 \usage{
-\method{plot}{bop2fe}(object)
+\method{plot}{bop2fe}(x, ...)
 }
 \arguments{
-\item{object}{the object returned by BOP2FE_xx}
+\item{x}{the object returned by BOP2FE_xx}
+
+\item{...}{additional parameters}
 }
 \value{
 \code{plot()} returns a figure depending on the object entered

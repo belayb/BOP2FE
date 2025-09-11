@@ -2,7 +2,7 @@
 % Please edit documentation in R/efftox_endpoint.R
 \name{get_boundary_oc_efftox}
 \alias{get_boundary_oc_efftox}
-\title{Computes both the boundry and corresponding operating charactersitcs for joint efficacy and toxicity endpoints}
+\title{Computes both the boundary and corresponding operating characteristics for joint efficacy and toxicity endpoints}
 \usage{
 get_boundary_oc_efftox(
   H0,
@@ -49,7 +49,7 @@ the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
 
 \item{eta}{A vector of values for parameter `eta` of the cut-off probability for efficacy}
 
-\item{method}{A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
+\item{method}{A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 Options are "power" (default) or "OF" for "O'Brien-Fleming".}
 
 \item{seed}{for reproducibility}
@@ -70,11 +70,11 @@ A data frame with the following columns
   \item{ss_mean_h1: }{Average sample size under the alternative hypothesis} 
   \item{rejectnull_mean_h1: }{Average number of hypothesis rejection at the final analysis under the alternative hypothesis} 
   \item{lambda: }{lambda values for cut-off probability}
-  \item{gamma: }{gamma valuesfor cut-off probability}
-  \item{eta: }{eta valuesfor cut-off probability}}
+  \item{gamma: }{gamma values for cut-off probability}
+  \item{eta: }{eta values for cut-off probability}}
 }
 \description{
-Computes both the boundry and corresponding operating charactersitcs for joint efficacy and toxicity endpoints
+Computes both the boundary and corresponding operating characteristics for joint efficacy and toxicity endpoints
 }
 \examples{
 \dontrun{

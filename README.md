@@ -12,9 +12,9 @@ coverage](https://codecov.io/gh/belayb/BOP2FE/graph/badge.svg)](https://app.code
 
 This R-package implements a flexible Bayesian optimal phase II design
 with futility and efficacy stopping boundaries for single-arm clinical
-trials, named the BOP2-FE design, proposed by Xu et al (under review).
-The proposed BOP2-FE design allows for early stopping of efficacy when
-the observed antitumor effect is sufficiently higher than the null
+trials, named the BOP2-FE design, proposed by Xu et al. (2025). The
+proposed BOP2-FE design allows for early stopping of efficacy when the
+observed antitumor effect is sufficiently higher than the null
 hypothesis value in the interim looks and retains the benefits of the
 original BOP2 design, such as explicitly controlling the type I error
 rate while maximizing power, accommodating different types of endpoint,
@@ -63,6 +63,9 @@ summary(test_binary)
 #> $design_pars$n
 #> [1] 10  5  5  5  5  5  5
 #> 
+#> $design_pars$cum_n
+#> [1] 10 15 20 25 30 35 40
+#> 
 #> $design_pars$nsim
 #> [1] 1000
 #> 
@@ -78,9 +81,9 @@ summary(test_binary)
 #> 1    0.9     1 2.1
 #> 
 #> $boundary
-#>                   IA1 IA2 IA3 IA4 IA5 IA6 IA7
-#> Futility boundary   1   2   3   5   7   9  11
-#> Efficacy boundary   6   8   9  10  10  11  12
+#>                   IA1 IA2 IA3 IA4 IA5 IA6 FA
+#> Futility boundary   1   2   3   5   7   9 11
+#> Efficacy boundary   6   8   9  10  10  11 12
 #> 
 #> $oc
 #>                         Under H0 Under H1
@@ -90,7 +93,7 @@ summary(test_binary)
 #> Reject null                0.095    0.883
 ```
 
-The result of BOP2-FE can be ploted as follow
+The result of BOP2-FE can be visualized as follow
 
 ``` r
 plot(test_binary)
@@ -121,6 +124,9 @@ summary(test_nested)
 #> $design_pars$n
 #> [1] 10  5  5  5  5  5  5
 #> 
+#> $design_pars$cum_n
+#> [1] 10 15 20 25 30 35 40
+#> 
 #> $design_pars$nsim
 #> [1] 1000
 #> 
@@ -136,11 +142,11 @@ summary(test_nested)
 #> 1    0.9   0.3   2
 #> 
 #> $boundary
-#>                           IA1 IA2 IA3 IA4 IA5 IA6 IA7
-#> Futility boundary (CR)      1   3   4   5   6   7   9
-#> Futility boundary (CR/PR)   3   5   7   9  11  13  15
-#> Efficacy boundary (CR)      6   6   7   8   9   9  10
-#> Efficacy boundary (CR/PR)   8   9  11  12  14  15  16
+#>                           IA1 IA2 IA3 IA4 IA5 IA6 FA
+#> Futility boundary (CR)      1   3   4   5   6   7  9
+#> Futility boundary (CR/PR)   3   5   7   9  11  13 15
+#> Efficacy boundary (CR)      6   6   7   8   9   9 10
+#> Efficacy boundary (CR/PR)   8   9  11  12  14  15 16
 #> 
 #> $oc
 #>                         Under H0 Under H1
@@ -174,6 +180,9 @@ summary(test_coprimary)
 #> $design_pars$n
 #> [1] 10  5  5  5  5  5  5
 #> 
+#> $design_pars$cum_n
+#> [1] 10 15 20 25 30 35 40
+#> 
 #> $design_pars$nsim
 #> [1] 1000
 #> 
@@ -189,11 +198,11 @@ summary(test_coprimary)
 #> 1    0.9   0.3 2.3
 #> 
 #> $boundary
-#>                          IA1 IA2 IA3 IA4 IA5 IA6 IA7
-#> Futility boundary (OR)     1   2   3   4   4   5   6
-#> Futility boundary (PFS6)   2   3   5   6   8   9  11
-#> Efficacy boundary (OR)     5   6   6   6   7   7   7
-#> Efficacy boundary (PFS6)   7   8   9  10  11  11  12
+#>                          IA1 IA2 IA3 IA4 IA5 IA6 FA
+#> Futility boundary (OR)     1   2   3   4   4   5  6
+#> Futility boundary (PFS6)   2   3   5   6   8   9 11
+#> Efficacy boundary (OR)     5   6   6   6   7   7  7
+#> Efficacy boundary (PFS6)   7   8   9  10  11  11 12
 #> 
 #> $oc
 #>                         Under H0 Under H1
@@ -228,6 +237,9 @@ summary(test_joint)
 #> $design_pars$n
 #> [1] 10  5  5  5  5  5  5
 #> 
+#> $design_pars$cum_n
+#> [1] 10 15 20 25 30 35 40
+#> 
 #> $design_pars$nsim
 #> [1] 1000
 #> 
@@ -243,11 +255,11 @@ summary(test_joint)
 #> 1    0.7   0.8 0.9
 #> 
 #> $boundary
-#>                         IA1 IA2 IA3 IA4 IA5 IA6 IA7
-#> Futility boundary (OR)    3   5   8  11  13  16  19
-#> Futility boundary (Tox)   5   6   7   8   9  10  11
-#> Efficacy boundary (OR)    7  10  12  14  16  18  20
-#> Efficacy boundary (Tox)   1   2   4   5   7   8  10
+#>                         IA1 IA2 IA3 IA4 IA5 IA6 FA
+#> Futility boundary (OR)    3   5   8  11  13  16 19
+#> Futility boundary (Tox)   5   6   7   8   9  10 11
+#> Efficacy boundary (OR)    7  10  12  14  16  18 20
+#> Efficacy boundary (Tox)   1   2   4   5   7   8 10
 #> 
 #> $oc
 #>                         Under H0 Under H1

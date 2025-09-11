@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 This R-package implements a flexible Bayesian optimal phase II design with futility and efficacy
-stopping boundaries for single-arm clinical trials, named the BOP2-FE design, proposed by Xu et al (under review). The proposed BOP2-FE design allows for early stopping of efficacy when the observed
+stopping boundaries for single-arm clinical trials, named the BOP2-FE design, proposed by Xu et al. (2025). The proposed BOP2-FE design allows for early stopping of efficacy when the observed
 antitumor effect is sufficiently higher than the null hypothesis value in the interim
 looks and retains the benefits of the original BOP2 design, such as explicitly controlling the type I error rate while maximizing power, accommodating different types
 of endpoint, flexible number of interim looks, and stopping boundaries calculated
@@ -63,7 +63,7 @@ summary(test_binary)
 
 ```
 
-The result of BOP2-FE can be ploted as follow
+The result of BOP2-FE can be visualized as follow
 
 ```{r binary2}
 plot(test_binary)

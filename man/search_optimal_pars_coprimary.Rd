@@ -52,7 +52,7 @@ the vector would be represented as \code{n = c(10, 5, 5, 10)}, where:
 
 \item{t1e}{Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value}
 
-\item{method}{A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
+\item{method}{A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 Options are "power" (default) or "OF" for "O'Brien-Fleming".}
 
 \item{lambda1}{starting value for `lambda` values to search}
@@ -91,8 +91,8 @@ A data frame with the following columns
   \item{ss_mean_h1: }{Average sample size under the alternative hypothesis} 
   \item{rejectnull_mean_h1: }{Average number of hypothesis rejection at the final analysis under the alternative hypothesis} 
   \item{lambda: }{lambda values for cut-off probability}
-  \item{gamma: }{gamma valuesfor cut-off probability}
-  \item{eta: }{eta valuesfor cut-off probability}}
+  \item{gamma: }{gamma values for cut-off probability}
+  \item{eta: }{eta values for cut-off probability}}
 }
 \description{
 `search_optimal_pars_coprimary()` is a helper function and calls `get_boundary_oc_coprimary()` to obtain the

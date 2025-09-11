@@ -68,7 +68,7 @@ get_boundary_nested <- function(H0, a, n, lambda, gamma, eta = NULL, method = "p
   generate_nested_sequences <- function(n, a, b1, b2, phi1, phi2) {
     data_list <- lapply(seq_along(n), function(i) {
       data <- expand.grid(Y1 = 0:n[i], Y2 = 0:n[i])
-      data <- subset(data, Y1 + Y2 <= n[i])
+      data <- subset(data, data$Y1 + data$Y2 <= n[i])
       data[["Y3"]] <- n[i] - data[["Y1"]] - data[["Y2"]]
       data[["beta_a_11"]] <- b1[1] * (a[1] + data[["Y1"]]) + b1[2] * (a[2] + data[["Y2"]]) + b1[3] * (a[3] + data[["Y3"]])
       data[["beta_b_11"]] <- (1 - b1[1]) * (a[1] + data[["Y1"]]) + (1 - b1[2]) * (a[2] + data[["Y2"]]) + (1 - b1[3]) * (a[3] + data[["Y3"]])
@@ -87,15 +87,7 @@ get_boundary_nested <- function(H0, a, n, lambda, gamma, eta = NULL, method = "p
   # Generate sequences for each interim analysis
   nested_sequences <- generate_nested_sequences(cum_n, a, b1, b2, phi1, phi2)
   
-  # Combine into a single matrix
-  # combine_data <- function(nested_sequences, var) {
-  #   do.call(rbind, lapply(nested_sequences, function(data) {
-  #     max_len <- length(nested_sequences[[(length(nested_sequences))]][[var]])
-  #     vec <- data[[var]]
-  #     length(vec) <- max_len
-  #     return(vec)
-  #   }))
-  # }
+ 
   combine_data <- function(nested_sequences, var) {
     # Remove duplicated rows based on Y1, Y12, postp11, postp12
     nested_sequences <- lapply(nested_sequences, function(data) {
@@ -271,8 +263,8 @@ get_boundary_nested <- function(H0, a, n, lambda, gamma, eta = NULL, method = "p
 #' @returns A data frame with the following columns
 #' \describe{
 #' \item{lambda: }{lambda values for cut-off probability}
-#' \item{gamma: }{gamma valuesfor cut-off probability}
-#' \item{eta: }{eta valuesfor cut-off probability}
+#' \item{gamma: }{gamma values for cut-off probability}
+#' \item{eta: }{eta values for cut-off probability}
 #' \item{earlystopfuti_mean: }{Average number of early stopping due to futility}
 #'  \item{earlystopsupe_mean: }{Average number of early stopping for futility due to efficacy}
 #'   \item{ss_mean: }{Average sample size"} 
@@ -337,7 +329,7 @@ get_oc_nested <- function(p1, p2, p3, n, nsim, fb, sb, seed = NULL) {
   uniq_fb <- fb[!duplicated(t((apply(fb[, c(paste0('f1', seq(n)),paste0('f2', seq(n)))], 1, sort)))),]
   # Unique combinations of s_{1},...,s_{length(n)}
   uniq_sb <- sb[!duplicated(t((apply(sb[, c(paste0('s1', seq(n)),paste0('s2', seq(n)))], 1, sort)))),]
-  # Merge two datasets of fb and sb
+  # Merge two data sets of fb and sb
   uniq_fb_and_sb = merge(uniq_fb, uniq_sb)
   
   # temp
@@ -522,8 +514,8 @@ get_oc_nested <- function(p1, p2, p3, n, nsim, fb, sb, seed = NULL) {
 #'   \item{ss_mean_h1: }{Average sample size under the alternative hypothesis} 
 #'   \item{rejectnull_mean_h1: }{Average number of hypothesis rejection at the final analysis under the alternative hypothesis} 
 #'   \item{lambda: }{lambda values for cut-off probability}
-#'   \item{gamma: }{gamma valuesfor cut-off probability}
-#'   \item{eta: }{eta valuesfor cut-off probability}} 
+#'   \item{gamma: }{gamma values for cut-off probability}
+#'   \item{eta: }{eta values for cut-off probability}} 
 #' @examples
 #' \dontrun{
 #' oc_nested<-get_boundary_oc_nested(
@@ -643,8 +635,8 @@ get_boundary_oc_nested <- function(
 #'   \item{ss_mean_h1: }{Average sample size under the alternative hypothesis} 
 #'   \item{rejectnull_mean_h1: }{Average number of hypothesis rejection at the final analysis under the alternative hypothesis} 
 #'   \item{lambda: }{lambda values for cut-off probability}
-#'   \item{gamma: }{gamma valuesfor cut-off probability}
-#'   \item{eta: }{eta valuesfor cut-off probability}} 
+#'   \item{gamma: }{gamma values for cut-off probability}
+#'   \item{eta: }{eta values for cut-off probability}} 
 #'
 #' @export
 #' @keywords internal

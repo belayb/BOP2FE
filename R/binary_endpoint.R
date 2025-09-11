@@ -166,8 +166,8 @@ get_boundary_binary <- function(H0, a1, b1, n, lambda, gamma, eta = NULL, method
 #' @returns A data frame with the following columns
 #' \describe{
 #' \item{lambda: }{lambda values for cut-off probability}
-#' \item{gamma: }{gamma valuesfor cut-off probability}
-#' \item{eta: }{eta valuesfor cut-off probability}
+#' \item{gamma: }{gamma values for cut-off probability}
+#' \item{eta: }{eta values for cut-off probability}
 #' \item{earlystopfuti_mean: }{Average number of early stopping due to futility}
 #'  \item{earlystopsupe_mean: }{Average number of early stopping for futility due to efficacy}
 #'   \item{ss_mean: }{Average sample size} 
@@ -371,8 +371,8 @@ get_oc_binary <- function(p, n, nsim, fb, sb, seed = NULL) {
 #'   \item{ss_mean_h1: }{Average sample size under the alternative hypothesis} 
 #'   \item{rejectnull_mean_h1: }{Average number of hypothesis rejection at the final analysis under the alternative hypothesis} 
 #'   \item{lambda: }{lambda values for cut-off probability}
-#'   \item{gamma: }{gamma valuesfor cut-off probability}
-#'   \item{eta: }{eta valuesfor cut-off probability}} 
+#'   \item{gamma: }{gamma values for cut-off probability}
+#'   \item{eta: }{eta values for cut-off probability}} 
 #' @examples
 #' \dontrun{
 #' oc_binary<-get_boundary_oc_binary(
@@ -468,7 +468,7 @@ get_boundary_oc_binary <- function(
 #' @param eta1 starting value for `eta` values to search
 #' @param eta2 ending value for `eta` values to search
 #' @param grid3 number of eta values to consider between eta1 and eta2
-#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
+#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility             
 #'
@@ -485,8 +485,8 @@ get_boundary_oc_binary <- function(
 #'   \item{ss_mean_h1: }{Average sample size under the alternative hypothesis} 
 #'   \item{rejectnull_mean_h1: }{Average number of hypothesis rejection at the final analysis under the alternative hypothesis} 
 #'   \item{lambda: }{lambda values for cut-off probability}
-#'   \item{gamma: }{gamma valuesfor cut-off probability}
-#'   \item{eta:2 }{eta valuesfor cut-off probability}
+#'   \item{gamma: }{gamma values for cut-off probability}
+#'   \item{eta:2 }{eta values for cut-off probability}
 #'   } 
 #'
 #' @export

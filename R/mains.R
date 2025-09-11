@@ -25,7 +25,7 @@
 #' @param eta1 starting value for `eta` values to search
 #' @param eta2 ending value for `eta` values to search
 #' @param grid3 number of eta values to consider between eta1 and eta2
-#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
+#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility             
 #'
@@ -55,17 +55,14 @@ BOP2FE_binary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
                           eta1 = NULL, eta2 = NULL, grid3 = NULL, 
                           seed = NULL) {
   
-  # Check paramters 
-  
-  
   design_pars <- list(H0 = H0,
                       H1 = H1, 
                       n = n,
+                      cum_n =cumsum(n),
                       nsim = nsim,
                       t1e = t1e,
                       method = method)
   
-  # Call search_optimal_pars_efftox
   all_res <- search_optimal_pars_binary(
     H0, H1, n, nsim, t1e, method, 
     lambda1, lambda2, grid1, 
@@ -75,8 +72,7 @@ BOP2FE_binary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
   
   search_result <- as.data.frame(all_res)
   
-  # add function to compute operating charactersics for additional alternative hypothesis using the optimal parmeter
-  
+
   result <- list(
     end_point = "binary",
     design_pars = design_pars,
@@ -151,17 +147,15 @@ BOP2FE_nested <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
                           eta1 = NULL, eta2 = NULL, grid3 = NULL, 
                           seed = NULL) {
   
-  # Check paramters 
-  
   
   design_pars <- list(H0 = H0,
                       H1 = H1, 
                       n = n,
+                      cum_n =cumsum(n),
                       nsim = nsim,
                       t1e = t1e,
                       method = method)
   
-  # Call search_optimal_pars_efftox
   all_res <- search_optimal_pars_nested(
     H0, H1, n, nsim, t1e, method, 
     lambda1, lambda2, grid1, 
@@ -171,8 +165,7 @@ BOP2FE_nested <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
   
   search_result <- as.data.frame(all_res)
   
-  # add function to compute operating charactersics for additional alternative hypothesis using the optimal parmeter
-  
+
   result <- list(
     end_point = "nested",
     design_pars = design_pars,
@@ -219,7 +212,7 @@ BOP2FE_nested <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' @param eta1 starting value for `eta` values to search
 #' @param eta2 ending value for `eta` values to search
 #' @param grid3 number of eta values to consider between eta1 and eta2
-#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
+#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility             
 #'
@@ -248,17 +241,14 @@ BOP2FE_coprimary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
                              eta1 = NULL, eta2 = NULL, grid3 = NULL, 
                              seed = NULL) {
   
-  # Check paramters 
-  
-  
   design_pars <- list(H0 = H0,
                       H1 = H1, 
                       n = n,
+                      cum_n =cumsum(n),
                       nsim = nsim,
                       t1e = t1e,
                       method = method)
   
-  # Call search_optimal_pars_efftox
   all_res <- search_optimal_pars_coprimary(
     H0, H1, n, nsim, t1e, method, 
     lambda1, lambda2, grid1, 
@@ -268,8 +258,7 @@ BOP2FE_coprimary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
   
   search_result <- as.data.frame(all_res)
   
-  # add function to compute operating charactersics for additional alternative hypothesis using the optimal parmeter
-  
+
   result <- list(
     end_point = "coprimary",
     design_pars = design_pars,
@@ -316,7 +305,7 @@ BOP2FE_coprimary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' @param eta1 starting value for `eta` values to search
 #' @param eta2 ending value for `eta` values to search
 #' @param grid3 number of eta values to consider between eta1 and eta2
-#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stoping.
+#' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility             
 #' @export
@@ -345,17 +334,16 @@ BOP2FE_jointefftox <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
                                eta1 = NULL, eta2 = NULL, grid3 = NULL, 
                                seed = NULL) {
   
-  # Check paramters 
-  
+
   
   design_pars <- list(H0 = H0,
                       H1 = H1, 
                       n = n,
+                      cum_n =cumsum(n),
                       nsim = nsim,
                       t1e = t1e,
                       method = method)
   
-  # Call search_optimal_pars_efftox
   all_res <- search_optimal_pars_efftox(
     H0, H1, n, nsim, t1e, method, 
     lambda1, lambda2, grid1, 
@@ -365,8 +353,7 @@ BOP2FE_jointefftox <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
   
   search_result <- as.data.frame(all_res)
   
-  # add function to compute operating charactersics for additional alternative hypothesis using the optimal parmeter
-  
+
   result <- list(
     end_point = "efftox",
     design_pars = design_pars,
@@ -379,17 +366,19 @@ BOP2FE_jointefftox <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 }
 
 
-#' summrise main results for a given BOP2FE designs
+#' summarize main results for a given BOP2FE designs
 #'
 #' @param object the object returned by BOP2FE_xx
+#' @param ... additional parameters 
 #'
 #' @return \code{summary()} returns a list depending on the object entered including design parameters,
 #' boundary, operating characteristics. 
 #' @rdname summary.bop2fe
+#' @method summary bop2fe
 #' @export
 #' @importFrom utils packageVersion
 #' 
-summary.bop2fe <- function(object) {
+summary.bop2fe <- function(object, ...) {
   selected_res <- object$search_result[1,]
   
   grab <- function(data, prefix) {
@@ -397,7 +386,6 @@ summary.bop2fe <- function(object) {
     list(values = unlist(data[, cols]), nc = length(cols))
   }
   
-  # This part is endpoint dependant 
   if(object$end_point == "binary"){
     fut_boundary <- grab(selected_res, 'fut_boundary')
     sup_boundary <- grab(selected_res, 'sup_boundary')
@@ -406,7 +394,7 @@ summary.bop2fe <- function(object) {
     summary_tab1[1, ] <- fut_boundary$values
     summary_tab1[2, ] <- sup_boundary$values
     row.names(summary_tab1) <- c("Futility boundary", "Efficacy boundary")
-    colnames(summary_tab1) <- paste0("IA", seq(nc))
+    colnames(summary_tab1) <- c(paste0("IA", seq(nc-1)), "FA")
   }else if(object$end_point == "nested"){
     fut_boundary_CR <- grab(selected_res, 'fut_boundary_CR_')
     fut_boundary_CRPR <- grab(selected_res, 'fut_boundary_CR/PR_')
@@ -420,7 +408,7 @@ summary.bop2fe <- function(object) {
     summary_tab1[4, ] <- sup_boundary_CRPR$values
     row.names(summary_tab1) <- c("Futility boundary (CR)", "Futility boundary (CR/PR)",
                                  "Efficacy boundary (CR)", "Efficacy boundary (CR/PR)")
-    colnames(summary_tab1) <- paste0("IA", seq(nc))
+    colnames(summary_tab1) <- c(paste0("IA", seq(nc-1)), "FA")
   }else if(object$end_point == "coprimary"){
     fut_boundary_OR <- grab(selected_res, 'fut_boundary_OR')
     fut_boundary_PFS6 <- grab(selected_res, 'fut_boundary_PFS6')
@@ -434,7 +422,7 @@ summary.bop2fe <- function(object) {
     summary_tab1[4, ] <- sup_boundary_PFS6$values
     row.names(summary_tab1) <- c("Futility boundary (OR)", "Futility boundary (PFS6)",
                                  "Efficacy boundary (OR)", "Efficacy boundary (PFS6)")
-    colnames(summary_tab1) <- paste0("IA", seq(nc))
+    colnames(summary_tab1) <- c(paste0("IA", seq(nc-1)), "FA")
   } else if(object$end_point == "efftox"){
     fut_boundary_OR <- grab(selected_res, 'fut_boundary_OR')
     fut_boundary_Tox <- grab(selected_res, 'fut_boundary_Tox')
@@ -448,10 +436,9 @@ summary.bop2fe <- function(object) {
     summary_tab1[4, ] <- sup_boundary_Tox$values
     row.names(summary_tab1) <- c("Futility boundary (OR)", "Futility boundary (Tox)",
                                  "Efficacy boundary (OR)", "Efficacy boundary (Tox)")
-    colnames(summary_tab1) <- paste0("IA", seq(nc))
+    colnames(summary_tab1) <- c(paste0("IA", seq(nc-1)), "FA")
   }
-  # end of endpoint dependant 
-  
+
   summary_tab2 <- matrix(0, 4, 2)
   summary_tab2[, 1] <- unlist(selected_res[, c('earlystopfuti_mean_h0', 'earlystopsupe_mean_h0', 
                                                'ss_mean_h0', 'rejectnull_mean_h0')])
@@ -480,74 +467,76 @@ summary.bop2fe <- function(object) {
 #' (3) operating characteristics
 #'
 #'
-#' @param object the object returned by BOP2FE_xx
+#' @param x the object returned by BOP2FE_xx
+#' @param ... additional parameters 
 #'
 #' @return \code{plot()} returns a figure depending on the object entered
+#' @rdname plot.bop2fe
+#' @method plot bop2fe
 #' @importFrom gridExtra tableGrob ttheme_minimal
 #' @importFrom patchwork plot_annotation wrap_plots 
 #' @import ggplot2
 #' @export
-#' @rdname plot.bop2fe
-plot.bop2fe <- function(object) {
-  summary_data <- summary(object)
+#' 
+plot.bop2fe <- function(x, ...) {
+  summary_data <- summary(x)
   summary_tab1 <- summary_data$boundary
   summary_tab2 <- summary_data$oc
   opt_pars <- summary_data$opt_pars
   
-  nsum <- sum(object$design_pars$n)
+  nsum <- sum(x$design_pars$n)
   plot_dat <- data.frame(n = 0:nsum)
   
   plot_dat$postprob_fut <- opt_pars$lambda * (plot_dat$n / nsum)^opt_pars$gamma * 100
-  if (object$design_pars$method == "OF") {
+  if (x$design_pars$method == "OF") {
     plot_dat$postprob_sup <- (2 * pnorm(qnorm((1 + opt_pars$lambda) / 2) / sqrt(plot_dat$n / nsum)) - 1) * 100
   } else { # "power"
     plot_dat$postprob_sup <- (1 - (1 - opt_pars$lambda) * (plot_dat$n / nsum)^opt_pars$eta) * 100
   }
   
-  IAs <- cumsum(object$design_pars$n)
+  IAs <- cumsum(x$design_pars$n)
   
-  p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = n)) +
-    ggplot2::geom_line(ggplot2::aes(y = postprob_fut), color = "blue", linewidth = 1) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = postprob_fut), fill = "blue", alpha = 0.7) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
-    ggplot2::geom_line(ggplot2::aes(y = postprob_sup), color = "red", linewidth = 1, alpha = 0.7) +
-    ggplot2::geom_ribbon(ggplot2::aes(ymin = postprob_sup, ymax = 100), fill = "red", alpha = 0.8) +
-    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = cumsum(object$design_pars$n)) +
+  p1 <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = .data$n)) +
+    ggplot2::geom_line(ggplot2::aes(y = .data$postprob_fut), color = "blue", linewidth = 1) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = 0, ymax = .data$postprob_fut), fill = "blue", alpha = 0.7) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = .data$postprob_fut, ymax = 100), fill = "gray", alpha = 0.8) +
+    ggplot2::geom_line(ggplot2::aes(y = .data$postprob_sup), color = "red", linewidth = 1, alpha = 0.7) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = .data$postprob_sup, ymax = 100), fill = "red", alpha = 0.8) +
+    ggplot2::scale_x_continuous(name = "Number of Enrolled Participants", breaks = IAs) +
     ggplot2::scale_y_continuous(name = paste("Cut-off", "\n", "Probability (%)"), breaks = seq(0, 100, by = 20)) +
     ggplot2::geom_vline(xintercept = IAs, linetype = "dashed") +
     ggplot2::theme_bw()
+
   
   Oc_tabs2 <- gridExtra::tableGrob(summary_tab2, theme = gridExtra::ttheme_minimal())
   boundary_tab2 <- gridExtra::tableGrob(summary_tab1, theme = gridExtra::ttheme_minimal())
   
   run_date <- Sys.Date()
-  
-  # This part is endpoint dependant 
-  if(object$end_point=="binary"){
-    Info <- paste0("Efficacy cutoff probabilities method - ", object$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
-    Info2 <- paste0("Resp =", object$design_pars$H0)
-    Info3 <- paste0("Resp =", object$design_pars$H1)
+ 
+  if(x$end_point=="binary"){
+    Info <- paste0("Efficacy cutoff probabilities method - ", x$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
+    Info2 <- paste0("Resp =", x$design_pars$H0)
+    Info3 <- paste0("Resp =", x$design_pars$H1)
     title <- "BOP2 FE for binary endpoint"
     
-  } else if (object$end_point =="nested"){
-    Info <- paste0("Efficacy cutoff probabilities method - ", object$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
-    Info2 <- paste0("CR =", object$design_pars$H0[1], " ", "CR/PR =", object$design_pars$H0[1] + object$design_pars$H0[2])
-    Info3 <- paste0("CR =", object$design_pars$H1[1], " ", "CR/PR =", object$design_pars$H1[1] + object$design_pars$H1[2])
+  } else if (x$end_point =="nested"){
+    Info <- paste0("Efficacy cutoff probabilities method - ", x$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
+    Info2 <- paste0("CR =", x$design_pars$H0[1], " ", "CR/PR =", x$design_pars$H0[1] + x$design_pars$H0[2])
+    Info3 <- paste0("CR =", x$design_pars$H1[1], " ", "CR/PR =", x$design_pars$H1[1] + x$design_pars$H1[2])
     title <- "BOP2 FE for nested endpoint"
-  } else if (object$end_point =="coprimary"){
-    Info <- paste0("Efficacy cutoff probabilities method - ", object$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
-    Info2 <- paste0("ORR-PFS6 =", object$design_pars$H0[1], " ", "ORR-no PFS6 =", object$design_pars$H0[2], " ", "no ORR-PFS6 =", object$design_pars$H0[3], " ", "no ORR- no PFS6 =", object$design_pars$H0[4])
-    Info3 <- paste0("ORR-PFS6 =", object$design_pars$H1[1], " ", "ORR-no PFS6 =", object$design_pars$H1[2], " ", "no ORR-PFS6 =", object$design_pars$H1[3], " ", "no ORR- no PFS6 =", object$design_pars$H1[4])
+  } else if (x$end_point =="coprimary"){
+    Info <- paste0("Efficacy cutoff probabilities method - ", x$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
+    Info2 <- paste0("ORR-PFS6 =", x$design_pars$H0[1], " ", "ORR-no PFS6 =", x$design_pars$H0[2], " ", "no ORR-PFS6 =", x$design_pars$H0[3], " ", "no ORR- no PFS6 =", x$design_pars$H0[4])
+    Info3 <- paste0("ORR-PFS6 =", x$design_pars$H1[1], " ", "ORR-no PFS6 =", x$design_pars$H1[2], " ", "no ORR-PFS6 =", x$design_pars$H1[3], " ", "no ORR- no PFS6 =", x$design_pars$H1[4])
     title <- "BOP2 FE for coprimary endpoint"
-  } else if (object$end_point =="efftox"){
-    Info <- paste0("Efficacy cutoff probabilities method - ", object$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
-    Info2 <- paste0("Resp-tox =", object$design_pars$H0[1], " ", "Resp-no tox =", object$design_pars$H0[2], " ", "no Resp-tox =", object$design_pars$H0[3], " ", "no Resp- no tox =", object$design_pars$H0[4])
-    Info3 <- paste0("Resp-tox =", object$design_pars$H1[1], " ", "Resp-no tox =", object$design_pars$H1[2], " ", "no Resp-tox =", object$design_pars$H1[3], " ", "no Resp- no tox =", object$design_pars$H1[4])
+  } else if (x$end_point =="efftox"){
+    Info <- paste0("Efficacy cutoff probabilities method - ", x$design_pars$method, ":", " ", "lambda=", opt_pars$lambda, " ", "gamma=", opt_pars$gamma, " ", "eta=", opt_pars$eta)
+    Info2 <- paste0("Resp-tox =", x$design_pars$H0[1], " ", "Resp-no tox =", x$design_pars$H0[2], " ", "no Resp-tox =", x$design_pars$H0[3], " ", "no Resp- no tox =", x$design_pars$H0[4])
+    Info3 <- paste0("Resp-tox =", x$design_pars$H1[1], " ", "Resp-no tox =", x$design_pars$H1[2], " ", "no Resp-tox =", x$design_pars$H1[3], " ", "no Resp- no tox =", x$design_pars$H1[4])
     title <- "BOP2 FE for joint efficacy and toxicity endpoint"
   } 
   
-  # end of endpoint dependant part
-  
+
   layout <- patchwork::wrap_plots(p1, Oc_tabs2, boundary_tab2, nrow = 3)
   layout <- layout +
     patchwork::plot_annotation(

@@ -41,8 +41,8 @@ in the following order: c(resp_1,..., resp_length(n), PFS6_1, ..., PFS6_length(n
 A data frame with the following columns
 \describe{
 \item{lambda: }{lambda values for cut-off probability}
-\item{gamma: }{gamma valuesfor cut-off probability}
-\item{eta: }{eta valuesfor cut-off probability}
+\item{gamma: }{gamma values for cut-off probability}
+\item{eta: }{eta values for cut-off probability}
 \item{earlystopfuti_mean: }{Average number of early stopping due to futility}
  \item{earlystopsupe_mean: }{Average number of early stopping for futility due to efficacy}
   \item{ss_mean: }{Average sample size"} 
