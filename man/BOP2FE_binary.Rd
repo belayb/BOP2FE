@@ -89,3 +89,6 @@ plot(test_binary)
 
 
 }
+\references{
+Xu, X., Hashimoto, A., Yimer, B., & Takeda, K. (2025). BOP2-FE: Bayesian optimal phase II design with futility and efficacy stopping boundaries. Journal of Biopharmaceutical Statistics \url{https://doi.org/10.1080/10543406.2025.2558142}.
+}

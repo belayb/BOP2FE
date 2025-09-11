@@ -48,6 +48,8 @@
 #' }
 #' 
 #' 
+#' @references 
+#' Xu, X., Hashimoto, A., Yimer, B., & Takeda, K. (2025). BOP2-FE: Bayesian optimal phase II design with futility and efficacy stopping boundaries. Journal of Biopharmaceutical Statistics \url{https://doi.org/10.1080/10543406.2025.2558142}.
 
 BOP2FE_binary <- function(H0, H1, n, nsim, t1e = NULL, method = "power", 
                           lambda1, lambda2, grid1, 
@@ -141,6 +143,9 @@ BOP2FE_binary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #'plot(test_nested)
 #'}
 #' 
+#' @references 
+#' Xu, X., Hashimoto, A., Yimer, B., & Takeda, K. (2025). BOP2-FE: Bayesian optimal phase II design with futility and efficacy stopping boundaries. Journal of Biopharmaceutical Statistics \url{https://doi.org/10.1080/10543406.2025.2558142}.
+
 BOP2FE_nested <- function(H0, H1, n, nsim, t1e = NULL, method = "power", 
                           lambda1, lambda2, grid1, 
                           gamma1, gamma2, grid2, 
@@ -235,6 +240,10 @@ BOP2FE_nested <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #'plot(test_coprimary)
 #'}
 #' 
+#' 
+#' @references 
+#' Xu, X., Hashimoto, A., Yimer, B., & Takeda, K. (2025). BOP2-FE: Bayesian optimal phase II design with futility and efficacy stopping boundaries. Journal of Biopharmaceutical Statistics \url{https://doi.org/10.1080/10543406.2025.2558142}.
+#' 
 BOP2FE_coprimary <- function(H0, H1, n, nsim, t1e = NULL, method = "power", 
                              lambda1, lambda2, grid1, 
                              gamma1, gamma2, grid2, 
@@ -327,6 +336,9 @@ BOP2FE_coprimary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #'summary(test_joint)
 #'plot(test_joint)
 #'}
+#' 
+#' @references 
+#' Xu, X., Hashimoto, A., Yimer, B., & Takeda, K. (2025). BOP2-FE: Bayesian optimal phase II design with futility and efficacy stopping boundaries. Journal of Biopharmaceutical Statistics \url{https://doi.org/10.1080/10543406.2025.2558142}.
 #' 
 BOP2FE_jointefftox <- function(H0, H1, n, nsim, t1e = NULL, method = "power", 
                                lambda1, lambda2, grid1, 

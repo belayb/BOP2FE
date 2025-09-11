@@ -1,6 +1,6 @@
 Package: BOP2FE
 Type: Package
-Title: Bayesian optimal phase II design with futility and efficacy stopping boundaries 
+Title: Bayesian Optimal Phase II Design with Futility and Efficacy Stopping Boundaries 
 Version: 0.4.1
 Authors@R: c(
     person("Belay Birlie", "Yimer", email = "belayabyimer@gmail.com", role =  c("aut", "cre")),
