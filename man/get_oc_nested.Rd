@@ -56,7 +56,7 @@ A data frame with the following columns
 Operating characteristics for Nested Endpoint
 }
 \examples{
-\dontrun{
+ \donttest{
 H0=c(0.15, 0.15, 0.70)
 a <- H0
 seed <- 123

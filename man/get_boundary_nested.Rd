@@ -52,7 +52,7 @@ A list with the first element corresponding to futility and the second for effic
 Boundary values for Nested Endpoint
 }
 \examples{
-\dontrun{
+ \donttest{
 H0 <- c(0.15, 0.15, 0.70)
 a <- H0
 seed <- 123

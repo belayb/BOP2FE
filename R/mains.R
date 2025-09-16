@@ -33,7 +33,7 @@
 #' 
 #' @export
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' test_binary <- BOP2FE_binary(
 #'  H0=0.2, H1= 0.4,
 #'  n = c(10, 5, 5, 5, 5, 5, 5),
@@ -128,7 +128,7 @@ BOP2FE_binary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' @export
 #' 
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' test_nested <- BOP2FE_nested(
 #'  H0=c(0.15,0.15, 0.70), 
 #'  H1= c(0.25,0.25, 0.50),
@@ -225,7 +225,7 @@ BOP2FE_nested <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' 
 #' @export
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' test_coprimary <- BOP2FE_coprimary(
 #'  H0=c(0.05,0.05, 0.15, 0.75),
 #'  H1= c(0.15,0.15, 0.20, 0.50),
@@ -322,7 +322,7 @@ BOP2FE_coprimary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' @returns An S3 object of class 'bop2fe' 
 #' 
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' test_joint <- BOP2FE_jointefftox(
 #'  H0=c(0.15,0.30, 0.15, 0.40),
 #'  H1= c(0.18,0.42, 0.02, 0.38),
@@ -582,7 +582,7 @@ plot.bop2fe <- function(x, ...) {
 #' @export
 #' 
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' test_nested <- BOP2FE_nested(
 #'  H0=c(0.15,0.15, 0.70), 
 #'  H1= c(0.25,0.25, 0.50),

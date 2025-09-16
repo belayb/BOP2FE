@@ -26,7 +26,7 @@
 #' 
 #' @returns A list with the first element corresponding to futility and the second for efficacy boundaries
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' H0 <- c(0.15, 0.15, 0.70)
 #' a <- H0
 #' seed <- 123
@@ -277,7 +277,7 @@ get_boundary_nested <- function(H0, a, n, lambda, gamma, eta = NULL, method = "p
 #'   } 
 #'   
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' H0=c(0.15, 0.15, 0.70)
 #' a <- H0
 #' seed <- 123
@@ -517,7 +517,7 @@ get_oc_nested <- function(p1, p2, p3, n, nsim, fb, sb, seed = NULL) {
 #'   \item{gamma: }{gamma values for cut-off probability}
 #'   \item{eta: }{eta values for cut-off probability}} 
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' oc_nested<-get_boundary_oc_nested(
 #'   H0=c(0.15,0.15, 0.70), 
 #'   H1= c(0.25,0.25, 0.50),
@@ -641,7 +641,7 @@ get_boundary_oc_nested <- function(
 #' @export
 #' @keywords internal
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #'test_nested <- search_optimal_pars_nested(
 #'  H0=c(0.15,0.15, 0.70), 
 #'  H1= c(0.25,0.25, 0.50),

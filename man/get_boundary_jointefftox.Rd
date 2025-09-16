@@ -49,7 +49,7 @@ A list with the first element corresponding to futility and the second for effic
 Boundary values for joint Endpoint
 }
 \examples{
-\dontrun{
+ \donttest{
 H0=c(0.15,0.30, 0.15, 0.40)
 a <- H0
 seed <- 123

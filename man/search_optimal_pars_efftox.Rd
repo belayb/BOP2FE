@@ -99,7 +99,7 @@ A data frame with the following columns
 optimal parameter combinations with type I error less than t1e and sorted according to power.
 }
 \examples{
-\dontrun{
+ \donttest{
 test_jointy <- search_optimal_pars_efftox(
  H0=c(0.15,0.30, 0.15, 0.40),
  H1= c(0.18,0.42, 0.02, 0.38),

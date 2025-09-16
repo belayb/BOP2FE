@@ -73,7 +73,7 @@ Computes stopping boundaries and operating characteristics of Bayesian optimal p
 design with efficacy and futility stopping for a binary endpoint
 }
 \examples{
-\dontrun{
+ \donttest{
 test_binary <- BOP2FE_binary(
  H0=0.2, H1= 0.4,
  n = c(10, 5, 5, 5, 5, 5, 5),

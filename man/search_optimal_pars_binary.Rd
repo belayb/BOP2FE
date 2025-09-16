@@ -90,7 +90,7 @@ A data frame with the following columns
  optimal parameter combinations with type I error less than t1e and sorted according to power.
 }
 \examples{
-\dontrun{
+ \donttest{
 test_binary <- search_optimal_pars_binary(
  H0=0.2,
  H1= 0.4,

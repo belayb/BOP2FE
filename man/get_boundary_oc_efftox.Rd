@@ -77,7 +77,7 @@ A data frame with the following columns
 Computes both the boundary and corresponding operating characteristics for joint efficacy and toxicity endpoints
 }
 \examples{
-\dontrun{
+ \donttest{
 oc_joint<-get_boundary_oc_efftox(
   H0=c(0.15,0.30, 0.15, 0.40), 
   H1= c(0.18,0.42, 0.02, 0.38),

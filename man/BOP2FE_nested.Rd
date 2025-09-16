@@ -79,7 +79,7 @@ Computes stopping boundaries and operating characteristics of Bayesian optimal p
 design with efficacy and futility stopping for a nested (ordinal) endpoint
 }
 \examples{
-\dontrun{
+ \donttest{
 test_nested <- BOP2FE_nested(
  H0=c(0.15,0.15, 0.70), 
  H1= c(0.25,0.25, 0.50),

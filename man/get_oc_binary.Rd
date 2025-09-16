@@ -52,7 +52,7 @@ A data frame with the following columns
 Operating characteristics for binary Endpoint
 }
 \examples{
-\dontrun{
+ \donttest{
  H0 <- 0.2
  a1 <- H0
  b1 <- 1-a1

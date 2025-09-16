@@ -58,7 +58,7 @@ A data frame with the following columns
 Operating characteristics for for coprimary Endpoint
 }
 \examples{
-\dontrun{
+\donttest{
 H0=c(0.05,0.05, 0.15, 0.75)
 a <- H0
 seed <- 123

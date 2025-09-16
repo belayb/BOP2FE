@@ -49,7 +49,7 @@ A list with the first element corresponding to futility and the second for effic
 Boundary values for co-primary Endpoint
 }
 \examples{
-\dontrun{
+ \donttest{
 H0=c(0.05,0.05, 0.15, 0.75)
 a <- H0
 seed <- 123

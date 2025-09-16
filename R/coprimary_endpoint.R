@@ -22,7 +22,7 @@
 #' 
 #' @returns A list with the first element corresponding to futility and the second for efficacy boundaries
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' H0=c(0.05,0.05, 0.15, 0.75)
 #' a <- H0
 #' seed <- 123
@@ -273,7 +273,7 @@ get_boundary_coprimary <- function(H0, a, n, lambda, gamma, eta = NULL, method =
 #'   } 
 #'   
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' H0=c(0.05,0.05, 0.15, 0.75)
 #' a <- H0
 #' seed <- 123
@@ -516,7 +516,7 @@ get_oc_coprimary <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
 #'   \item{gamma: }{gamma values for cut-off probability}
 #'   \item{eta: }{eta values for cut-off probability}} 
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' oc_coprimary<-get_boundary_oc_coprimary(
 #'   H0=c(0.15,0.30, 0.15, 0.40), 
 #'   H1= c(0.18,0.42, 0.02, 0.38),
@@ -642,7 +642,7 @@ get_boundary_oc_coprimary <- function(
 #' @export
 #' @keywords internal
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #'test_comprimary <- search_optimal_pars_coprimary(
 #'  H0=c(0.05,0.05, 0.15, 0.75),
 #'  H1= c(0.15,0.15, 0.20, 0.50),

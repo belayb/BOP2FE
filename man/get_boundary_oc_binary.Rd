@@ -67,7 +67,7 @@ A data frame with the following columns
 Computes both the boundary and corresponding operating characteristics for binary endpoints
 }
 \examples{
-\dontrun{
+ \donttest{
 oc_binary<-get_boundary_oc_binary(
   H0=0.2, 
   H1= 0.4,

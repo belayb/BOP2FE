@@ -99,7 +99,7 @@ A data frame with the following columns
 optimal parameter combinations with type I error less than t1e and sorted according to power.
 }
 \examples{
-\dontrun{
+ \donttest{
 test_comprimary <- search_optimal_pars_coprimary(
  H0=c(0.05,0.05, 0.15, 0.75),
  H1= c(0.15,0.15, 0.20, 0.50),

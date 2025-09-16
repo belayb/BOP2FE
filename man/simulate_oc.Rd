@@ -29,7 +29,7 @@ under a different H1 values. This function accepts a single or multiple values o
 additional H1 values and compute the operating characteristics for each of them.
 }
 \examples{
-\dontrun{
+ \donttest{
 test_nested <- BOP2FE_nested(
  H0=c(0.15,0.15, 0.70), 
  H1= c(0.25,0.25, 0.50),

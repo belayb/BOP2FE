@@ -81,7 +81,7 @@ Computes stopping boundaries and operating characteristics of Bayesian optimal p
 design with efficacy and futility stopping for a co-primary endpoint.
 }
 \examples{
-\dontrun{
+ \donttest{
 test_coprimary <- BOP2FE_coprimary(
  H0=c(0.05,0.05, 0.15, 0.75),
  H1= c(0.15,0.15, 0.20, 0.50),

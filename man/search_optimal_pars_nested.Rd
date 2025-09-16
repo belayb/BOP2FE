@@ -97,7 +97,7 @@ A data frame with the following columns
 optimal parameter combinations with type I error less than t1e and sorted according to power.
 }
 \examples{
-\dontrun{
+ \donttest{
 test_nested <- search_optimal_pars_nested(
  H0=c(0.15,0.15, 0.70), 
  H1= c(0.25,0.25, 0.50),

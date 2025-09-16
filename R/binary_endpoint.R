@@ -24,7 +24,7 @@
 #' 
 #' @returns A list with the first element corresponding to futility and the second for efficacy boundaries
 #' @examples
-#' \dontrun{
+#'\donttest{
 #' H0 <- 0.2
 #' a1 <- H0
 #' b1 <- 1- a1
@@ -32,7 +32,7 @@
 #' n <- c(10, 5, 5, 5, 5, 5, 5)
 #' method <- "power"
 #' 
-#' boundary_binary<- get_boundary_binary(H0=H0, a=a, n =n,
+#' boundary_binary<- get_boundary_binary(H0=H0, a1=a1, b1=b1, n =n,
 #'                      lambda = seq(0, 1, l = 101),
 #'                      gamma  = seq(0, 1, l = 101),
 #'                      eta    = seq(0, 3, l = 301),
@@ -180,7 +180,7 @@ get_boundary_binary <- function(H0, a1, b1, n, lambda, gamma, eta = NULL, method
 #'   } 
 #'   
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #'  H0 <- 0.2
 #'  a1 <- H0
 #'  b1 <- 1-a1
@@ -374,7 +374,7 @@ get_oc_binary <- function(p, n, nsim, fb, sb, seed = NULL) {
 #'   \item{gamma: }{gamma values for cut-off probability}
 #'   \item{eta: }{eta values for cut-off probability}} 
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #' oc_binary<-get_boundary_oc_binary(
 #'   H0=0.2, 
 #'   H1= 0.4,
@@ -492,7 +492,7 @@ get_boundary_oc_binary <- function(
 #' @export
 #' @keywords internal
 #' @examples
-#' \dontrun{
+#'  \donttest{
 #'test_binary <- search_optimal_pars_binary(
 #'  H0=0.2,
 #'  H1= 0.4,

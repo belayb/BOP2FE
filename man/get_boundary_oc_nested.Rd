@@ -75,7 +75,7 @@ A data frame with the following columns
 Computes both the boundary and corresponding operating characteristics for nested endpoints
 }
 \examples{
-\dontrun{
+ \donttest{
 oc_nested<-get_boundary_oc_nested(
   H0=c(0.15,0.15, 0.70), 
   H1= c(0.25,0.25, 0.50),

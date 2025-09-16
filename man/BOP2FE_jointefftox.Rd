@@ -81,7 +81,7 @@ Computes stopping boundaries and operating characteristics of Bayesian optimal p
 design with efficacy and futility stopping for a joint efficacy and toxicity endpoint.
 }
 \examples{
-\dontrun{
+ \donttest{
 test_joint <- BOP2FE_jointefftox(
  H0=c(0.15,0.30, 0.15, 0.40),
  H1= c(0.18,0.42, 0.02, 0.38),
