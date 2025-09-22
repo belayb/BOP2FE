@@ -52,12 +52,11 @@ A data frame with the following columns
 Operating characteristics for binary Endpoint
 }
 \examples{
- \donttest{
  H0 <- 0.2
  a1 <- H0
  b1 <- 1-a1
  seed <- 123
- n <- c(10, 5, 5, 5, 5, 5, 5)
+ n <- c(10, 5, 5)
  method <- "power"
  boundary_tab<- get_boundary_binary(H0=H0, a1=a1, b1=b1, n =n,
                                lambda = seq(0, 1, l = 11),
@@ -67,12 +66,11 @@ Operating characteristics for binary Endpoint
                                seed=seed)
 test_oc<-get_oc_binary(
   p = 0.2,
-  n = c(10, 5, 5, 5, 5, 5, 5),
+  n = c(10, 5, 5),
   nsim = 1000,
   fb = boundary_tab$cnf,
   sb = boundary_tab$cns,
   seed = seed
 )
-}
   
 }

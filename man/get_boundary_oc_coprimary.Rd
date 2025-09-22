@@ -77,11 +77,10 @@ A data frame with the following columns
 Computes both the boundary and corresponding operating characteristics for co primary endpoints
 }
 \examples{
- \donttest{
 oc_coprimary<-get_boundary_oc_coprimary(
   H0=c(0.15,0.30, 0.15, 0.40), 
   H1= c(0.18,0.42, 0.02, 0.38),
-  n = c(10, 5, 5, 5, 5, 5, 5),
+  n = c(10, 5, 5),
   nsim = 1000,
   lambda = seq(0, 1, l = 11),
   gamma  = seq(0, 1, l = 11),
@@ -89,7 +88,6 @@ oc_coprimary<-get_boundary_oc_coprimary(
   method = "power",
   seed = 1
 )
-}
 
 }
 \keyword{internal}

@@ -56,11 +56,10 @@ A data frame with the following columns
 Operating characteristics for Nested Endpoint
 }
 \examples{
- \donttest{
 H0=c(0.15, 0.15, 0.70)
 a <- H0
 seed <- 123
-n <- c(10, 5, 5, 5, 5, 5, 5)
+n <- c(10, 5, 5)
 method <- "power"
 boundary_tab<- get_boundary_nested(H0=H0, a=a, n =n,
                                lambda = seq(0, 1, l = 11),
@@ -72,12 +71,11 @@ test_oc<-get_oc_nested(
   p1 = 0.15,
   p2 = 0.15,
   p3 = 0.70,
-  n = c(10, 5, 5, 5, 5, 5, 5),
+  n = c(10, 5, 5),
   nsim = 1000,
   fb = boundary_tab$cnf,
   sb = boundary_tab$cns,
   seed = seed
 )
-}
   
 }

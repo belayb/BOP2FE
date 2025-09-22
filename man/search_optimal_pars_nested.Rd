@@ -97,11 +97,10 @@ A data frame with the following columns
 optimal parameter combinations with type I error less than t1e and sorted according to power.
 }
 \examples{
- \donttest{
 test_nested <- search_optimal_pars_nested(
  H0=c(0.15,0.15, 0.70), 
  H1= c(0.25,0.25, 0.50),
- n = c(10, 5, 5, 5, 5, 5, 5),
+ n = c(10, 5, 5),
  nsim = 1000,
  t1e = 0.1,
  method = "power",
@@ -116,7 +115,6 @@ test_nested <- search_optimal_pars_nested(
  grid3 = 31,
  seed = 123
 )
-}
 
 }
 \keyword{internal}

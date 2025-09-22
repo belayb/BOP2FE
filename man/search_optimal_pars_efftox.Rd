@@ -99,11 +99,10 @@ A data frame with the following columns
 optimal parameter combinations with type I error less than t1e and sorted according to power.
 }
 \examples{
- \donttest{
-test_jointy <- search_optimal_pars_efftox(
+test_joint <- search_optimal_pars_efftox(
  H0=c(0.15,0.30, 0.15, 0.40),
  H1= c(0.18,0.42, 0.02, 0.38),
- n = c(10, 5, 5, 5, 5, 5, 5),
+ n = c(10, 5, 5),
  nsim = 1000,
  t1e = 0.1,
  method = "power",
@@ -118,7 +117,6 @@ test_jointy <- search_optimal_pars_efftox(
  grid3 = 31,
  seed = 123
 )
-}
 
 }
 \keyword{internal}

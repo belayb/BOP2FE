@@ -75,11 +75,10 @@ A data frame with the following columns
 Computes both the boundary and corresponding operating characteristics for nested endpoints
 }
 \examples{
- \donttest{
 oc_nested<-get_boundary_oc_nested(
   H0=c(0.15,0.15, 0.70), 
   H1= c(0.25,0.25, 0.50),
-  n = c(10, 5, 5, 5, 5, 5, 5),
+  n = c(10, 5, 5),
   nsim = 1000,
   lambda = seq(0, 1, l = 11),
   gamma  = seq(0, 1, l = 11),
@@ -87,7 +86,6 @@ oc_nested<-get_boundary_oc_nested(
   method = "power",
   seed = 1
 )
-}
 
 }
 \keyword{internal}

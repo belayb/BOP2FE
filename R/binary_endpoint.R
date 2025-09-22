@@ -24,12 +24,11 @@
 #' 
 #' @returns A list with the first element corresponding to futility and the second for efficacy boundaries
 #' @examples
-#'\donttest{
 #' H0 <- 0.2
 #' a1 <- H0
 #' b1 <- 1- a1
 #' seed <- 123
-#' n <- c(10, 5, 5, 5, 5, 5, 5)
+#' n <- c(10, 5, 5)
 #' method <- "power"
 #' 
 #' boundary_binary<- get_boundary_binary(H0=H0, a1=a1, b1=b1, n =n,
@@ -38,7 +37,6 @@
 #'                      eta    = seq(0, 3, l = 301),
 #'                      method = method,
 #'                     seed = seed)
-#' }
 #' 
 get_boundary_binary <- function(H0, a1, b1, n, lambda, gamma, eta = NULL, method = "power", seed=NULL) {
   set.seed(seed)
@@ -180,12 +178,11 @@ get_boundary_binary <- function(H0, a1, b1, n, lambda, gamma, eta = NULL, method
 #'   } 
 #'   
 #' @examples
-#'  \donttest{
 #'  H0 <- 0.2
 #'  a1 <- H0
 #'  b1 <- 1-a1
 #'  seed <- 123
-#'  n <- c(10, 5, 5, 5, 5, 5, 5)
+#'  n <- c(10, 5, 5)
 #'  method <- "power"
 #'  boundary_tab<- get_boundary_binary(H0=H0, a1=a1, b1=b1, n =n,
 #'                                lambda = seq(0, 1, l = 11),
@@ -195,13 +192,12 @@ get_boundary_binary <- function(H0, a1, b1, n, lambda, gamma, eta = NULL, method
 #'                                seed=seed)
 #' test_oc<-get_oc_binary(
 #'   p = 0.2,
-#'   n = c(10, 5, 5, 5, 5, 5, 5),
+#'   n = c(10, 5, 5),
 #'   nsim = 1000,
 #'   fb = boundary_tab$cnf,
 #'   sb = boundary_tab$cns,
 #'   seed = seed
 #' )
-#' }
 #'   
 get_oc_binary <- function(p, n, nsim, fb, sb, seed = NULL) {
   set.seed(seed)
@@ -374,11 +370,10 @@ get_oc_binary <- function(p, n, nsim, fb, sb, seed = NULL) {
 #'   \item{gamma: }{gamma values for cut-off probability}
 #'   \item{eta: }{eta values for cut-off probability}} 
 #' @examples
-#'  \donttest{
 #' oc_binary<-get_boundary_oc_binary(
 #'   H0=0.2, 
 #'   H1= 0.4,
-#'   n = c(10, 5, 5, 5, 5, 5, 5),
+#'   n = c(10, 5, 5),
 #'   nsim = 1000,
 #'   lambda = seq(0, 1, l = 11),
 #'   gamma  = seq(0, 1, l = 11),
@@ -386,7 +381,6 @@ get_oc_binary <- function(p, n, nsim, fb, sb, seed = NULL) {
 #'   method = "power",
 #'   seed = 1
 #' )
-#' }
 #' 
 get_boundary_oc_binary <- function(
     H0, H1, n, nsim, lambda, gamma, eta = NULL, method = "power", seed = NULL  
@@ -492,11 +486,10 @@ get_boundary_oc_binary <- function(
 #' @export
 #' @keywords internal
 #' @examples
-#'  \donttest{
 #'test_binary <- search_optimal_pars_binary(
 #'  H0=0.2,
 #'  H1= 0.4,
-#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  n = c(10, 5, 5),
 #'  nsim = 1000,
 #'  t1e = 0.1,
 #'  method = "power",
@@ -511,7 +504,6 @@ get_boundary_oc_binary <- function(
 #'  grid3 = 31,
 #'  seed = 123
 #')
-#'}
 #' 
 #' 
 search_optimal_pars_binary <- function(

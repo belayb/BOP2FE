@@ -52,12 +52,11 @@ A list with the first element corresponding to futility and the second for effic
 Boundary values for binary Endpoint
 }
 \examples{
-\donttest{
 H0 <- 0.2
 a1 <- H0
 b1 <- 1- a1
 seed <- 123
-n <- c(10, 5, 5, 5, 5, 5, 5)
+n <- c(10, 5, 5)
 method <- "power"
 
 boundary_binary<- get_boundary_binary(H0=H0, a1=a1, b1=b1, n =n,
@@ -66,6 +65,5 @@ boundary_binary<- get_boundary_binary(H0=H0, a1=a1, b1=b1, n =n,
                      eta    = seq(0, 3, l = 301),
                      method = method,
                     seed = seed)
-}
 
 }

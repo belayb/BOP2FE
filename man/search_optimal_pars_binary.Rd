@@ -90,11 +90,10 @@ A data frame with the following columns
  optimal parameter combinations with type I error less than t1e and sorted according to power.
 }
 \examples{
- \donttest{
 test_binary <- search_optimal_pars_binary(
  H0=0.2,
  H1= 0.4,
- n = c(10, 5, 5, 5, 5, 5, 5),
+ n = c(10, 5, 5),
  nsim = 1000,
  t1e = 0.1,
  method = "power",
@@ -109,7 +108,6 @@ test_binary <- search_optimal_pars_binary(
  grid3 = 31,
  seed = 123
 )
-}
 
 
 }

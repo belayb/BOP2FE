@@ -49,17 +49,15 @@ A list with the first element corresponding to futility and the second for effic
 Boundary values for joint Endpoint
 }
 \examples{
- \donttest{
 H0=c(0.15,0.30, 0.15, 0.40)
 a <- H0
 seed <- 123
-n <- c(10, 5, 5, 5, 5, 5, 5)
+n <- c(10, 5, 5)
 method <- "power"
 test1<- get_boundary_jointefftox(H0=H0, a=a, n =n,
                                   lambda = seq(0, 1, l = 11),
                                   gamma  = seq(0, 1, l = 11),
                                   eta    = seq(0, 3, l = 31),
                                   method = "power")
-}
 
 }

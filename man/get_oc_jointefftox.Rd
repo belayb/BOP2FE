@@ -58,11 +58,10 @@ A data frame with the following columns
 Operating characteristics for for joint Endpoint
 }
 \examples{
- \donttest{
 H0=c(0.15,0.30, 0.15, 0.40)
 a <- H0
 seed <- 123
-n <- c(10, 5, 5, 5, 5, 5, 5)
+n <- c(10, 5, 5)
 method <- "power"
 boundary_tab<- get_boundary_jointefftox(H0=H0, a=a, n =n,
                                lambda = seq(0, 1, l = 11),
@@ -75,12 +74,11 @@ test_oc<-get_oc_jointefftox(
   p2 = 0.30,
   p3 = 0.15,
   p4 = 0.40,
-  n = c(10, 5, 5, 5, 5, 5, 5),
+  n = c(10, 5, 5),
   nsim = 1000,
   fb = boundary_tab$cnf,
   sb = boundary_tab$cns,
   seed = seed
 )
-}
   
 }

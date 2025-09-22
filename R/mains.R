@@ -3,8 +3,8 @@
 #' Computes stopping boundaries and operating characteristics of Bayesian optimal phase II
 #' design with efficacy and futility stopping for a binary endpoint
 #' 
-#' @param H0 A numeric value for the response rate under the null hypothesis
-#' @param H1 A numeric value for the response rate under the alternative hypothesis
+#' @param H0 A numeric value for the response rate under the null hypothesis.
+#' @param H1 A numeric value for the response rate under the alternative hypothesis.
 #' @param n A numeric vector representing the additional patients enrolled at each interim analysis. 
 #' The value at index `i` indicates the number of new patients added at interim analysis `i`. 
 #' The total sample size at interim `i` is the cumulative sum of the values in `n` up to that index. 
@@ -14,17 +14,17 @@
 #' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
 #' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
 #' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
-#' @param nsim number of simulation. A value at least 1000 for better result
+#' @param nsim number of simulation. A value at least 1000 for better result.
 #' @param t1e Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value 
-#' @param lambda1 starting value for `lambda` values to search
-#' @param lambda2 ending value for `lambda` values to search
-#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2
-#' @param gamma1 starting value for `gamma` values to search
-#' @param gamma2 ending value for `gamma` values to search
-#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2
-#' @param eta1 starting value for `eta` values to search
-#' @param eta2 ending value for `eta` values to search
-#' @param grid3 number of eta values to consider between eta1 and eta2
+#' @param lambda1 starting value for `lambda` values to search.
+#' @param lambda2 ending value for `lambda` values to search.
+#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2. A fine grid by 0.01 is recommended. 
+#' @param gamma1 starting value for `gamma` values to search.
+#' @param gamma2 ending value for `gamma` values to search.
+#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2. A fine grid by 0.01 is recommended. 
+#' @param eta1 starting value for `eta` values to search.
+#' @param eta2 ending value for `eta` values to search.
+#' @param grid3 number of eta values to consider between eta1 and eta2. A fine grid by 0.01 is recommended. 
 #' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility             
@@ -33,19 +33,15 @@
 #' 
 #' @export
 #' @examples
-#'  \donttest{
-#' test_binary <- BOP2FE_binary(
+#'  test_binary <- BOP2FE_binary(
 #'  H0=0.2, H1= 0.4,
-#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  n = c(10, 5, 5),
 #'  nsim = 1000, t1e = 0.1, method = "power",
 #'  lambda1 = 0, lambda2 = 1, grid1 = 11,
 #'  gamma1 = 0, gamma2 = 1, grid2 = 11,
-#'  eta1 = 0, eta2 = 3, grid3 = 31,
-#'  seed = 123
-#' )
-#' summary(test_binary)
-#' plot(test_binary)
-#' }
+#'  eta1 = 0, eta2 = 3, grid3 = 31,seed = 123)
+#'  summary(test_binary)
+#' #plot(test_binary)
 #' 
 #' 
 #' @references 
@@ -108,17 +104,17 @@ BOP2FE_binary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
 #' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
 #' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
-#' @param nsim number of simulation. A value at least 1000 for better result
+#' @param nsim number of simulation. A value at least 1000 for better result.
 #' @param t1e Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value 
-#' @param lambda1 starting value for `lambda` values to search
-#' @param lambda2 ending value for `lambda` values to search
-#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2
-#' @param gamma1 starting value for `gamma` values to search
-#' @param gamma2 ending value for `gamma` values to search
-#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2
-#' @param eta1 starting value for `eta` values to search
-#' @param eta2 ending value for `eta` values to search
-#' @param grid3 number of eta values to consider between eta1 and eta2
+#' @param lambda1 starting value for `lambda` values to search.
+#' @param lambda2 ending value for `lambda` values to search.
+#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2. A fine grid by 0.01 is recommended.
+#' @param gamma1 starting value for `gamma` values to search.
+#' @param gamma2 ending value for `gamma` values to search.
+#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2. A fine grid by 0.01 is recommended.
+#' @param eta1 starting value for `eta` values to search.
+#' @param eta2 ending value for `eta` values to search.
+#' @param grid3 number of eta values to consider between eta1 and eta2. A fine grid by 0.01 is recommended.
 #' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility             
@@ -128,20 +124,17 @@ BOP2FE_binary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' @export
 #' 
 #' @examples
-#'  \donttest{
-#' test_nested <- BOP2FE_nested(
-#'  H0=c(0.15,0.15, 0.70), 
+#'  test_nested <- BOP2FE_nested(
+#'  H0=c(0.15,0.15, 0.70),
 #'  H1= c(0.25,0.25, 0.50),
-#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  n = c(10, 5, 5),
 #'  nsim = 1000, t1e = 0.1, method = "power",
 #'  lambda1 = 0, lambda2 = 1, grid1 = 11,
 #'  gamma1 = 0, gamma2 = 1, grid2 = 11,
 #'  eta1 = 0, eta2 = 3, grid3 = 31,
-#'  seed = 123
-#')
-#'summary(test_nested)
-#'plot(test_nested)
-#'}
+#'  seed = 123)
+#'  summary(test_nested)
+#' #plot(test_nested)
 #' 
 #' @references 
 #' Xu, X., Hashimoto, A., Yimer, B., & Takeda, K. (2025). BOP2-FE: Bayesian optimal phase II design with futility and efficacy stopping boundaries. Journal of Biopharmaceutical Statistics \doi{10.1080/10543406.2025.2558142}.
@@ -206,17 +199,17 @@ BOP2FE_nested <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
 #' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
 #' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
-#' @param nsim number of simulation. A value at least 1000 for better result
+#' @param nsim number of simulation. A value at least 1000 for better result.
 #' @param t1e Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value 
-#' @param lambda1 starting value for `lambda` values to search
-#' @param lambda2 ending value for `lambda` values to search
-#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2
-#' @param gamma1 starting value for `gamma` values to search
-#' @param gamma2 ending value for `gamma` values to search
-#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2
-#' @param eta1 starting value for `eta` values to search
-#' @param eta2 ending value for `eta` values to search
-#' @param grid3 number of eta values to consider between eta1 and eta2
+#' @param lambda1 starting value for `lambda` values to search.
+#' @param lambda2 ending value for `lambda` values to search.
+#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2. A fine grid by 0.01 is recommended.
+#' @param gamma1 starting value for `gamma` values to search.
+#' @param gamma2 ending value for `gamma` values to search.
+#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2. A fine grid by 0.01 is recommended.
+#' @param eta1 starting value for `eta` values to search.
+#' @param eta2 ending value for `eta` values to search.
+#' @param grid3 number of eta values to consider between eta1 and eta2. A fine grid by 0.01 is recommended.
 #' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility             
@@ -225,20 +218,18 @@ BOP2FE_nested <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' 
 #' @export
 #' @examples
-#'  \donttest{
-#' test_coprimary <- BOP2FE_coprimary(
+#'  test_coprimary <- BOP2FE_coprimary(
 #'  H0=c(0.05,0.05, 0.15, 0.75),
 #'  H1= c(0.15,0.15, 0.20, 0.50),
-#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  n = c(10, 5, 5),
 #'  nsim = 1000, t1e = 0.1, method = "power",
 #'  lambda1 = 0, lambda2 = 1, grid1 = 11,
 #'  gamma1 = 0, gamma2 = 1, grid2 = 11,
 #'  eta1 = 0, eta2 = 3, grid3 = 31,
-#'  seed = 123
-#')
-#'summary(test_coprimary)
-#'plot(test_coprimary)
-#'}
+#'  seed = 123)
+#'  summary(test_coprimary)
+#'#plot(test_coprimary)
+#'
 #' 
 #' 
 #' @references 
@@ -303,17 +294,17 @@ BOP2FE_coprimary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' - 5 (15 - 10) is the additional number of patients enrolled at interim 2,
 #' - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
 #' - 10 (30 - 20) is the additional number of patients enrolled at interim 4.
-#' @param nsim number of simulation. A value at least 1000 for better result
+#' @param nsim number of simulation. A value at least 1000 for better result.
 #' @param t1e Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value 
-#' @param lambda1 starting value for `lambda` values to search
-#' @param lambda2 ending value for `lambda` values to search
-#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2
-#' @param gamma1 starting value for `gamma` values to search
-#' @param gamma2 ending value for `gamma` values to search
-#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2
-#' @param eta1 starting value for `eta` values to search
-#' @param eta2 ending value for `eta` values to search
-#' @param grid3 number of eta values to consider between eta1 and eta2
+#' @param lambda1 starting value for `lambda` values to search.
+#' @param lambda2 ending value for `lambda` values to search.
+#' @param grid1 number of `lambda` values to consider between lambda1 and lambda2. A fine grid by 0.01 is recommended.
+#' @param gamma1 starting value for `gamma` values to search.
+#' @param gamma2 ending value for `gamma` values to search.
+#' @param grid2 number of `gamma` values to consider between gamma1 and gamma2. A fine grid by 0.01 is recommended.
+#' @param eta1 starting value for `eta` values to search.
+#' @param eta2 ending value for `eta` values to search.
+#' @param grid3 number of eta values to consider between eta1 and eta2. A fine grid by 0.01 is recommended.
 #' @param method A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 #'               Options are "power" (default) or "OF" for "O'Brien-Fleming".
 #' @param seed for reproducibility             
@@ -322,11 +313,10 @@ BOP2FE_coprimary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #' @returns An S3 object of class 'bop2fe' 
 #' 
 #' @examples
-#'  \donttest{
 #' test_joint <- BOP2FE_jointefftox(
 #'  H0=c(0.15,0.30, 0.15, 0.40),
 #'  H1= c(0.18,0.42, 0.02, 0.38),
-#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  n = c(10, 5, 5),
 #'  nsim = 1000, t1e = 0.1, method = "power",
 #'  lambda1 = 0, lambda2 = 1, grid1 = 11,
 #'  gamma1 = 0, gamma2 = 1, grid2 = 11,
@@ -334,8 +324,8 @@ BOP2FE_coprimary <- function(H0, H1, n, nsim, t1e = NULL, method = "power",
 #'  seed = 123
 #')
 #'summary(test_joint)
-#'plot(test_joint)
-#'}
+#'#plot(test_joint)
+#'
 #' 
 #' @references 
 #' Xu, X., Hashimoto, A., Yimer, B., & Takeda, K. (2025). BOP2-FE: Bayesian optimal phase II design with futility and efficacy stopping boundaries. Journal of Biopharmaceutical Statistics \doi{10.1080/10543406.2025.2558142} .
@@ -582,11 +572,10 @@ plot.bop2fe <- function(x, ...) {
 #' @export
 #' 
 #' @examples
-#'  \donttest{
 #' test_nested <- BOP2FE_nested(
 #'  H0=c(0.15,0.15, 0.70), 
 #'  H1= c(0.25,0.25, 0.50),
-#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  n = c(10, 5, 5),
 #'  nsim = 1000, t1e = 0.1, method = "power",
 #'  lambda1 = 0, lambda2 = 1, grid1 = 11,
 #'  gamma1 = 0, gamma2 = 1, grid2 = 11,
@@ -602,7 +591,6 @@ plot.bop2fe <- function(x, ...) {
 #'  simulate_oc(test_nested, p=list(c(0.30,0.30,0.40),c(0.35,0.35,0.30)), 
 #'              endpoint = 'nested', seed=123)
 #' 
-#'}
 #' 
 simulate_oc <- function(object, p, endpoint, seed = NULL) {
   boundary <- summary(object)$boundary

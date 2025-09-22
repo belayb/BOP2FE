@@ -22,18 +22,16 @@
 #' 
 #' @returns A list with the first element corresponding to futility and the second for efficacy boundaries
 #' @examples
-#'  \donttest{
 #' H0=c(0.15,0.30, 0.15, 0.40)
 #' a <- H0
 #' seed <- 123
-#' n <- c(10, 5, 5, 5, 5, 5, 5)
+#' n <- c(10, 5, 5)
 #' method <- "power"
 #' test1<- get_boundary_jointefftox(H0=H0, a=a, n =n,
 #'                                   lambda = seq(0, 1, l = 11),
 #'                                   gamma  = seq(0, 1, l = 11),
 #'                                   eta    = seq(0, 3, l = 31),
 #'                                   method = "power")
-#' }
 #' 
 
 get_boundary_jointefftox <- function(H0, a, n, lambda, gamma, eta = NULL, method = "power", seed = NULL) {
@@ -279,11 +277,10 @@ get_boundary_jointefftox <- function(H0, a, n, lambda, gamma, eta = NULL, method
 #'   } 
 #'   
 #' @examples
-#'  \donttest{
 #' H0=c(0.15,0.30, 0.15, 0.40)
 #' a <- H0
 #' seed <- 123
-#' n <- c(10, 5, 5, 5, 5, 5, 5)
+#' n <- c(10, 5, 5)
 #' method <- "power"
 #' boundary_tab<- get_boundary_jointefftox(H0=H0, a=a, n =n,
 #'                                lambda = seq(0, 1, l = 11),
@@ -296,13 +293,12 @@ get_boundary_jointefftox <- function(H0, a, n, lambda, gamma, eta = NULL, method
 #'   p2 = 0.30,
 #'   p3 = 0.15,
 #'   p4 = 0.40,
-#'   n = c(10, 5, 5, 5, 5, 5, 5),
+#'   n = c(10, 5, 5),
 #'   nsim = 1000,
 #'   fb = boundary_tab$cnf,
 #'   sb = boundary_tab$cns,
 #'   seed = seed
 #' )
-#' }
 #'   
 get_oc_jointefftox <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
   set.seed(seed)
@@ -561,11 +557,10 @@ get_oc_jointefftox <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
 #'   \item{gamma: }{gamma values for cut-off probability}
 #'   \item{eta: }{eta values for cut-off probability}} 
 #' @examples
-#'  \donttest{
 #' oc_joint<-get_boundary_oc_efftox(
 #'   H0=c(0.15,0.30, 0.15, 0.40), 
 #'   H1= c(0.18,0.42, 0.02, 0.38),
-#'   n = c(10, 5, 5, 5, 5, 5, 5),
+#'   n = c(10, 5, 5),
 #'   nsim = 1000,
 #'   lambda = seq(0, 1, l = 11),
 #'   gamma  = seq(0, 1, l = 11),
@@ -573,7 +568,6 @@ get_oc_jointefftox <- function(p1, p2, p3, p4, n, nsim, fb, sb, seed = NULL) {
 #'   method = "power",
 #'   seed = 1
 #' )
-#' }
 #' 
 get_boundary_oc_efftox <- function(
     H0, H1, n, nsim, lambda, gamma, eta = NULL, method = "power", seed = NULL  
@@ -687,11 +681,10 @@ get_boundary_oc_efftox <- function(
 #' @export
 #' @keywords internal
 #' @examples
-#'  \donttest{
-#'test_jointy <- search_optimal_pars_efftox(
+#'test_joint <- search_optimal_pars_efftox(
 #'  H0=c(0.15,0.30, 0.15, 0.40),
 #'  H1= c(0.18,0.42, 0.02, 0.38),
-#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  n = c(10, 5, 5),
 #'  nsim = 1000,
 #'  t1e = 0.1,
 #'  method = "power",
@@ -706,7 +699,6 @@ get_boundary_oc_efftox <- function(
 #'  grid3 = 31,
 #'  seed = 123
 #')
-#'}
 #' 
 search_optimal_pars_efftox <- function(
     H0, H1, n, nsim, t1e = NULL, method = "power", 

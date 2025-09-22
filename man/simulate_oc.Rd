@@ -29,11 +29,10 @@ under a different H1 values. This function accepts a single or multiple values o
 additional H1 values and compute the operating characteristics for each of them.
 }
 \examples{
- \donttest{
 test_nested <- BOP2FE_nested(
  H0=c(0.15,0.15, 0.70), 
  H1= c(0.25,0.25, 0.50),
- n = c(10, 5, 5, 5, 5, 5, 5),
+ n = c(10, 5, 5),
  nsim = 1000, t1e = 0.1, method = "power",
  lambda1 = 0, lambda2 = 1, grid1 = 11,
  gamma1 = 0, gamma2 = 1, grid2 = 11,
@@ -49,6 +48,5 @@ simulate_oc(test_nested, p=c(0.30,0.30,0.40),
  simulate_oc(test_nested, p=list(c(0.30,0.30,0.40),c(0.35,0.35,0.30)), 
              endpoint = 'nested', seed=123)
 
-}
 
 }

@@ -26,20 +26,18 @@
 #' 
 #' @returns A list with the first element corresponding to futility and the second for efficacy boundaries
 #' @examples
-#'  \donttest{
 #' H0 <- c(0.15, 0.15, 0.70)
 #' a <- H0
 #' seed <- 123
-#' n <- c(10, 5, 5, 5, 5, 5, 5)
+#' n <- c(10, 5, 5)
 #' method <- "power"
 #' 
 #' boundary_nested<- get_boundary_nested(H0=H0, a=a, n =n,
-#'                      lambda = seq(0, 1, l = 101),
-#'                      gamma  = seq(0, 1, l = 101),
-#'                      eta    = seq(0, 3, l = 301),
+#'                      lambda = seq(0, 1, l = 11),
+#'                      gamma  = seq(0, 1, l = 11),
+#'                      eta    = seq(0, 3, l = 31),
 #'                      method = method,
 #'                     seed = seed)
-#' }
 #' 
 #' 
 
@@ -277,11 +275,10 @@ get_boundary_nested <- function(H0, a, n, lambda, gamma, eta = NULL, method = "p
 #'   } 
 #'   
 #' @examples
-#'  \donttest{
 #' H0=c(0.15, 0.15, 0.70)
 #' a <- H0
 #' seed <- 123
-#' n <- c(10, 5, 5, 5, 5, 5, 5)
+#' n <- c(10, 5, 5)
 #' method <- "power"
 #' boundary_tab<- get_boundary_nested(H0=H0, a=a, n =n,
 #'                                lambda = seq(0, 1, l = 11),
@@ -293,13 +290,12 @@ get_boundary_nested <- function(H0, a, n, lambda, gamma, eta = NULL, method = "p
 #'   p1 = 0.15,
 #'   p2 = 0.15,
 #'   p3 = 0.70,
-#'   n = c(10, 5, 5, 5, 5, 5, 5),
+#'   n = c(10, 5, 5),
 #'   nsim = 1000,
 #'   fb = boundary_tab$cnf,
 #'   sb = boundary_tab$cns,
 #'   seed = seed
 #' )
-#' }
 #'   
 get_oc_nested <- function(p1, p2, p3, n, nsim, fb, sb, seed = NULL) {
   set.seed(seed)
@@ -517,11 +513,10 @@ get_oc_nested <- function(p1, p2, p3, n, nsim, fb, sb, seed = NULL) {
 #'   \item{gamma: }{gamma values for cut-off probability}
 #'   \item{eta: }{eta values for cut-off probability}} 
 #' @examples
-#'  \donttest{
 #' oc_nested<-get_boundary_oc_nested(
 #'   H0=c(0.15,0.15, 0.70), 
 #'   H1= c(0.25,0.25, 0.50),
-#'   n = c(10, 5, 5, 5, 5, 5, 5),
+#'   n = c(10, 5, 5),
 #'   nsim = 1000,
 #'   lambda = seq(0, 1, l = 11),
 #'   gamma  = seq(0, 1, l = 11),
@@ -529,7 +524,6 @@ get_oc_nested <- function(p1, p2, p3, n, nsim, fb, sb, seed = NULL) {
 #'   method = "power",
 #'   seed = 1
 #' )
-#' }
 #' 
 get_boundary_oc_nested <- function(
     H0, H1, n, nsim, lambda, gamma, eta = NULL, method = "power", seed = NULL  
@@ -641,11 +635,10 @@ get_boundary_oc_nested <- function(
 #' @export
 #' @keywords internal
 #' @examples
-#'  \donttest{
 #'test_nested <- search_optimal_pars_nested(
 #'  H0=c(0.15,0.15, 0.70), 
 #'  H1= c(0.25,0.25, 0.50),
-#'  n = c(10, 5, 5, 5, 5, 5, 5),
+#'  n = c(10, 5, 5),
 #'  nsim = 1000,
 #'  t1e = 0.1,
 #'  method = "power",
@@ -660,7 +653,6 @@ get_boundary_oc_nested <- function(
 #'  grid3 = 31,
 #'  seed = 123
 #')
-#'}
 #' 
 search_optimal_pars_nested <- function(
     H0, H1, n, nsim, t1e = NULL, method = "power", 

@@ -67,11 +67,10 @@ A data frame with the following columns
 Computes both the boundary and corresponding operating characteristics for binary endpoints
 }
 \examples{
- \donttest{
 oc_binary<-get_boundary_oc_binary(
   H0=0.2, 
   H1= 0.4,
-  n = c(10, 5, 5, 5, 5, 5, 5),
+  n = c(10, 5, 5),
   nsim = 1000,
   lambda = seq(0, 1, l = 11),
   gamma  = seq(0, 1, l = 11),
@@ -79,7 +78,6 @@ oc_binary<-get_boundary_oc_binary(
   method = "power",
   seed = 1
 )
-}
 
 }
 \keyword{internal}

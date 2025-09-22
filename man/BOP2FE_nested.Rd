@@ -44,30 +44,30 @@ the vector would be represented as `n = c(10, 5, 5, 10)`, where:
 - 5 (20 - 15) is the additional number of patients enrolled at interim 3,
 - 10 (30 - 20) is the additional number of patients enrolled at interim 4.}
 
-\item{nsim}{number of simulation. A value at least 1000 for better result}
+\item{nsim}{number of simulation. A value at least 1000 for better result.}
 
 \item{t1e}{Desired Type - I error rate. If specified it will only return results with type I error rate less the specified value}
 
 \item{method}{A character string specifying the method to use for calculating cutoff values for the efficacy stopping.
 Options are "power" (default) or "OF" for "O'Brien-Fleming".}
 
-\item{lambda1}{starting value for `lambda` values to search}
+\item{lambda1}{starting value for `lambda` values to search.}
 
-\item{lambda2}{ending value for `lambda` values to search}
+\item{lambda2}{ending value for `lambda` values to search.}
 
-\item{grid1}{number of `lambda` values to consider between lambda1 and lambda2}
+\item{grid1}{number of `lambda` values to consider between lambda1 and lambda2. A fine grid by 0.01 is recommended.}
 
-\item{gamma1}{starting value for `gamma` values to search}
+\item{gamma1}{starting value for `gamma` values to search.}
 
-\item{gamma2}{ending value for `gamma` values to search}
+\item{gamma2}{ending value for `gamma` values to search.}
 
-\item{grid2}{number of `gamma` values to consider between gamma1 and gamma2}
+\item{grid2}{number of `gamma` values to consider between gamma1 and gamma2. A fine grid by 0.01 is recommended.}
 
-\item{eta1}{starting value for `eta` values to search}
+\item{eta1}{starting value for `eta` values to search.}
 
-\item{eta2}{ending value for `eta` values to search}
+\item{eta2}{ending value for `eta` values to search.}
 
-\item{grid3}{number of eta values to consider between eta1 and eta2}
+\item{grid3}{number of eta values to consider between eta1 and eta2. A fine grid by 0.01 is recommended.}
 
 \item{seed}{for reproducibility}
 }
@@ -79,20 +79,17 @@ Computes stopping boundaries and operating characteristics of Bayesian optimal p
 design with efficacy and futility stopping for a nested (ordinal) endpoint
 }
 \examples{
- \donttest{
-test_nested <- BOP2FE_nested(
- H0=c(0.15,0.15, 0.70), 
+ test_nested <- BOP2FE_nested(
+ H0=c(0.15,0.15, 0.70),
  H1= c(0.25,0.25, 0.50),
- n = c(10, 5, 5, 5, 5, 5, 5),
+ n = c(10, 5, 5),
  nsim = 1000, t1e = 0.1, method = "power",
  lambda1 = 0, lambda2 = 1, grid1 = 11,
  gamma1 = 0, gamma2 = 1, grid2 = 11,
  eta1 = 0, eta2 = 3, grid3 = 31,
- seed = 123
-)
-summary(test_nested)
-plot(test_nested)
-}
+ seed = 123)
+ summary(test_nested)
+#plot(test_nested)
 
 }
 \references{
